@@ -1,0 +1,34 @@
+{%  extends 'crime/main.html' %}
+{% block content %}
+<h5>Crime Suspect:</h5>
+<a class="btn btn-primary btn-sm btn-block" href="{% url 'create_suspect' %}">Add Suspect</a>
+<hr>
+<div class="card card-body">
+
+<table class="table table-sm">
+<tr>
+<th>Identification</th>
+<th>Name</th>
+<th>Phone</th>
+<th>Date Arrested</th>
+<th>Crime type</th>
+<th>Relation</th>
+<th>Attach Evidence</th>
+
+</tr>
+{% for suspect in suspect %}
+					<tr>
+						<td>{{suspect.suspectNID}}</td>
+						<td>{{suspect.f_name}}</td>
+						<td>{{suspect.phone}}</td>
+						<td>{{suspect.date_arrested}}</td>
+						<td>{{suspect.case}}</td>
+						<td>{{suspect.relation}}</td>
+						<td><a class="btn btn-sm btn-info" href="{% url 'suspect' suspect.id %}">Add Evidence</a></td>
+						
+
+					</tr>
+				{% endfor %}
+</table>
+{% endblock %}
+   

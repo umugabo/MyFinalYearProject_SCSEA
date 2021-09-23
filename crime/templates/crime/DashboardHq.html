@@ -1,0 +1,73 @@
+ {% extends 'crime/mainHq.html' %}
+
+{% block content %}
+{%  include 'crime/statusHq.html' %}
+
+<br>
+<div class="row">
+<div class="col-md-5">
+<h5>Open RIBStation:</h5>
+<hr>
+		<div class="card card-body">
+			<a class="btn btn-primary  btn-sm btn-block" href="{% url 'createRIBStation' %}">Add RIBStations
+</a>
+<table class="table table-sm">
+<tr>
+<th>User</th>
+<th>Stattion Name</th>
+<th>Province</th>
+<th>Update</th>
+<th>Delete</th>
+</tr>
+{% for station in stations %}
+		<tr>
+			<td>{{station.user}}</td>
+			<td>{{station.station_name}}</td>
+			<td>{{station.province}}</td>
+			 <td><a class="btn btn-sm btn-info" href="">Update</a></td>
+			<td><a class="btn btn-sm btn-danger" href="">Delete</a></td>
+	 
+		</tr>
+{% endfor %} 
+
+</table>
+</div>
+</div>
+
+
+<div class="col-md-7">
+<h5>Add Officer:</h5>
+<hr>
+<div class="card card-body">
+<a class="btn btn-primary btn-sm btn-block" href="{% url 'createOfficer' %}">Add Officers
+</a>
+{% comment %} <table class="table table-sm">
+<tr>
+<th>Identification</th>
+<th>Name</th>
+<th>Phone</th>
+<th>Date Arrested</th>
+<th>Crime type</th>
+<th>Relation</th>
+<th>View</th>
+
+</tr>
+{% for suspect in suspects %}
+					<tr>
+						<td>{{suspect.suspectNID}}</td>
+						<td>{{suspect.f_name}}</td>
+						<td>{{suspect.phone}}</td>
+						<td>{{suspect.date_arrested}}</td>
+						<td>{{suspect.case}}</td>
+						<td>{{suspect.relation}}</td>
+						<td><a class="btn btn-sm btn-info" href="{% url 'suspect' suspect.id %}">View</a></td>
+						
+
+					</tr>
+				{% endfor %}
+</table>
+
+</div>{% endcomment %}
+
+{% endblock %} 
+   

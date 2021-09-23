@@ -1,0 +1,61 @@
+{%  extends 'crime/main.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block content %}
+<style>
+
+    form button{
+        margin-right: 170px;
+    }
+
+    .contain{
+        display: flex;
+    }
+    .form-group {
+        width: 70%;
+    }
+
+</style>
+
+<div class="row">
+<h2>Suspect Registration</h2>
+	<div class="col-md-12">
+		<div class="card card-body">
+            
+			<form action="" method="POST">
+				{% csrf_token %}
+				<div class="contain">
+				<div class="form-group">
+				{{form.suspectNID|as_crispy_field}}
+				{{form.f_name|as_crispy_field}}
+				{{form.l_name|as_crispy_field}}
+				{{form.gender|as_crispy_field}}
+				</div>
+                <div class="form-group">
+				{{form.dob|as_crispy_field}}
+				{{form.phone|as_crispy_field}}
+				{{form.relation|as_crispy_field}}
+				{{form.father_name|as_crispy_field}}
+				</div>
+                <div class="form-group">
+				{{form.mother_name|as_crispy_field}}
+				{{form.province|as_crispy_field}}
+				{{form.district|as_crispy_field}}
+				{{form.cell|as_crispy_field}}
+				</div>
+                <div class="form-group">
+				{{form.village|as_crispy_field}}
+				{{form.note|as_crispy_field}}
+				{{form.case|as_crispy_field}}
+				
+				<center>
+				<a class="btn btn-warning" href="{% url 'home_Station' %}">Cancel</a>
+				<input type="submit" name="Submit" class="btn btn-info"></div>
+			</form>
+
+		</div>
+	</div>
+</div>
+
+
+{% endblock %}

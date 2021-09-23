@@ -1,0 +1,82 @@
+{% load static %}
+ <img src="{% static 'images/hd.jpg' %}"alt="logo" height="110" width="1517">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WelcomePage</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <script src="{% static 'js/jquery-1.11.1.min.js' %}"></script>
+</head>
+<body>
+    <div class="container"><br>
+    <h4 align="center">WELCOME TO SMART CRIME SCENE EVIDENCES ANALYSIS (SCSEA)</h4>
+    <a href="{% url 'login_view' %}" style="background-color: white-blue" class="btn btn-primary btn-block mt-5" >LOGIN </a>
+    </div>
+    <div class="container">
+    <nav class="navbar navbar-expand-sm bg-light navbar-blue">
+        <!-- Brand/logo -->
+       
+        
+        <!-- Links -->
+        <div class="collapse navbar-collapse justify-content-end">
+
+           <ul class="navbar-nav">
+            <li class="nav-item">
+                
+         
+        {% comment %} <a href="{% url 'login_view' %}" style="background-color: white-blue" class="btn btn-primary btn-block mt-5" >LOGIN {{request.user}}</a> {% endcomment %}
+      
+    
+            
+                <!-- <button class="btn btn-sm btn-primary">Login</button> -->
+           
+        </div>
+      </nav>
+    
+
+   
+        <div id="demo" class="carousel slide" data-ride="carousel">
+  
+            <ul class="carousel-indicators">
+              <li data-target="#demo" data-slide-to="0" class="active"></li>
+              <li data-target="#demo" data-slide-to="1"></li>
+              <li data-target="#demo" data-slide-to="2"></li>
+            </ul>
+          
+            <div class="carousel-inner">
+              <div class="carousel-item active">
+                <img src="{% static 'images/van.jpg' %}" alt="Los Angeles">
+              </div>
+              <div class="carousel-item">
+                <img src="{% static 'images/cimag.jpg' %}" alt="Chicago">
+              </div>
+              <div class="carousel-item">
+                <img src="{% static 'images/inmate.jpg' %}" alt="Chicago">
+              </div>
+               <div class="carousel-item">
+                <img src="{% static 'images/Ca.jpg' %}" alt="New York">
+              </div>
+            </div>
+          
+          
+            <a class="carousel-control-prev" href="#demo" data-slide="prev">
+              <span class="carousel-control-prev-icon"></span>
+            </a>
+            <a class="carousel-control-next" href="#demo" data-slide="next">
+              <span class="carousel-control-next-icon"></span>
+            </a>
+          
+          </div>
+    </div>
+    <footer>
+    <img src="{% static 'images/pattern.png' %}"alt="logo" height="40" width="1512"> 
+
+
+    <script src="{% static 'js/plugin.js' %}"></script>
+    <script src="{% static 'js/jquery-3.5.1.slim.min.js' %}" crossorigin="anonymous"></script>
+    <script src="{% static 'js/popper.min.js' %}" crossorigin="anonymous"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}" crossorigin="anonymous"></script>
+</body>
+</html>
