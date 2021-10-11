@@ -1,4 +1,5 @@
-{%  extends 'crime/main.html' %}
+{%  extends 'crime/mainOfficer.html' %}
+
 {% load crispy_forms_tags %}
 {% load static %}
 {% block content %}
@@ -18,14 +19,14 @@
 </style>
 
 <div class="row">
-<h1>Evidence Registration</h1>
+<h1>Evidence Registration for Suspect "<strong>{{suspect.l_name}} {{suspect.f_name}}</strong>"</h1>
 	<div class="col-md-12">
 		<div class="card card-body">
             
 			<form action="" method="POST">
 				{% csrf_token %}
 				<div class="contain">
-				{{form.suspect|as_crispy_field}}
+				{% comment %} {{form.suspect|as_crispy_field}} {% endcomment %}
 				{{form.evidenceCategory|as_crispy_field}}
 				{{form.evidence_note|as_crispy_field}}				
 				{{form.officerimage|as_crispy_field}}

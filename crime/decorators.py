@@ -24,6 +24,8 @@ def unauthenticated_user(view_func):
             return redirect('home_Hq')
         elif request.user.groups.filter(name='RIBStation')==True:
             return redirect('home_Station')
+        elif request.user.groups.filter(name='StationUser')==True:
+            return redirect('home_Officer')
         elif request.user.groups.filter(name='Admin')==True:
             return redirect('home')      
         else:

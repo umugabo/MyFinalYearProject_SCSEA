@@ -10,7 +10,7 @@ from .models import *
 import datetime
 from django.contrib import messages
 from .decorators import unauthenticated_user, allowed_users
-from .forms import CaseForm,SuspectForm,EvidenceForm,RibstationForm,OfficerForm,ReporterForm,MurderQuestionaireForm
+from .forms import CaseForm,SuspectForm,EvidenceForm,RibstationForm,OfficerForm,ReporterForm,MurderQuestionaireForm,ViolentQuestionaireForm,RobberyQuestionaireForm
 
 # Create your views here.
 
@@ -53,11 +53,11 @@ def login_view(request):
                 if 'next' in request.POST:
                     return redirect(request.POST.get('next'))
                 return redirect('home_Station')
-            elif Admin.objects.filter(user=user):
+            elif StationUser.objects.filter(user=user):
                 if 'next' in request.POST:
                     return redirect(request.POST.get('next'))
-                return redirect('home')
-            
+                return redirect('home_Officer')
+			       
     else:
         form = AuthenticationForm()
     return render(request, 'crime/loginOrg.html', { 'form': form })
@@ -101,6 +101,20 @@ def homeStation(request):
 
     return render(request, 'crime/DashboardStation.html', context)
 
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['StationUser'])
+def homeOfficer(request):
+    cases = Case.objects.all()
+    suspects = Suspect.objects.all()
+    total_suspects = suspects.count()
+    total_cases = cases.count()
+    finished = cases.filter(status='Finished').count()
+    pending = cases.filter(status='Pending').count()
+    context = {'cases':cases, 'suspects':suspects,
+    'total_casess':total_cases,'finished':finished,
+    'pending':pending }
+
+    return render(request, 'crime/DashboardOfficer.html', context)
 
 def createRIBStation(request):
 	form = RibstationForm()
@@ -142,10 +156,16 @@ def evidenceList(request):
     evidences = Evidence.objects.all()
     return render(request, 'crime/evidenceList.html', {'evidences':evidences})
 
+def witnes(request, pk_susp):
+    suspect = Suspect.objects.get(id=pk_susp)
+    reporters = suspect.reporters.all()
+    reporter_count = reporters.count()
+    context = {'suspect':suspect,'reporters':reporters,'reporter_count':reporter_count}
+    return render(request, 'crime/witness.html',context)
 
-def suspect(request, pk_test):
-    suspect = Suspect.objects.get(id=pk_test)
-    evidences = suspect.evidence_set.all()
+def suspect(request, pk_susp):
+    suspect = Suspect.objects.get(id=pk_susp)
+    evidences = suspect.evidences.all()
     evidence_count = evidences.count()
     context = {'suspect':suspect,'evidences':evidences,'evidence_count':evidence_count}
     return render(request, 'crime/suspect.html',context)
@@ -160,8 +180,10 @@ def createCase(request):
 		#print('Printing POST:', request.POST)
 		form = CaseForm(request.POST)
 		if form.is_valid():
-			form.save()
-			return redirect('caseList')
+			case = form.save(commit=False)
+			case.status = 'Pending'
+			case.save()
+			return redirect('home_Station')
 
 	context = {'form':form}
 	return render(request, 'crime/case_form.html', context)
@@ -175,7 +197,7 @@ def updateCase(request, pk):
 		form = CaseForm(request.POST, instance=case)
 		if form.is_valid():
 			form.save()
-			return redirect('/')
+			return redirect('home_Station')
 
 	context = {'form':form}
 	return render(request, 'crime/case_form.html', context)
@@ -184,26 +206,39 @@ def deleteCase(request, pk):
 	case = Case.objects.get(id=pk)
 	if request.method == "POST":
 		case.delete()
-		return redirect('/')
+		return redirect('home_Station')
 
 	context = {'item':case}
 	return render(request, 'crime/deleteCase.html', context)
 
 
-def createSuspect(request):
+def createSuspect(request, case_pk):
+
+	case = Case.objects.get(id=case_pk) 
+
+
 	form = SuspectForm()
 	if request.method == 'POST':
 		form = SuspectForm(request.POST)
 		if form.is_valid():
-			form.save()
-			return redirect('/')
+			suspect = form.save()
+			case.suspects.add(suspect)
+			return redirect('suspectList')
 
-	context = {'form':form}
+	context = {'form':form, 'case':case}
 	return render(request, 'crime/suspect_form.html', context)
 
-def updateSuspect(request, pk):
+def viewCaseSuspects(request, case_pk):
 
-	suspect = Suspect.objects.get(id=pk)
+	case = Case.objects.get(id=case_pk)
+	suspects = case.suspects.all()
+
+	context = {'suspects':suspects, 'case':case}
+	return render(request, 'crime/caseSuspects.html', context)
+
+def updateSuspect(request, case_pk):
+
+	suspect = Suspect.objects.get(id=case_pk)
 	form = SuspectForm(instance=suspect)
 
 	if request.method == 'POST':
@@ -215,26 +250,30 @@ def updateSuspect(request, pk):
 	context = {'form':form}
 	return render(request, 'crime/suspect_form.html', context)
 
-def deleteSuspect(request, pk):
-	suspect = Suspect.objects.get(id=pk)
+def deleteSuspect(request, case_pk):
+	suspect = Suspect.objects.get(id=case_pk)
 	if request.method == "POST":
 		suspect.delete()
-		return redirect('/')
+		return redirect('suspectList')
 
 	context = {'item':suspect}
 	return render(request, 'crime/deleteSuspect.html', context)
 
-def createEvidence(request):
+def createEvidence(request, suspect_pk):
+	suspect = Suspect.objects.get(id=suspect_pk)
 	form = EvidenceForm()
 	if request.method == 'POST':
 		#print('Printing POST:', request.POST)
 		form = EvidenceForm(request.POST)
 		if form.is_valid():
-			form.save()
-			return redirect('/')
+			evidence = form.save()
+			suspect.evidences.add(evidence)
+			return redirect('evidence')
 
-	context = {'form':form}
+	context = {'form':form, 'suspect':suspect}
 	return render(request, 'crime/evidence_form.html', context)
+
+
 
 def updateEvidence(request, pk):
 
@@ -250,15 +289,17 @@ def updateEvidence(request, pk):
 	context = {'form':form}
 	return render(request, 'crime/evidence_Form.html', context)
 
-def createReporter(request):
+def createReporter(request, suspect_pk):
+	suspect = Suspect.objects.get(id=suspect_pk)
 	form = ReporterForm()
 	if request.method == 'POST':
 		form = ReporterForm(request.POST)
 		if form.is_valid():
-			form.save()
-			return redirect('/')
+			reporter = form.save()
+			suspect.reporters.add(reporter)
+			return redirect('home_Officer')
 
-	context = {'form':form}
+	context = {'form':form, 'suspect':suspect}
 	return render(request, 'crime/reporter_form.html', context)
 
 def reporterList(request):
@@ -275,3 +316,25 @@ def createMurderForm(request):
 
 	context = {'form':form}
 	return render(request, 'crime/MurderQuestionaireForm.html', context)
+
+def createViolentForm(request):
+	form = ViolentQuestionaireForm()
+	if request.method == 'POST':
+		form = ViolentQuestionaireForm(request.POST)
+		if form.is_valid():
+			form.save()
+			return redirect('/')
+
+	context = {'form':form}
+	return render(request, 'crime/ViolentQuestionaireForm.html', context)
+
+def createRobberyForm(request):
+	form = RobberyQuestionaireForm()
+	if request.method == 'POST':
+		form = RobberyQuestionaireForm(request.POST)
+		if form.is_valid():
+			form.save()
+			return redirect('/')
+
+	context = {'form':form}
+	return render(request, 'crime/RobberyQuestionaireForm.html', context)

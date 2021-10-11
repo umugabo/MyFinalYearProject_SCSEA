@@ -18,14 +18,13 @@
 </style> 
 
 <div class="row">
-<h1>Murder Questionaire Form To Suspect</h1>&nbsp;
- <form class="form-inline my-2 my-lg-0">
+<h1>Violent Questionaire Form To Suspect</h1>
+	<div class="col-md-10">
+		<div class="card card-body">
+            <form class="form-inline my-2 my-lg-0">
       <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
     </form>
-	<div class="col-md-11">
-		<div class="card card-body">
-            
 			<form action="" method="POST">
 				{% csrf_token %}
 				<div class="contain">
@@ -65,11 +64,9 @@
 				</div>
                 <div class="form-group">
 				{{form.note|as_crispy_field}}
-				{{form.suspect|as_crispy_field}}
-
 				<a class="btn btn-warning" href="{% url 'evidence' %}">Cancel</a>
-				<input type="submit" name="Submit" class="btn btn-info btn-outline-success my-2 my-sm-0" >
-					</div>
+				<input type="submit" name="Submit" class="btn btn-info">
+				</div>
 			</form>
 
 		</div>

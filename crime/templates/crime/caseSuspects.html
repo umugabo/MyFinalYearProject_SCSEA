@@ -1,0 +1,47 @@
+{%  extends 'crime/mainOfficer.html' %}
+
+
+{% block content %}
+
+
+ <br>
+
+		<div class="row">
+			<div class="col-md">
+				<div class="card card-body">
+                    <h3>Case Suspect of the case with Code:"{{case.case_name}}" Case type:"{{case.crimeType}}"</h3>
+				</div>
+				<div class="card card-body">
+					<table class="table table-sm">
+                        <tr>
+                        <th>Identification</th>
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>Date Arrested</th>
+                        <!-- <th>Crime type</th> -->
+                        <th>Relation</th>
+                        <th>Attach Evidence</th>
+                        <th>Link Witness</th>
+                        
+                        </tr>
+                        {% for suspect in suspects %}
+                                            <tr>
+                                                <td>{{suspect.suspectNID}}</td>
+                                                <td>{{suspect.f_name}} {{suspect.l_name}}</td>
+                                                <td>{{suspect.phone}}</td>
+                                                <td>{{suspect.date_arrested}}</td>
+                                                <!-- <td>{{suspect.case}}</td> -->
+                                                <td>{{suspect.relation}}</td>
+                                                <td><a class="btn btn-sm btn-info" href="{% url 'suspect' suspect.id %}">View Evidence</a></td>
+                                                <td><a class="btn btn-sm btn-info" href="{% url 'witnes' suspect.id%}">View Witness</a></td>
+                                                
+                        
+                                            </tr>
+                                        {% endfor %}
+                        </table>
+				</div>
+			</div>
+			
+		</div>
+
+{% endblock %}

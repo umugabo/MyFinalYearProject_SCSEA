@@ -1,4 +1,4 @@
-{%  extends 'crime/main.html' %}
+{%  extends 'crime/mainOfficer.html' %}
 {% load crispy_forms_tags %}
 {% load static %}
 {% block content %}
@@ -16,10 +16,11 @@
     }
 
 </style>
-
-<div class="row">
-<h2>Suspect Registration</h2>
+	<div class="row">
+	<br><br>
+<h3>Suspect Registration on the case with Case Code:"<strong>{{case.case_name}}</strong>" CaseType:"{{case.crimeType}}" Victim:{{case.victim}}</h3>
 	<div class="col-md-12">
+
 		<div class="card card-body">
             
 			<form action="" method="POST">
@@ -46,7 +47,7 @@
                 <div class="form-group">
 				{{form.village|as_crispy_field}}
 				{{form.note|as_crispy_field}}
-				{{form.case|as_crispy_field}}
+				{% comment %} {{form.case|as_crispy_field}} {% endcomment %}
 				
 				<center>
 				<a class="btn btn-warning" href="{% url 'home_Station' %}">Cancel</a>

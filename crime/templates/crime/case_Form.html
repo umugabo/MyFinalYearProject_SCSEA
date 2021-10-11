@@ -13,9 +13,13 @@
 				{% csrf_token %}
 				{{form.case_name|as_crispy_field}}
 				{{form.crimeType|as_crispy_field}}
-				{{form.case_desc|as_crispy_field}}
+				{{form.victim_name|as_crispy_field}}
+				{{form.reporter_name|as_crispy_field}}
+				{{form.reporter_phone|as_crispy_field}}
+				{{form.victim_address|as_crispy_field}}
 				{{form.officer|as_crispy_field}}
-				{{form.status|as_crispy_field}}
+				{{form.case_desc|as_crispy_field}}
+				{% comment %} {{form.status|as_crispy_field}} {% endcomment %}
 				<center>
 				<a class="btn btn-warning" href="{% url 'home_Station' %}">Cancel</a>
 				<input type="submit" name="Submit" class="btn btn-info">

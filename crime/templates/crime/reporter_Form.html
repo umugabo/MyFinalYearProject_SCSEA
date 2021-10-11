@@ -1,4 +1,4 @@
-{%  extends 'crime/main.html' %}
+{%  extends 'crime/mainOfficer.html' %}
 {% load crispy_forms_tags %}
 {% load static %}
 {% block content %}
@@ -18,7 +18,7 @@
 </style>
 
 <div class="row">
-<h2> Witness Registration</h2>
+<h2> Witness Registration for Suspect called: "<strong>{{suspect.f_name}} {{suspect.l_name}}</strong>"</h2>
 	<div class="col-md-12">
 		<div class="card card-body">
             
@@ -29,19 +29,20 @@
 				{{form.reporterNID|as_crispy_field}}
 				{{form.f_name|as_crispy_field}}
 				{{form.l_name|as_crispy_field}}
-				{{form.gender|as_crispy_field}}
-                {{form.email|as_crispy_field}}
+				{{form.gender|as_crispy_field}}                
 				</div>
                 <div class="form-group">
+				{{form.email|as_crispy_field}}
 				{{form.phone|as_crispy_field}}
 				{{form.relation|as_crispy_field}}
-                {{form.suspect|as_crispy_field}}
-				{{form.vote|as_crispy_field}}
+                {{form.vote|as_crispy_field}}
+				</div>
+                <div class="form-group">
                 {{form.note|as_crispy_field}}
 				
 				
-				<center>
-				<a class="btn btn-warning" href="{% url 'home_Station' %}">Cancel</a>
+				
+				<a class="btn btn-warning" href="{% url 'home_Officer' %}">Cancel</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				<input type="submit" name="Submit" class="btn btn-info"></div>
 			</form>
 

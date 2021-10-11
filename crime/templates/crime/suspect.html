@@ -1,4 +1,5 @@
-{%  extends 'crime/main.html' %}
+{%  extends 'crime/mainOfficer.html' %}
+
 
 {% block content %}
 
@@ -11,7 +12,7 @@
 			<hr>
 			<a class="btn btn-outline-info  btn-sm btn-block" href="{% url 'update_suspect' suspect.id %}">Update Suspect</a>
 			<a class="btn btn-outline-danger  btn-sm btn-block" href="{% url 'delete_suspect' suspect.id %}">Delete Suspect</a>
-			<a class="btn btn-outline-warning  btn-sm btn-block" href="{% url 'create_evidence' %}">Link To Evidence</a>
+			<a class="btn btn-outline-warning  btn-sm btn-block" href="{% url 'create_evidence' suspect.id %}">Link To Evidence</a>
 
 		</div>
 	</div>
@@ -43,8 +44,8 @@
 	<div class="col">
 		<div class="card card-body">
 			<form method="get">
-
-		    <button class="btn btn-primary" type="submit">Search</button>
+			<h5>The Suspect <strong>"{{suspect.l_name}}</strong>" has the following Evidences</h5>
+		    {% comment %} <button class="btn btn-primary" type="submit">Search</button> {% endcomment %}
 		  </form>
 		</div>
 	</div>
@@ -67,11 +68,11 @@
 				{% for evidence in evidences %}
 
 				<tr>
-					<td>{{evidence.suspect}}</td>
+					<td>{{suspect.f_name}} {{suspect.l_name}}</td>
 					<td>{{evidence.evidenceCategory }}</td>
 					<td>{{evidence.evidence_note}}</td>
 					{% comment %} <td>{{evidence.points}}</td> {% endcomment %}
-					{% comment %} <td><a class="btn btn-sm btn-info" href="{% url 'update_suspect' suspect.id %}">Update</a></td> {% endcomment %}
+					 {% comment %} <td><a class="btn btn-sm btn-info" href="{% url 'update_evidence' suspect.id %}">Modify</a></td>  {% endcomment %}
 					{% comment %} <td><a class="btn btn-sm btn-danger" href="{% url 'delete_suspect' suspect.id %}">Delete</a></td> {% endcomment %}
 				</tr>
 				{% endfor %}
