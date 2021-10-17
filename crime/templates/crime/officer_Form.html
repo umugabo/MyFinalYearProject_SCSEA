@@ -16,9 +16,13 @@
     }
 
 </style>
+<br> <br> 
+      <a href="{% url 'register_ribofficer' %}" class="btn btn-primary" style="float: right;">Add Rib Officer User</a> <br> <br>
 
 <div class="row">
+
 <h1>Officer Registration</h1>
+
 	<div class="col-md-12">
 		<div class="card card-body">
             
@@ -27,7 +31,7 @@
 				<div class="contain">
 				<div class="form-group">
                 {{form.user|as_crispy_field}}
-				{{form.OfficerNationalId|as_crispy_field}}
+				{{form.nationalId|as_crispy_field}}
 				{{form.f_name|as_crispy_field}}
 				</div>
 

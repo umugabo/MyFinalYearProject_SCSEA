@@ -24,7 +24,7 @@
 {% comment %} <th>Add Suspect</th>
 <th>Suspects</th>  {% endcomment %}
 </tr>
-{% for case in cases %}
+{% for case in page_obj %}
 		<tr>
 			<td>{{case.case_name}}</td>
 			<td>{{case.victim_name}}</td>
@@ -43,43 +43,33 @@
 {% endfor %}
 
 </table>
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; First</a>
+            <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
 </div>
 </div>
 
 
- {% comment %} <div class="col-md-5">
-<h5>Crime Suspect:</h5>
+<div class="col-md-12">
+<h5>Add Officer:</h5>
 <hr>
 <div class="card card-body">
- <a class="btn btn-primary btn-sm btn-block" href="">Add Suspect
+<a class="btn btn-primary btn-sm btn-block" href="{% url 'createOfficer' %}">Add Officers
 </a>
-<table class="table table-sm">
-<tr>
-<th>Identification</th>
-<th>Name</th>
-<th>Phone</th>
-<th>Date Arrested</th>
-<th>Crime type</th>
-<th>Relation</th>
-<th>View</th>
-
-</tr>
-{% for suspect in suspects %}
-					<tr>
-						<td>{{suspect.suspectNID}}</td>
-						<td>{{suspect.f_name}}</td>
-						<td>{{suspect.phone}}</td>
-						<td>{{suspect.date_arrested}}</td>
-						<td>{{suspect.case}}</td>
-						<td>{{suspect.relation}}</td>
-						<td><a class="btn btn-sm btn-info" href="{% url 'suspect' suspect.id %}">View</a></td>
-						
-
-					</tr>
-				{% endfor %}
-</table>
-
-</div> {% endcomment %}
 
 {% endblock %} 
    

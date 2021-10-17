@@ -104,6 +104,7 @@ class Officer(models.Model):
     officerimage = models.ImageField(upload_to='images/', max_length=154, blank=True, null=True)
     rank = models.CharField(max_length=30, choices=RANK)
     recruit_year = models.IntegerField()
+    ribstation = models.ForeignKey(RIBStation, on_delete=models.CASCADE, null=True, blank=True)
     def __str__(self):
         return self.f_name 
 
@@ -131,6 +132,23 @@ class Reporter(models.Model):
     def __str__(self):
         return self.f_name  
 
+
+
+class StationUser(models.Model):
+    user = models.OneToOneField(User,null=True, on_delete=models.CASCADE)
+    nationalId = models.CharField(max_length=16, blank=True, null=True,)
+    f_name = models.CharField(max_length=30, blank=True, null=True,)
+    l_name = models.CharField(max_length=30, blank=True, null=True,)
+    gender = models.CharField(max_length=1, choices=GENDER,)
+    phone = models.CharField(max_length=10, blank=True, null=True,)
+    email = models.CharField(max_length=50, blank=True, null=True,)
+    officerimage = models.ImageField(upload_to='images/', max_length=154, blank=True, null=True)
+    rank = models.CharField(max_length=30, choices=RANK, null=True,)
+    recruit_year = models.IntegerField(null=True, blank=True)
+    ribstation = models.ForeignKey(RIBStation, on_delete=models.CASCADE, null=True, blank=True)
+    def __str__(self):
+        return self.f_name 
+
 class Suspect(models.Model):
     suspectNID = models.CharField(max_length=16, blank=False)
     f_name = models.CharField(max_length=30, blank=False)
@@ -149,7 +167,8 @@ class Suspect(models.Model):
     note = models.CharField(max_length=150, blank=False)
     evidences = models.ManyToManyField(Evidence, blank=True, null=True)
     reporters = models.ManyToManyField(Reporter, blank=True, null=True)
-
+    ribstation = models.ForeignKey(RIBStation, on_delete=models.CASCADE, null=True, blank=True)
+    stationuser = models.ForeignKey(StationUser, on_delete=models.CASCADE, null=True, blank=True)
   
     def __str__(self):
         return self.f_name  
@@ -162,11 +181,16 @@ class Case(models.Model):
     victim_address = models.CharField(max_length=90, blank=True, null=True)
     crimeType = models.CharField(max_length=15, choices=CRIMETYPE, default="Select Crime")
     case_desc = models.TextField()
-    officer = models.ForeignKey(Officer, on_delete=models.CASCADE)
+    stationuser = models.ForeignKey(StationUser, on_delete=models.CASCADE, null=True, blank=True)
     suspects = models.ManyToManyField(Suspect, blank=True, null=True)
+    ribstation = models.ForeignKey(RIBStation, on_delete=models.CASCADE, null=True, blank=True)
     status = models.CharField(max_length=15, choices=STATUS)
+    
     def __str__(self):
         return self.crimeType
+
+
+
 
 
 
@@ -192,21 +216,6 @@ class RIBHeadquarter(models.Model):
         return self.station_name  
 
 
-class StationUser(models.Model):
-    user = models.OneToOneField(User,null=True, on_delete=models.CASCADE)
-    officerNationalId = models.CharField(max_length=16, blank=False)
-    f_name = models.CharField(max_length=30, blank=False)
-    l_name = models.CharField(max_length=30, blank=False)
-    gender = models.CharField(max_length=1, choices=GENDER)
-    phone = models.CharField(max_length=10, blank=False)
-    email = models.CharField(max_length=50, blank=False)
-    rank = models.CharField(max_length=30, choices=RANK)
-    username = models.CharField(max_length=50, blank=False)
-    password = models.CharField(max_length=5, blank=False)
-    station = models.ForeignKey(RIBStation, on_delete=models.CASCADE)
-    
-    def __str__(self):
-        return self.f_name 
 
 
 

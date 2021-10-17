@@ -14,6 +14,7 @@ urlpatterns = [
     path('', views.index, name="index"),
     path('login_view/', views.login_view, name="login_view"),
     path('registerPage/', views.registerPage, name="registerPage"),
+    path('register_ribofficer/', views.register_ribofficer, name="register_ribofficer"),
     path('logout',views.logoutUser, name='logout'),
     path('error401', views.error401, name='error401'),
     path('home_Hq/', views.homeHq, name="home_Hq"),
@@ -42,5 +43,8 @@ urlpatterns = [
     path('createViolentForm/', views.createViolentForm, name="createViolentForm"),
     path('createRobberyForm/', views.createRobberyForm, name="createRobberyForm"),
     path('viewCaseSuspects/<str:case_pk>/', views.viewCaseSuspects, name="viewCaseSuspects"),
+
+
+
 
  ]

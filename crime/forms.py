@@ -4,7 +4,33 @@ from datetime import date
 import datetime
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Case,Suspect,Evidence,RIBStation,Officer,Reporter,MurderQuestions,ViolentQuestions,RobberyQuestions
+from .models import StationUser, Case,Suspect,Evidence,RIBStation,Officer,Reporter,MurderQuestions,ViolentQuestions,RobberyQuestions
+
+
+class RibOfficerRegistrationForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+    
+    class Meta:
+        model = User
+        fields = (
+            'username',
+            'email',
+            'password1',
+            'password2'
+        )
+        
+    def __init__(self, *args, **kwargs):
+        super(RibOfficerRegistrationForm, self).__init__(*args, **kwargs)
+        
+        for fieldname in ['username','email','password1','password2']:
+            self.fields[fieldname].help_text = None
+    def save(self, commit=True):
+        user = super(RibOfficerRegistrationForm,self).save(commit=False)
+        user.email = self.cleaned_data['email']
+        if commit:
+            user.save()
+            
+        return user
 
 class DateInput(forms.DateInput):
     input_type = 'date'
@@ -13,7 +39,7 @@ class CaseForm(forms.ModelForm):
     class Meta:
         model = Case
         # fields = '__all__'
-        fields = ('case_name','crimeType','victim_name','reporter_name','reporter_phone','victim_address','case_desc','officer', 'suspects')
+        fields = ('case_name','crimeType','victim_name','reporter_name','reporter_phone','victim_address','case_desc','stationuser', 'suspects')
         labels = {
             'case_name':'Case Code',
             'crimeType':'Type Of Crime',
@@ -22,7 +48,7 @@ class CaseForm(forms.ModelForm):
             'reporter_phone':'Reporter Phone',
             'victim_address':'Address of the Victim',
             'case_desc':'Case Description',
-            'officer':'Case Officer',
+            'stationuser':'Case Officer',
             }
 class RibstationForm(forms.ModelForm):
     class Meta:
@@ -76,6 +102,24 @@ class OfficerForm(forms.ModelForm):
         labels = {
             'user':'User Name',
             'OfficerNationalId':'Officer ID',
+            'f_name':'Fist Name',
+            'l_name':'Last Name',
+            'gender':'Gender',
+            'phone':'Phone',
+            'email':'Email',
+            'rank':'Rank',
+            'recruit_year':'Join RIB Year',
+            'officerimage':'Officer Photo',
+            }
+
+class StationUserForm(forms.ModelForm):
+    class Meta:
+        model = StationUser
+        # fields = '__all__'
+        fields = ('user','nationalId','f_name','l_name','gender','phone','email','rank','recruit_year','officerimage')
+        labels = {
+            'user':'User Name',
+            'nationalId':'Officer ID',
             'f_name':'Fist Name',
             'l_name':'Last Name',
             'gender':'Gender',

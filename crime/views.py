@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect 
+from django.core.paginator import Paginator
 from django.contrib.auth.models import Group
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm 
 from django.contrib.auth import authenticate, login, logout
@@ -10,7 +11,7 @@ from .models import *
 import datetime
 from django.contrib import messages
 from .decorators import unauthenticated_user, allowed_users
-from .forms import CaseForm,SuspectForm,EvidenceForm,RibstationForm,OfficerForm,ReporterForm,MurderQuestionaireForm,ViolentQuestionaireForm,RobberyQuestionaireForm
+from .forms import StationUserForm,RibOfficerRegistrationForm,CaseForm,SuspectForm,EvidenceForm,RibstationForm,OfficerForm,ReporterForm,MurderQuestionaireForm,ViolentQuestionaireForm,RobberyQuestionaireForm
 
 # Create your views here.
 
@@ -18,6 +19,29 @@ def error401(request):
 
     context = {}
     return render(request, 'crime/401.html', context)
+
+def register_ribofficer(request):
+    form = RibOfficerRegistrationForm()
+    if request.method == 'POST':
+        form = RibOfficerRegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            username = form.cleaned_data.get('username')
+            group = Group.objects.get(name='StationUser')
+            user.groups.add(group)
+			
+
+            StationUser.objects.create(
+                user=user,
+            )
+            # messages.success(request, 'Hospital Agent has been successfully registered')
+            
+            return redirect('createOfficer')
+    
+    context = {'form':form}
+    return render(request, 'crime/register_ribofficer.html', context)
+
+
 @unauthenticated_user
 def registerPage(request):
     form = UserCreationForm()
@@ -89,32 +113,48 @@ def homeHq(request):
 @login_required(login_url='login_view')
 @allowed_users(allowed_roles=['RIBStation'])
 def homeStation(request):
-    cases = Case.objects.all()
-    suspects = Suspect.objects.all()
-    total_suspects = suspects.count()
-    total_cases = cases.count()
-    finished = cases.filter(status='Finished').count()
-    pending = cases.filter(status='Pending').count()
-    context = {'cases':cases, 'suspects':suspects,
-    'total_casess':total_cases,'finished':finished,
-    'pending':pending }
+	user = request.user
+	ribstation = RIBStation.objects.get(user=user)
+	cases = Case.objects.filter(ribstation=ribstation)
 
-    return render(request, 'crime/DashboardStation.html', context)
+	paginator = Paginator(cases, 2)
+	
+	page_number = request.GET.get('page')
+	
+	page_obj = paginator.get_page(page_number)
+
+	suspects = Suspect.objects.filter(ribstation=ribstation)
+	total_suspects = suspects.count()
+	total_cases = cases.count()
+	finished = cases.filter(status='Finished').count()
+	pending = cases.filter(status='Pending').count()
+	
+	context = {'cases':cases, 'suspects':suspects,
+    'total_casess':total_cases,'finished':finished,
+    'pending':pending, 'page_obj':page_obj }
+	
+	return render(request, 'crime/DashboardStation.html', context)
 
 @login_required(login_url='login_view')
 @allowed_users(allowed_roles=['StationUser'])
 def homeOfficer(request):
-    cases = Case.objects.all()
-    suspects = Suspect.objects.all()
-    total_suspects = suspects.count()
-    total_cases = cases.count()
-    finished = cases.filter(status='Finished').count()
-    pending = cases.filter(status='Pending').count()
-    context = {'cases':cases, 'suspects':suspects,
+	user = request.user
+
+	stationuser = StationUser.objects.get(user=user)
+	
+	cases = Case.objects.filter(stationuser=stationuser)
+	
+	suspects = Suspect.objects.filter(stationuser=stationuser)
+	total_suspects = suspects.count()
+	total_cases = cases.count()
+	finished = cases.filter(status='Finished').count()
+	pending = cases.filter(status='Pending').count()
+	
+	context = {'cases':cases, 'suspects':suspects,
     'total_casess':total_cases,'finished':finished,
     'pending':pending }
-
-    return render(request, 'crime/DashboardOfficer.html', context)
+	
+	return render(request, 'crime/DashboardOfficer.html', context)
 
 def createRIBStation(request):
 	form = RibstationForm()
@@ -134,19 +174,22 @@ def RIBstationList(request):
 
 
 def createOfficer(request):
-	form = OfficerForm()
+	form = StationUserForm()
 	if request.method == 'POST':
-		form = OfficerForm(request.POST)
+		form = StationUserForm(request.POST)
 		if form.is_valid():
 			form.save()
-			return redirect('home_Hq')
+			return redirect('home_Station')
 
 	context = {'form':form}
 	return render(request, 'crime/officer_form.html', context)
 
 def officerList(request):
-    officers = Officer.objects.all()
-    return render(request, 'crime/officerList.html', {'officers':officers})
+	user = request.user
+	ribstation = RIBStation.objects.get(user=user)
+
+	officers = Officer.objects.filter(ribstation=ribstation)
+	return render(request, 'crime/officerList.html', {'officers':officers})
 
 def caseList(request):
     cases = Case.objects.all()
@@ -175,6 +218,8 @@ def suspectList(request):
     return render(request, 'crime/suspectList.html', {'suspect':suspect})
 
 def createCase(request):
+	user = request.user
+	ribstation = RIBStation.objects.get(user=user)
 	form = CaseForm()
 	if request.method == 'POST':
 		#print('Printing POST:', request.POST)
@@ -182,6 +227,7 @@ def createCase(request):
 		if form.is_valid():
 			case = form.save(commit=False)
 			case.status = 'Pending'
+			
 			case.save()
 			return redirect('home_Station')
 
