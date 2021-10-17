@@ -259,7 +259,7 @@ def deleteCase(request, pk):
 
 
 def createSuspect(request, case_pk):
-
+	user = request.user
 	case = Case.objects.get(id=case_pk) 
 
 
