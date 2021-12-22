@@ -20,6 +20,7 @@ urlpatterns = [
     path('home_Hq/', views.homeHq, name="home_Hq"),
     path('home_Station/', views.homeStation, name="home_Station"),
     path('home_Officer/', views.homeOfficer, name="home_Officer"),
+    path('createStationName/', views.createStationName, name="createStationName"),
     path('createRIBStation/', views.createRIBStation, name="createRIBStation"),
     path('createOfficer/', views.createOfficer, name="createOfficer"),
     path('officerList/', views.officerList, name="officerList"),

@@ -187,7 +187,7 @@ class Case(models.Model):
     status = models.CharField(max_length=15, choices=STATUS)
     
     def __str__(self):
-        return self.crimeType
+        return self.case_name
 
 
 
@@ -304,3 +304,37 @@ class RobberyQuestions(models.Model):
   
     def __str__(self):
         return self.suspectNID
+
+
+
+class Crime(models.Model):
+    
+    crimeName = models.CharField(max_length=30, blank=False)
+        
+    def __str__(self):
+        return self.crimeName 
+
+class Question(models.Model):
+    
+    questionName = models.TextField(blank=False)
+        
+    def __str__(self):
+        return self.questionName 
+
+class Answer(models.Model):
+    
+    AnswerName = models.TextField(blank=False)
+        
+    def __str__(self):
+        return self.AnswerName 
+
+class CAQS(models.Model):
+    
+    crime = models.ForeignKey(Crime, on_delete=models.CASCADE, null=True, blank=True)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, null=True, blank=True)
+    suspect = models.ForeignKey(Suspect, on_delete=models.CASCADE, null=True, blank=True)
+    answer = models.ForeignKey(Answer, on_delete=models.CASCADE, null=True, blank=True)
+        
+    # def __str__(self):
+    #     return self.question
+

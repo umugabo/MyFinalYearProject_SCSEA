@@ -32,6 +32,34 @@ class RibOfficerRegistrationForm(UserCreationForm):
             
         return user
 
+
+
+class StationNameRegistrationForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+    
+    class Meta:
+        model = User
+        fields = (
+            'username',
+            'email',
+            'password1',
+            'password2'
+        )
+        
+    def __init__(self, *args, **kwargs):
+        super(StationNameRegistrationForm, self).__init__(*args, **kwargs)
+        
+        for fieldname in ['username','email','password1','password2']:
+            self.fields[fieldname].help_text = None
+    def save(self, commit=True):
+        user = super(StationNameRegistrationForm,self).save(commit=False)
+        user.email = self.cleaned_data['email']
+        if commit:
+            user.save()
+            
+        return user
+
+
 class DateInput(forms.DateInput):
     input_type = 'date'
 

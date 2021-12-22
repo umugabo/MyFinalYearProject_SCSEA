@@ -21,12 +21,12 @@
 
 <div class="row">
 
-<h1>Officer Registration</h1>
+<h1>Station User Registration</h1>
 
 	<div class="col-md-12">
 		<div class="card card-body">
             
-			<form action="" method="POST">
+			<form action="{% url 'createOfficer' %}" method="POST">
 				{% csrf_token %}
 				<div class="contain">
 				<div class="form-group">
@@ -51,7 +51,7 @@
 				{{form.officerimage|as_crispy_field}}
 						
 				<center>
-				<a class="btn btn-warning" href="{% url 'home_Hq' %}">Cancel</a>&nbsp;&nbsp;
+				<a class="btn btn-warning" href="{% url 'home_Station' %}">Cancel</a>&nbsp;&nbsp;
 				<input type="submit" name="Submit" class="btn btn-info"></div>
 			</form>
 

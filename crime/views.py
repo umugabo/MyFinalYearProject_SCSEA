@@ -42,6 +42,27 @@ def register_ribofficer(request):
     return render(request, 'crime/register_ribofficer.html', context)
 
 
+def register_stationName(request):
+    form = StationNameRegistrationForm()
+    if request.method == 'POST':
+        form = StationNameRegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            username = form.cleaned_data.get('username')
+            group = Group.objects.get(name='StationUser')
+            user.groups.add(group)
+			
+
+            StationUser.objects.create(
+                user=user,
+            )
+            # messages.success(request, 'Hospital Agent has been successfully registered')
+            
+            return redirect('createOfficer')
+    
+    context = {'form':form}
+    return render(request, 'crime/register_StationName.html', context)
+
 @unauthenticated_user
 def registerPage(request):
     form = UserCreationForm()
@@ -139,13 +160,14 @@ def homeStation(request):
 @allowed_users(allowed_roles=['StationUser'])
 def homeOfficer(request):
 	user = request.user
-
 	stationuser = StationUser.objects.get(user=user)
+	print(stationuser)
 	
 	cases = Case.objects.filter(stationuser=stationuser)
 	
 	suspects = Suspect.objects.filter(stationuser=stationuser)
 	total_suspects = suspects.count()
+	print(total_suspects)
 	total_cases = cases.count()
 	finished = cases.filter(status='Finished').count()
 	pending = cases.filter(status='Pending').count()
@@ -172,13 +194,27 @@ def RIBstationList(request):
     stations = RIBStation.objects.all()
     return render(request, 'crime/RIBstationList.html', {'stations':stations})
 
+def createStationName(request):
+	form = RibstationForm()
+	if request.method == 'POST':
+		form = RibstationForm(request.POST)
+		if form.is_valid():
+			form.save()
+			return redirect('home_HQ')
+
+	context = {'form':form}
+	return render(request, 'crime/officer_form.html', context)
 
 def createOfficer(request):
+	user = request.user
+	ribstation = RIBStation.objects.get(user=user)
 	form = StationUserForm()
 	if request.method == 'POST':
 		form = StationUserForm(request.POST)
 		if form.is_valid():
-			form.save()
+			stationUser = form.save(commit=False)
+			stationUser.ribstation = ribstation
+			stationUser.save(stationUser)
 			return redirect('home_Station')
 
 	context = {'form':form}
@@ -192,8 +228,10 @@ def officerList(request):
 	return render(request, 'crime/officerList.html', {'officers':officers})
 
 def caseList(request):
-    cases = Case.objects.all()
-    return render(request, 'crime/caseList.html', {'cases':cases})
+	user = request.user
+	ribstation = RIBStation.objects.get(user=user)
+	cases = Case.objects.filter(ribstation=ribstation)
+	return render(request, 'crime/caseList.html', {'cases':cases})
 
 def evidenceList(request):
     evidences = Evidence.objects.all()
@@ -226,8 +264,8 @@ def createCase(request):
 		form = CaseForm(request.POST)
 		if form.is_valid():
 			case = form.save(commit=False)
+			case.ribstation = ribstation
 			case.status = 'Pending'
-			
 			case.save()
 			return redirect('home_Station')
 
@@ -262,14 +300,20 @@ def createSuspect(request, case_pk):
 	user = request.user
 	case = Case.objects.get(id=case_pk) 
 
+	# ribstation = RIBStation.objects.get(user=user)
+
+	stationuser = StationUser.objects.get(user=user)
 
 	form = SuspectForm()
 	if request.method == 'POST':
 		form = SuspectForm(request.POST)
 		if form.is_valid():
-			suspect = form.save()
+			suspect = form.save(commit=False)
+			# suspect.ribstation = ribstation
+			suspect.stationuser = stationuser
+			suspect.save()
 			case.suspects.add(suspect)
-			return redirect('suspectList')
+			return redirect('home_Officer')
 
 	context = {'form':form, 'case':case}
 	return render(request, 'crime/suspect_form.html', context)
@@ -314,7 +358,7 @@ def createEvidence(request, suspect_pk):
 		if form.is_valid():
 			evidence = form.save()
 			suspect.evidences.add(evidence)
-			return redirect('evidence')
+			return redirect('home_officer')
 
 	context = {'form':form, 'suspect':suspect}
 	return render(request, 'crime/evidence_form.html', context)
