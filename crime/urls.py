@@ -44,6 +44,11 @@ urlpatterns = [
     path('createViolentForm/', views.createViolentForm, name="createViolentForm"),
     path('createRobberyForm/', views.createRobberyForm, name="createRobberyForm"),
     path('viewCaseSuspects/<str:case_pk>/', views.viewCaseSuspects, name="viewCaseSuspects"),
+    path('createQuestion/', views.createQuestion, name="createQuestion"),
+    path('createAnswer/', views.createAnswer, name="createAnswer"),
+    path('createCAQS/', views.createCAQS, name="createCAQS"),
+    path('CAQSList/', views.CAQSList, name="CAQSList"),
+    path('createCrime/', views.createCrime, name="createCrime"),
 
 
 

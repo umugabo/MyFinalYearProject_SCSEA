@@ -20,6 +20,7 @@
                         <th>Date Arrested</th>
                         <!-- <th>Crime type</th> -->
                         <th>Relation</th>
+                        <th>Questionaire</th>
                         <th>Attach Evidence</th>
                         <th>Link Witness</th>
                         
@@ -32,6 +33,7 @@
                                                 <td>{{suspect.date_arrested}}</td>
                                                 <!-- <td>{{suspect.case}}</td> -->
                                                 <td>{{suspect.relation}}</td>
+                                                <td><a class="btn btn-sm btn-info" href="{% url 'createCAQS'    %}">Ask Questions</a></td>
                                                 <td><a class="btn btn-sm btn-info" href="{% url 'suspect' suspect.id %}">View Evidence</a></td>
                                                 <td><a class="btn btn-sm btn-info" href="{% url 'witnes' suspect.id%}">View Witness</a></td>
                                                 

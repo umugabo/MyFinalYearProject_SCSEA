@@ -4,7 +4,7 @@ from datetime import date
 import datetime
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import StationUser, Case,Suspect,Evidence,RIBStation,Officer,Reporter,MurderQuestions,ViolentQuestions,RobberyQuestions
+from .models import Crime,CAQS,Answer,Question,StationUser, Case,Suspect,Evidence,RIBStation,Officer,Reporter,MurderQuestions,ViolentQuestions,RobberyQuestions
 
 
 class RibOfficerRegistrationForm(UserCreationForm):
@@ -274,4 +274,39 @@ class RobberyQuestionaireForm(forms.ModelForm):
             'q16':'How many times did you usually meet with the victim in a week?',
             'note':'Short Note on how the victim has been killed',
             'suspect': 'Suspect'
+            }
+
+class QuestionForm(forms.ModelForm):
+    class Meta:
+        model = Question
+        fields = ('questionName',)
+        labels = {
+            'questionName':'Describe the Question To Be Asked',
+            }
+
+class AnswerForm(forms.ModelForm):
+    class Meta:
+        model = Answer
+        fields = ('AnswerName',)
+        labels = {
+            'AnswerName':'Predict an Answer To Be Answered',
+            }
+
+class CAQSForm(forms.ModelForm):
+    class Meta:
+        model = CAQS
+        fields = ('suspect','crime','question','answer')
+        labels = {
+            'suspect':'What is your name? ',
+            'crime':'Which case are you against To?',
+            'question':'Question 3',
+            'answer':'Your Answer',
+            }
+
+class CrimeForm(forms.ModelForm):
+    class Meta:
+        model = Crime
+        fields = ('crimeName',)
+        labels = {
+            'crimeName':'Describe the Crime Name',
             }

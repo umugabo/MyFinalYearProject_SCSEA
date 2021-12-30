@@ -1,0 +1,35 @@
+{%  extends 'crime/mainOfficer.html' %}
+
+{% block content %}
+
+		<br>
+
+		<div class="row">
+			<div class="col-md">
+				<div class="card card-body">
+					<h5>Questionaire Result To Suspect <strong>{{user}}</strong></h5>
+				</div>
+				<div class="card card-body">
+					<table class="table">
+						<tr>
+                            <th>Suspect Name</th>
+							<th>Crime Type</th>
+							<th>Question</th>	
+                            <th>Answer</th>						
+						</tr>
+						{% for quesans in quesans %}
+							<tr>
+								<td>{{quesans.suspect}}</td>
+								<td>{{quesans.crime}}</td>
+								<td>{{quesans.question}}</td>
+                                <td>{{quesans.answer}}</td>
+							</tr>
+						{% endfor %}
+						
+					</table>
+				</div>
+			</div>
+			
+		</div>
+
+{% endblock content %}

@@ -11,7 +11,7 @@ from .models import *
 import datetime
 from django.contrib import messages
 from .decorators import unauthenticated_user, allowed_users
-from .forms import StationUserForm,RibOfficerRegistrationForm,CaseForm,SuspectForm,EvidenceForm,RibstationForm,OfficerForm,ReporterForm,MurderQuestionaireForm,ViolentQuestionaireForm,RobberyQuestionaireForm
+from .forms import CrimeForm,CAQSForm,AnswerForm,QuestionForm,StationUserForm,RibOfficerRegistrationForm,CaseForm,SuspectForm,EvidenceForm,RibstationForm,OfficerForm,ReporterForm,MurderQuestionaireForm,ViolentQuestionaireForm,RobberyQuestionaireForm
 
 # Create your views here.
 
@@ -428,3 +428,51 @@ def createRobberyForm(request):
 
 	context = {'form':form}
 	return render(request, 'crime/RobberyQuestionaireForm.html', context)
+
+def createQuestion(request):
+	form = QuestionForm()
+	if request.method == 'POST':
+		form = QuestionForm(request.POST)
+		if form.is_valid():
+			form.save()
+			return redirect('home_Hq')
+
+	context = {'form':form}
+	return render(request, 'crime/question_form.html', context)
+
+def createAnswer(request):
+	form = AnswerForm()
+	if request.method == 'POST':
+		form = AnswerForm(request.POST)
+		if form.is_valid():
+			form.save()
+			return redirect('home_Hq')
+
+	context = {'form':form}
+	return render(request, 'crime/answer_form.html', context)
+
+def createCAQS(request):
+	form = CAQSForm()
+	if request.method == 'POST':
+		form = CAQSForm(request.POST)
+		if form.is_valid():
+			form.save()
+			return redirect('home_Officer')
+
+	context = {'form':form}
+	return render(request, 'crime/cransquestsusp_Form.html', context)
+
+def CAQSList(request):
+    quesans = CAQS.objects.all()
+    return render(request, 'crime/questAnsList.html', {'quesans':quesans})
+
+def createCrime(request):
+	form = CrimeForm()
+	if request.method == 'POST':
+		form = CrimeForm(request.POST)
+		if form.is_valid():
+			form.save()
+			return redirect('home_Hq')
+
+	context = {'form':form}
+	return render(request, 'crime/crime_form.html', context)
