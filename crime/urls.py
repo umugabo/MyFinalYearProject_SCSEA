@@ -49,6 +49,10 @@ urlpatterns = [
     path('createCAQS/', views.createCAQS, name="createCAQS"),
     path('CAQSList/', views.CAQSList, name="CAQSList"),
     path('createCrime/', views.createCrime, name="createCrime"),
+    path('CrimeList/', views.CrimeList, name="CrimeList"),
+    path('QuestionList/', views.QuestionList, name="QuestionList"),
+    path('AnswerList/', views.AnswerList, name="AnswerList"),
+    path('generalStatisticalReport/', views.generalStatisticalReport, name="generalStatisticalReport"),
 
 
 

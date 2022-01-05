@@ -12,7 +12,7 @@
 				{% csrf_token %}
 				{{form.questionName|as_crispy_field}}
 				<center>
-				<a class="btn btn-warning" href="{% url 'home_Hq' %}">Cancel</a>
+				<a class="btn btn-warning" href="{% url 'QuestionList' %}">Cancel</a>
 				<input type="submit" name="Submit" class="btn btn-info">
 			</form>
 

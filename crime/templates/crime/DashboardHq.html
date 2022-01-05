@@ -5,8 +5,7 @@
 
 <br>
 <div class="row">
-<div class="col-md-12">
-<h5>Open RIBStation:</h5>
+
 <hr>
 		<div class="card card-body">
 			<a class="btn btn-primary  btn-sm btn-block" href="{% url 'createRIBStation' %}">Add RIBStations
@@ -16,7 +15,7 @@
 <th>User</th>
 <th>Stattion Name</th>
 <th>Province</th>
-<th>Update</th>
+{% comment %} <th>Update</th> {% endcomment %}
 <th>Delete</th>
 </tr>
 {% for station in stations %}
@@ -24,7 +23,7 @@
 			<td>{{station.user}}</td>
 			<td>{{station.station_name}}</td>
 			<td>{{station.province}}</td>
-			 <td><a class="btn btn-sm btn-info" href="">Update</a></td>
+			 {% comment %} <td><a class="btn btn-sm btn-info" href="">Update</a></td> {% endcomment %}
 			<td><a class="btn btn-sm btn-danger" href="">Delete</a></td>
 	 
 		</tr>

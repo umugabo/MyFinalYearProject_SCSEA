@@ -138,7 +138,7 @@ def homeStation(request):
 	ribstation = RIBStation.objects.get(user=user)
 	cases = Case.objects.filter(ribstation=ribstation)
 
-	paginator = Paginator(cases, 2)
+	paginator = Paginator(cases, 3)
 	
 	page_number = request.GET.get('page')
 	
@@ -310,6 +310,7 @@ def createSuspect(request, case_pk):
 		if form.is_valid():
 			suspect = form.save(commit=False)
 			# suspect.ribstation = ribstation
+			case.status = 'Studied'
 			suspect.stationuser = stationuser
 			suspect.save()
 			case.suspects.add(suspect)
@@ -358,7 +359,7 @@ def createEvidence(request, suspect_pk):
 		if form.is_valid():
 			evidence = form.save()
 			suspect.evidences.add(evidence)
-			return redirect('home_officer')
+			return redirect('home_Officer')
 
 	context = {'form':form, 'suspect':suspect}
 	return render(request, 'crime/evidence_form.html', context)
@@ -435,10 +436,14 @@ def createQuestion(request):
 		form = QuestionForm(request.POST)
 		if form.is_valid():
 			form.save()
-			return redirect('home_Hq')
+			return redirect('QuestionList')
 
 	context = {'form':form}
 	return render(request, 'crime/question_form.html', context)
+
+def QuestionList(request):
+    questions = Question.objects.all()
+    return render(request, 'crime/questionList.html', {'questions':questions})
 
 def createAnswer(request):
 	form = AnswerForm()
@@ -446,10 +451,14 @@ def createAnswer(request):
 		form = AnswerForm(request.POST)
 		if form.is_valid():
 			form.save()
-			return redirect('home_Hq')
+			return redirect('AnswerList')
 
 	context = {'form':form}
 	return render(request, 'crime/answer_form.html', context)
+
+def AnswerList(request):
+    answers = Answer.objects.all()
+    return render(request, 'crime/answerList.html', {'answers':answers})
 
 def createCAQS(request):
 	form = CAQSForm()
@@ -472,7 +481,30 @@ def createCrime(request):
 		form = CrimeForm(request.POST)
 		if form.is_valid():
 			form.save()
-			return redirect('home_Hq')
+			return redirect('CrimeList')
 
 	context = {'form':form}
 	return render(request, 'crime/crime_form.html', context)
+
+def CrimeList(request):
+    crimes = Crime.objects.all()
+    return render(request, 'crime/crimeList.html', {'crimes':crimes})
+
+
+def generalStatisticalReport(request):
+    n_suspects = 0
+    user = request.user
+    cases = Case.objects.all()
+    officers = Officer.objects.all()
+    stations = RIBStation.objects.all()
+    suspects = Suspect.objects.all()
+    
+  
+
+    # cursor = connection.cursor()
+    # male_female = "select sum(case when gender='M' then 1 else 0 end) as male_count,sum(case when gender='F' then 1 else 0 end) as female_count, sum(case when physical_disability='YES' then 1 else 0 end) as disability_count,sum(case when physical_disability='NO' then 1 else 0 end) as no_disability_count, count(*) as n_students from student_student inner join student_classe on student_classe.id=student_student.classe_id inner join student_school on student_school.id=student_classe.school_id where student_student.year_reg=%s and student_school.id=%s" %(year, stations.id)
+    # cursor.execute(male_female)
+    
+    
+    context = {'stations':stations,'cases':cases,'suspects':suspects,'officers':officers}
+    return render(request, 'crime/GeneralReport.html', context)
