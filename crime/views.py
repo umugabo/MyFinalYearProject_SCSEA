@@ -20,6 +20,12 @@ def error401(request):
     context = {}
     return render(request, 'crime/401.html', context)
 
+def errorDelete(request):
+
+    context = {}
+    return render(request, 'crime/deleteRequest.html', context)
+
+
 def register_ribofficer(request):
     form = RibOfficerRegistrationForm()
     if request.method == 'POST':
@@ -498,7 +504,8 @@ def generalStatisticalReport(request):
     officers = Officer.objects.all()
     stations = RIBStation.objects.all()
     suspects = Suspect.objects.all()
-    
+    reporters = Reporter.objects.all()
+	
   
 
     # cursor = connection.cursor()
@@ -506,5 +513,5 @@ def generalStatisticalReport(request):
     # cursor.execute(male_female)
     
     
-    context = {'stations':stations,'cases':cases,'suspects':suspects,'officers':officers}
+    context = {'stations':stations,'cases':cases,'suspects':suspects,'officers':officers,'reporters':reporters}
     return render(request, 'crime/GeneralReport.html', context)

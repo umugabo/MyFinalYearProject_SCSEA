@@ -13,8 +13,8 @@
 <table class="table table-sm">
 <tr>
 <th>User</th>
-<th>Stattion Name</th>
-<th>Province</th>
+<th>Station Name</th>
+<th>Location</th>
 {% comment %} <th>Update</th> {% endcomment %}
 <th>Delete</th>
 </tr>
@@ -24,7 +24,8 @@
 			<td>{{station.station_name}}</td>
 			<td>{{station.province}}</td>
 			 {% comment %} <td><a class="btn btn-sm btn-info" href="">Update</a></td> {% endcomment %}
-			<td><a class="btn btn-sm btn-danger" href="">Delete</a></td>
+			 <td><a class="btn btn-sm btn-danger" href="{% url 'errorDelete' %}">Delete</a></td>
+
 	 
 		</tr>
 {% endfor %} 

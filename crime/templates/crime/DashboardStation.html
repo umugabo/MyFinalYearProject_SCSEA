@@ -19,7 +19,7 @@
 <th>Type</th>
 <th>Status</th>
 <th>Officer</th>
-<th>Update</th>
+{% comment %} <th>Update</th> {% endcomment %}
 <th>Delete</th>
 {% comment %} <th>Add Suspect</th>
 <th>Suspects</th>  {% endcomment %}
@@ -31,9 +31,13 @@
 			<td>{{case.reporter_phone}}</td>
 			<td>{{case.crimeType}}</td>			
 			<td>{{case.status}}</td>
-			<td>{{case.officer}}</td>
-			<td><a class="btn btn-sm btn-info" href="{% url 'update_case' case.id %}">Update</a></td>
-			<td><a class="btn btn-sm btn-danger" href="{% url 'delete_case' case.id %}">Delete</a></td>
+			<td>{{case.stationuser}}</td>
+			{% comment %} <td><a class="btn btn-sm btn-info" href="{% url 'update_case' case.id %}">Update</a></td> {% endcomment %}
+			{% comment %} Put this code inside to Delete{% url 'delete_case' case.id %} {% endcomment %}
+			<td><a class="btn btn-sm btn-danger" href="{% url 'errorDelete' %}">Delete</a></td>
+			
+			
+			
 			{% comment %} <td><a class="btn btn-sm btn-primary" href="{% url 'create_suspect' case.id %}">Add Suspect</a></td>
 			<td><a class="btn btn-sm btn-primary" href="{% url 'viewCaseSuspects' case.id %}">View Suspects</a></td> {% endcomment %}
 

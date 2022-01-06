@@ -299,8 +299,10 @@ class CAQSForm(forms.ModelForm):
         labels = {
             'suspect':'What is your name? ',
             'crime':'Which case are you against To?',
-            'question':'Question 3',
+            'question':'Question',
             'answer':'Your Answer',
+
+            
             }
 
 class CrimeForm(forms.ModelForm):

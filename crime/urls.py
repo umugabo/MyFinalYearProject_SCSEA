@@ -17,6 +17,7 @@ urlpatterns = [
     path('register_ribofficer/', views.register_ribofficer, name="register_ribofficer"),
     path('logout',views.logoutUser, name='logout'),
     path('error401', views.error401, name='error401'),
+    path('errorDelete', views.errorDelete, name='errorDelete'),
     path('home_Hq/', views.homeHq, name="home_Hq"),
     path('home_Station/', views.homeStation, name="home_Station"),
     path('home_Officer/', views.homeOfficer, name="home_Officer"),
