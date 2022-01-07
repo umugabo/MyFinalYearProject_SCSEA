@@ -17,8 +17,8 @@
 			Identification: {{suspect.suspectNID}}&nbsp;&nbsp;
 			Phone: {{suspect.phone}},&nbsp;&nbsp;&nbsp;&nbsp;
 			Father:  {{suspect.father_name}},&nbsp;&nbsp;&nbsp;&nbsp;
-			Mother:  {{suspect.mother_name}},&nbsp;&nbsp;&nbsp;&nbsp;
-			Location:  {{suspect.province}},{{suspect.district}},{{suspect.sector}}{{suspect.cell}},{{suspect.village}}</p>
+			Mother:  {{suspect.mother_name}},&nbsp;&nbsp;&nbsp;	<br>
+			Location: ( {{suspect.province}},{{suspect.district}},{{suspect.sector}}{{suspect.cell}},{{suspect.village}} )</p>
 		</div>
 	</div>
 </div></div>
@@ -56,12 +56,26 @@
 				{% for reporter in reporters %}
 
 				<tr>
-					<td>{{reporter.f_name}} {{reporter.l_name}}</td>
 					<td>{{reporter.reporterNID }}</td>
+					<td>{{reporter.f_name}} {{reporter.l_name}}</td>
 					<td>{{reporter.phone}}</td>
 					<td>{{reporter.relation}}</td> 
                     <td>{{reporter.vote}}</td>
-					<td>{{reporter.note}}</td> 
+					<td>{{reporter.note}}</td>
+					
+					<td>
+						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						  Questionaire
+						</a>
+						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+						  <a class="dropdown-item" href="{% url 'createMurderForm' %}">Murder Form</a>
+						  <div class="dropdown-divider"></div>
+						  <a class="dropdown-item" href="{% url 'createViolentForm' %}">Violent Form</a>
+						  <div class="dropdown-divider"></div>
+						  <a class="dropdown-item" href="{% url 'createRobberyForm' %}">Robbery Form</a>
+						</div>
+					</td>
+
 					{% comment %} <td><a class="btn btn-sm btn-info" href="{% url 'create_reporter' suspect.id %}">Link To Witmess</a> {% endcomment %}
 					{% comment %} <td><a class="btn btn-sm btn-danger" href="{% url 'delete_suspect' suspect.id %}">Delete</a></td> {% endcomment %}
 				</tr>

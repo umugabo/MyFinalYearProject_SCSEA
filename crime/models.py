@@ -220,7 +220,7 @@ class RIBHeadquarter(models.Model):
 
 
 class MurderQuestions(models.Model):
-    suspectNID = models.CharField(max_length=16, blank=False)
+    reporterNID = models.CharField(max_length=16, blank=False)
     case = models.ForeignKey(Case, on_delete=models.CASCADE)
     q1 = models.CharField(max_length=3, choices=VOTE) 
     q2 = models.CharField(max_length=50, choices=WHERE)
@@ -242,14 +242,13 @@ class MurderQuestions(models.Model):
     q16 = models.CharField(max_length=1, blank=True)
     note = models.CharField(max_length=150, blank=False)
     suspect = models.ForeignKey(Suspect, on_delete=models.CASCADE, null=True, blank=True)
-
     
   
     def __str__(self):
-        return self.suspectNID 
+        return self.reporterNID 
 
 class ViolentQuestions(models.Model):
-    suspectNID = models.CharField(max_length=16, blank=False)
+    reporterNID = models.CharField(max_length=16, blank=False)
     case = models.ForeignKey(Case, on_delete=models.CASCADE)
     q1 = models.CharField(max_length=3, choices=VOTE) 
     q2 = models.CharField(max_length=50, choices=WHERE)
@@ -274,10 +273,10 @@ class ViolentQuestions(models.Model):
 
   
     def __str__(self):
-        return self.suspectNID
+        return self.reporterNID
 
 class RobberyQuestions(models.Model):
-    suspectNID = models.CharField(max_length=16, blank=False)
+    reporterNID = models.CharField(max_length=16, blank=False)
     case = models.ForeignKey(Case, on_delete=models.CASCADE)
     q1 = models.CharField(max_length=3, choices=VOTE) 
     q2 = models.CharField(max_length=50, choices=WHERE)
@@ -303,7 +302,7 @@ class RobberyQuestions(models.Model):
     
   
     def __str__(self):
-        return self.suspectNID
+        return self.reporterNID
 
 
 

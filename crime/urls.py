@@ -54,6 +54,8 @@ urlpatterns = [
     path('QuestionList/', views.QuestionList, name="QuestionList"),
     path('AnswerList/', views.AnswerList, name="AnswerList"),
     path('generalStatisticalReport/', views.generalStatisticalReport, name="generalStatisticalReport"),
+    path('some_view/', views.some_view, name="some_view"),
+
 
 
 

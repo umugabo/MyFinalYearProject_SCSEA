@@ -18,18 +18,18 @@
 </style> 
 
 <div class="row">
-<h1>Robbery Questionaire Form To Suspect</h1>
+<h1>Witness Questionaire Form To Robbery Crime</h1>
 	<div class="col-md-10">
 		<div class="card card-body">
-            <form class="form-inline my-2 my-lg-0">
+            {% comment %} <form class="form-inline my-2 my-lg-0">
       <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-    </form>
+    </form> {% endcomment %}
 			<form action="" method="POST">
 				{% csrf_token %}
 				<div class="contain">
 				<div class="form-group">
-				{{form.suspectNID|as_crispy_field}}
+				{{form.suspect|as_crispy_field}}
 				{{form.q1|as_crispy_field}}
 				{{form.case|as_crispy_field}}
 				</div>

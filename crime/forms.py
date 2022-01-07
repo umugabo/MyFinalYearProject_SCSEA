@@ -181,14 +181,14 @@ class MurderQuestionaireForm(forms.ModelForm):
     class Meta:
         model = MurderQuestions
         # fields = '__all__'
-        fields = ('suspectNID',
+        fields = ('reporterNID',
         'q1','q2','q3',
         'q4','q5','q6',
         'q7','q8',
         'q9','q10','q11',
         'q12','q13','q14','q15','q16','case','note', 'suspect')
         labels = {
-            'suspectNID':'What is  your id?',
+            'reporterNID':'What is  your id?',
             'q1':'Have you been suspected before?',
             'case':'On which case have you suspected Before?',
             'q13':'Why are you suspected to this case?',
@@ -215,13 +215,13 @@ class ViolentQuestionaireForm(forms.ModelForm):
     class Meta:
         model = ViolentQuestions
         # fields = '__all__'
-        fields = ('suspectNID','q1','q2','q3',
+        fields = ('reporterNID','q1','q2','q3',
         'q4','q5','q6',
         'q7','q8',
         'q9','q10','q11',
         'q12','q13','q14','q15','q16','case','note', 'suspect')
         labels = {
-            'suspectNID':'What is  your id?',
+            'reporterNID':'What is  your id?',
             'q1':'Have you been suspected before?',
             'case':'On which case have you suspected Before?',
             'q13':'Why are you suspected to this case?',
@@ -247,14 +247,14 @@ class RobberyQuestionaireForm(forms.ModelForm):
     class Meta:
         model = RobberyQuestions
         # fields = '__all__'
-        fields = ('suspectNID',
+        fields = ('suspect',
         'q1','q2','q3',
         'q4','q5','q6',
         'q7','q8',
         'q9','q10','q11',
         'q12','q13','q14','q15','q16','case','note', 'suspect')
         labels = {
-            'suspectNID':'What is  your id?',
+            'suspect':'What is  your id?',
             'q1':'Have you been suspected before?',
             'case':'On which case have you suspected Before?',
             'q13':'Why are you suspected to this case?',

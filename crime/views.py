@@ -12,6 +12,10 @@ import datetime
 from django.contrib import messages
 from .decorators import unauthenticated_user, allowed_users
 from .forms import CrimeForm,CAQSForm,AnswerForm,QuestionForm,StationUserForm,RibOfficerRegistrationForm,CaseForm,SuspectForm,EvidenceForm,RibstationForm,OfficerForm,ReporterForm,MurderQuestionaireForm,ViolentQuestionaireForm,RobberyQuestionaireForm
+import reportlab
+import io
+from django.http import FileResponse
+from reportlab.pdfgen import canvas
 
 # Create your views here.
 
@@ -515,3 +519,26 @@ def generalStatisticalReport(request):
     
     context = {'stations':stations,'cases':cases,'suspects':suspects,'officers':officers,'reporters':reporters}
     return render(request, 'crime/GeneralReport.html', context)
+
+
+
+def some_view(request):
+	suspect = Suspect.objects.all()
+	
+    # Create a file-like buffer to receive PDF data.
+	buffer = io.BytesIO()
+
+    # Create the PDF object, using the buffer as its "file."
+	p = canvas.Canvas(buffer)
+    # Draw things on the PDF. Here's where the PDF generation happens.
+    # See the ReportLab documentation for the full list of functionality.
+	p.drawString(100, 100, "This is the Evidence of Suspect,.")
+	# s.drawString(100, 100, "{{suspect}}")
+    # Close the PDF object cleanly, and we're done.
+	p.showPage()
+	p.save()
+
+    # FileResponse sets the Content-Disposition header so that browsers
+    # present the option to save the file.
+	buffer.seek(0)
+	return FileResponse(buffer, as_attachment=True, filename='hello.pdf')
