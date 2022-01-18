@@ -1,0 +1,53 @@
+{% load static %}
+
+{% block styles %}
+  <style>
+    .active {
+      background-color: rgb(51, 135, 245);
+    }
+  </style>
+{% endblock styles %}
+
+ <img src="{% static 'images/RIB_Banner_final.gif' %}"alt="logo" height="110" width="1350">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="{% if 'home_Station' in request.path %} nav-item active {% endif %}">
+        <a class="nav-link" href="{% url 'home_Station' %}">Dashboard </a>
+      </li>
+
+      <li class="{% if 'caseList' in request.path %} nav-item active {% endif %}">
+        <a class="nav-link" href="{% url 'caseList' %}">Crime Case</a>
+      </li>    
+        
+      </li>
+      
+      <li class="{% if 'officerList' in request.path %} nav-item active {% endif %}">
+        <a class="nav-link" href="{% url 'officerList' %}">Station Officers</a>
+      </li>
+
+      <li class="   ">
+        <a class="nav-link" href="">Result</a>
+      </li>
+        {% comment %} <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Questionaire
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="{% url 'createMurderForm' %}">Murder Form</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="{% url 'createViolentForm' %}">Violent Form</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="{% url 'createRobberyForm' %}">Robbery Form</a>
+        </div> {% endcomment %}
+         </div>
+         <ul class="list-unstyled CTAs">
+       {% csrf_token%}
+        <a href="{% url 'logout' %}" style="background-color: #7CFC00 " class="btn btn-primary btn-block mt-5" >LOGOUT {{request.user}}</a>
+      
+    </ul>
+</nav>

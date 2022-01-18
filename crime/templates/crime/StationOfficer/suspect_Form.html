@@ -1,0 +1,62 @@
+{%  extends 'crime/StationOfficer/mainOfficer.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block content %}
+<style>
+
+    form button{
+        margin-right: 170px;
+    }
+
+    .contain{
+        display: flex;
+    }
+    .form-group {
+        width: 70%;
+    }
+
+</style>
+	<div class="row">
+	<br><br>
+<h3>Suspect Registration on the case with Case Code:"<strong>{{case.case_name}}</strong>" CaseType:"{{case.crimeType}}" Victim:{{case.victim}}</h3>
+	<div class="col-md-12">
+
+		<div class="card card-body">
+            
+			<form action="" method="POST">
+				{% csrf_token %}
+				<div class="contain">
+				<div class="form-group">
+				{{form.suspectNID|as_crispy_field}}
+				{{form.f_name|as_crispy_field}}
+				{{form.l_name|as_crispy_field}}
+				{{form.gender|as_crispy_field}}
+				</div>
+                <div class="form-group">
+				{{form.dob|as_crispy_field}}
+				{{form.phone|as_crispy_field}}
+				{{form.relation|as_crispy_field}}
+				{{form.father_name|as_crispy_field}}
+				</div>
+                <div class="form-group">
+				{{form.mother_name|as_crispy_field}}
+				{{form.province|as_crispy_field}}
+				{{form.district|as_crispy_field}}
+				{{form.cell|as_crispy_field}}
+				</div>
+                <div class="form-group">
+				{{form.village|as_crispy_field}}
+				{{form.note|as_crispy_field}}
+				{% comment %} {{form.case|as_crispy_field}} {% endcomment %}
+				
+				<center>
+				<a class="btn btn-warning" href="{% url 'home_Officer' %}">Cancel</a>
+				<input type="submit" name="Submit" class="btn btn-info"></div>
+			</form>
+
+		</div>
+	</div>
+</div>
+
+
+{% endblock %}

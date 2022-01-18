@@ -1,0 +1,40 @@
+{%  extends 'crime/StationOfficer/mainOfficer.html' %}
+
+
+{% block content %}
+		<br>
+
+		<div class="row">
+			<div class="col-md">
+				<div class="card card-body">
+					<h5>Crime Evidence</h5>
+					{% comment %} <a class="btn btn-sm btn-info" href="{% url 'create_evidence'%}">Link with Suspect</a> {% endcomment %}
+				</div>
+				<div class="card card-body">
+					<table class="table">
+						<tr>
+                            <th>Suspect</th>
+                            <th>Evidence Category</th>
+							<th>Evidence Note</th>
+                            <th>Image</th>
+							<th>Points</th>	
+							<th>Update</th>							
+						</tr>
+						{% for i in evidences %}
+							<tr>
+								<td>{{i.suspect}}</td>
+								<td>{{i.evidenceCategory}}</td>
+								<td>{{i.evidence_note}}</td>
+                                <td>{{i.image}}</td>
+                                <td>{{i.points}}</td>
+								<td><a class="btn btn-sm btn-info" href="{% url 'update_evidence' i.id %}">Update</a></td>
+							</tr>
+						{% endfor %}
+						
+					</table>
+				</div>
+			</div>
+			
+		</div>
+
+{% endblock content %}

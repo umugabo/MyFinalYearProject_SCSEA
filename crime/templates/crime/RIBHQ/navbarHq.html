@@ -1,0 +1,49 @@
+{% load static %}
+
+{% block styles %}
+  <style>
+    .active {
+      background-color: cadetblue;
+    }
+  </style>
+{% endblock styles %}
+ <img src="{% static 'images/hd.jpg' %}"alt="logo" height="110" width="1347">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="{% if 'home_Hq' in request.path %} nav-item active {% endif %}">
+        <a class="nav-link" href="{% url 'home_Hq' %}">Dashboard </a>
+      </li>
+      <li class="{% if 'RIBstationList' in request.path %} nav-item active {% endif %}">
+        <a class="nav-link" href="{% url 'RIBstationList' %}">RIB Stations</a>
+      </li>
+      <li class="{% if 'CrimeList' in request.path %} nav-item active {% endif %}">
+        <a class="nav-link" href="{% url 'CrimeList' %}">RIB Crimes</a>
+      </li>
+      <li class="{% if 'QuestionList' in request.path %} nav-item active {% endif %}">
+        <a class="nav-link" href="{% url 'QuestionList' %}">RIB Questions</a>
+      </li>
+      <li class="{% if 'AnswerList' in request.path %} nav-item active {% endif %}">
+        <a class="nav-link" href="{% url 'AnswerList' %}">RIB Answers</a>
+      </li>
+      <li class="{% if 'generalStatisticalReport' in request.path %} nav-item active {% endif %}">
+        <a class="nav-link" href="{% url 'generalStatisticalReport' %}">General Report</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="">Officer</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'some_view' %}">Result</a>
+      </li>              
+  </div>
+  
+   <ul class="list-unstyled CTAs">
+       {% csrf_token%}
+        <a href="{% url 'logout' %}" style="background-color: light-blue "  class="btn btn-primary btn-block mt-5" >LOGOUT {{request.user}}</a>
+      
+    </ul>
+</nav>

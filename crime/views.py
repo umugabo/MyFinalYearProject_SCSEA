@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect 
 from django.core.paginator import Paginator
+from django.template.loader import get_template
+from.utils  import render_to_pdf
 from django.contrib.auth.models import Group
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm 
 from django.contrib.auth import authenticate, login, logout
@@ -29,6 +31,11 @@ def errorDelete(request):
     context = {}
     return render(request, 'crime/deleteRequest.html', context)
 
+def errorDeleteCase(request):
+
+    context = {}
+    return render(request, 'crime/RIBStation/deleteRequest.html', context)
+
 
 def register_ribofficer(request):
     form = RibOfficerRegistrationForm()
@@ -49,7 +56,7 @@ def register_ribofficer(request):
             return redirect('createOfficer')
     
     context = {'form':form}
-    return render(request, 'crime/register_ribofficer.html', context)
+    return render(request, 'crime/RIBStation/register_ribofficer.html', context)
 
 
 def register_stationName(request):
@@ -71,7 +78,7 @@ def register_stationName(request):
             return redirect('createOfficer')
     
     context = {'form':form}
-    return render(request, 'crime/register_StationName.html', context)
+    return render(request, 'crime/RIBStation/register_StationName.html', context)
 
 @unauthenticated_user
 def registerPage(request):
@@ -84,7 +91,7 @@ def registerPage(request):
             group = Group.objects.get()
             return redirect('loginOrg.html')
     context = {'form':form}
-    return render(request,'crime/register.html', context)
+    return render(request,'crime/RIBStation/register.html', context)
 
 @unauthenticated_user
 def index(request):
@@ -126,19 +133,48 @@ def logoutUser(request):
 @login_required(login_url='login_view')
 @allowed_users(allowed_roles=['RIBHeadquarter'])
 def homeHq(request):
-    cases = Case.objects.all()
-    officers = Officer.objects.all()
-    stations = RIBStation.objects.all()
-    suspects = Suspect.objects.all()
-    total_suspects = suspects.count()
-    total_cases = cases.count()
-    finished = cases.filter(status='Finished').count()
-    pending = cases.filter(status='Pending').count()
-    context = {'cases':cases, 'suspects':suspects,'stations':stations,
-    'total_casess':total_cases,'finished':finished,'officers':officers,
-    'pending':pending }
+	cases = Case.objects.all()
+	officers = Officer.objects.all()
+	stations = RIBStation.objects.all()
+	suspects = Suspect.objects.all()
+	total_suspects = suspects.count()
+	total_cases = cases.count()
+	finished = cases.filter(status='Finished').count()
+	pending = cases.filter(status='Pending').count()
 
-    return render(request, 'crime/DashboardHq.html', context)
+	cases_remera = Case.objects.filter(ribstation = 1).count()
+	cases_kicukiro = Case.objects.filter(ribstation = 2).count()
+	cases_rwezamenyo = Case.objects.filter(ribstation = 3).count()
+
+	year = datetime.datetime.now().year
+
+	january = Suspect.objects.filter(date_arrested__year__gte=year, date_arrested__month=1).count()
+	february = Suspect.objects.filter(date_arrested__year__gte=year, date_arrested__month=2).count()
+	march = Suspect.objects.filter(date_arrested__year__gte=year, date_arrested__month=3).count()
+	april = Suspect.objects.filter(date_arrested__year__gte=year, date_arrested__month=4).count()
+	may = Suspect.objects.filter(date_arrested__year__gte=year, date_arrested__month=5).count()
+	june = Suspect.objects.filter(date_arrested__year__gte=year, date_arrested__month=6).count()
+	july = Suspect.objects.filter(date_arrested__year__gte=year, date_arrested__month=7).count()
+	august = Suspect.objects.filter(date_arrested__year__gte=year, date_arrested__month=8).count()
+	september = Suspect.objects.filter(date_arrested__year__gte=year, date_arrested__month=9).count()
+	october = Suspect.objects.filter(date_arrested__year__gte=year, date_arrested__month=10).count()
+	november = Suspect.objects.filter(date_arrested__year__gte=year, date_arrested__month=11).count()
+	december = Suspect.objects.filter(date_arrested__year__gte=year, date_arrested__month=12).count()
+
+	robbery_cases = Case.objects.filter(crimeType = 'Robbery').count()
+	violent_cases = Case.objects.filter(crimeType = 'Violent').count()
+	murder_cases = Case.objects.filter(crimeType = 'Murder').count()
+
+	context = {'cases':cases, 'suspects':suspects,'stations':stations,
+	'total_casess':total_cases,'finished':finished,'officers':officers,
+	'pending':pending, 'cases_remera':cases_remera,'cases_kicukiro':cases_kicukiro, 
+	'cases_rwezamenyo': cases_rwezamenyo, 'january':january, 'february':february, 'march': march,
+	'april': april, 'may': may, 'june': june, 'july': july, 'august': august, 'september':september, 
+	'october': october, 'november': november, 'december': december,
+	'robbery_cases':robbery_cases, 'violent_cases':violent_cases, 'murder_cases':murder_cases
+	  }
+
+	return render(request, 'crime/RIBHQ/DashboardHq.html', context)
 
 
 @login_required(login_url='login_view')
@@ -164,7 +200,7 @@ def homeStation(request):
     'total_casess':total_cases,'finished':finished,
     'pending':pending, 'page_obj':page_obj }
 	
-	return render(request, 'crime/DashboardStation.html', context)
+	return render(request, 'crime/RIBStation/DashboardStation.html', context)
 
 @login_required(login_url='login_view')
 @allowed_users(allowed_roles=['StationUser'])
@@ -186,7 +222,7 @@ def homeOfficer(request):
     'total_casess':total_cases,'finished':finished,
     'pending':pending }
 	
-	return render(request, 'crime/DashboardOfficer.html', context)
+	return render(request, 'crime/StationOfficer/DashboardOfficer.html', context)
 
 def createRIBStation(request):
 	form = RibstationForm()
@@ -197,12 +233,12 @@ def createRIBStation(request):
 			return redirect('home_Hq')
 
 	context = {'form':form}
-	return render(request, 'crime/ribstation_Form.html', context)
+	return render(request, 'crime/RIBHQ/ribstation_Form.html', context)
 
 
 def RIBstationList(request):
     stations = RIBStation.objects.all()
-    return render(request, 'crime/RIBstationList.html', {'stations':stations})
+    return render(request, 'crime/RIBHQ/RIBstationList.html', {'stations':stations})
 
 def createStationName(request):
 	form = RibstationForm()
@@ -213,7 +249,7 @@ def createStationName(request):
 			return redirect('home_HQ')
 
 	context = {'form':form}
-	return render(request, 'crime/officer_form.html', context)
+	return render(request, 'crime/RIBHQ/officer_form.html', context)
 
 def createOfficer(request):
 	user = request.user
@@ -228,42 +264,42 @@ def createOfficer(request):
 			return redirect('home_Station')
 
 	context = {'form':form}
-	return render(request, 'crime/officer_form.html', context)
+	return render(request, 'crime/RIBStation/officer_form.html', context)
 
 def officerList(request):
 	user = request.user
 	ribstation = RIBStation.objects.get(user=user)
 
 	officers = Officer.objects.filter(ribstation=ribstation)
-	return render(request, 'crime/officerList.html', {'officers':officers})
+	return render(request, 'crime/RIBStation/officerList.html', {'officers':officers})
 
 def caseList(request):
 	user = request.user
 	ribstation = RIBStation.objects.get(user=user)
 	cases = Case.objects.filter(ribstation=ribstation)
-	return render(request, 'crime/caseList.html', {'cases':cases})
+	return render(request, 'crime/RIBStation/caseList.html', {'cases':cases})
 
 def evidenceList(request):
     evidences = Evidence.objects.all()
-    return render(request, 'crime/evidenceList.html', {'evidences':evidences})
+    return render(request, 'crime/StationOfficer/evidenceList.html', {'evidences':evidences})
 
 def witnes(request, pk_susp):
     suspect = Suspect.objects.get(id=pk_susp)
     reporters = suspect.reporters.all()
     reporter_count = reporters.count()
     context = {'suspect':suspect,'reporters':reporters,'reporter_count':reporter_count}
-    return render(request, 'crime/witness.html',context)
+    return render(request, 'crime/StationOfficer/witness.html',context)
 
 def suspect(request, pk_susp):
     suspect = Suspect.objects.get(id=pk_susp)
     evidences = suspect.evidences.all()
     evidence_count = evidences.count()
     context = {'suspect':suspect,'evidences':evidences,'evidence_count':evidence_count}
-    return render(request, 'crime/suspect.html',context)
+    return render(request, 'crime/StationOfficer/suspect.html',context)
 
 def suspectList(request):
     suspect = Suspect.objects.all()
-    return render(request, 'crime/suspectList.html', {'suspect':suspect})
+    return render(request, 'crime/StationOfficer/suspectList.html', {'suspect':suspect})
 
 def createCase(request):
 	user = request.user
@@ -280,7 +316,7 @@ def createCase(request):
 			return redirect('home_Station')
 
 	context = {'form':form}
-	return render(request, 'crime/case_form.html', context)
+	return render(request, 'crime/RIBStation/case_form.html', context)
 
 def updateCase(request, pk):
 
@@ -294,7 +330,7 @@ def updateCase(request, pk):
 			return redirect('home_Station')
 
 	context = {'form':form}
-	return render(request, 'crime/case_form.html', context)
+	return render(request, 'crime/RIBStation/case_form.html', context)
 
 def deleteCase(request, pk):
 	case = Case.objects.get(id=pk)
@@ -303,7 +339,7 @@ def deleteCase(request, pk):
 		return redirect('home_Station')
 
 	context = {'item':case}
-	return render(request, 'crime/deleteCase.html', context)
+	return render(request, 'crime/RIBStation/deleteCase.html', context)
 
 
 def createSuspect(request, case_pk):
@@ -327,7 +363,7 @@ def createSuspect(request, case_pk):
 			return redirect('home_Officer')
 
 	context = {'form':form, 'case':case}
-	return render(request, 'crime/suspect_form.html', context)
+	return render(request, 'crime/StationOfficer/suspect_form.html', context)
 
 def viewCaseSuspects(request, case_pk):
 
@@ -335,7 +371,7 @@ def viewCaseSuspects(request, case_pk):
 	suspects = case.suspects.all()
 
 	context = {'suspects':suspects, 'case':case}
-	return render(request, 'crime/caseSuspects.html', context)
+	return render(request, 'crime/StationOfficer/caseSuspects.html', context)
 
 def updateSuspect(request, case_pk):
 
@@ -349,7 +385,7 @@ def updateSuspect(request, case_pk):
 			return redirect('suspectList')
 
 	context = {'form':form}
-	return render(request, 'crime/suspect_form.html', context)
+	return render(request, 'crime/StationOfficer/suspect_form.html', context)
 
 def deleteSuspect(request, case_pk):
 	suspect = Suspect.objects.get(id=case_pk)
@@ -358,7 +394,7 @@ def deleteSuspect(request, case_pk):
 		return redirect('suspectList')
 
 	context = {'item':suspect}
-	return render(request, 'crime/deleteSuspect.html', context)
+	return render(request, 'crime/StationOfficer/deleteSuspect.html', context)
 
 def createEvidence(request, suspect_pk):
 	suspect = Suspect.objects.get(id=suspect_pk)
@@ -372,7 +408,7 @@ def createEvidence(request, suspect_pk):
 			return redirect('home_Officer')
 
 	context = {'form':form, 'suspect':suspect}
-	return render(request, 'crime/evidence_form.html', context)
+	return render(request, 'crime/StationOfficer/evidence_form.html', context)
 
 
 
@@ -388,7 +424,7 @@ def updateEvidence(request, pk):
 			return redirect('evidence')
 
 	context = {'form':form}
-	return render(request, 'crime/evidence_Form.html', context)
+	return render(request, 'crime/StationOfficer/evidence_Form.html', context)
 
 def createReporter(request, suspect_pk):
 	suspect = Suspect.objects.get(id=suspect_pk)
@@ -401,11 +437,11 @@ def createReporter(request, suspect_pk):
 			return redirect('home_Officer')
 
 	context = {'form':form, 'suspect':suspect}
-	return render(request, 'crime/reporter_form.html', context)
+	return render(request, 'crime/StationOfficer/reporter_form.html', context)
 
 def reporterList(request):
     reporter = Reporter.objects.all()
-    return render(request, 'crime/reportertList.html', {'reporter':reporter})
+    return render(request, 'crime/StationOfficer/reportertList.html', {'reporter':reporter})
 
 def createMurderForm(request):
 	form = MurderQuestionaireForm()
@@ -413,10 +449,10 @@ def createMurderForm(request):
 		form = MurderQuestionaireForm(request.POST)
 		if form.is_valid():
 			form.save()
-			return redirect('/')
+			return redirect('home_Officer')
 
 	context = {'form':form}
-	return render(request, 'crime/MurderQuestionaireForm.html', context)
+	return render(request, 'crime/StationOfficer/MurderQuestionaireForm.html', context)
 
 def createViolentForm(request):
 	form = ViolentQuestionaireForm()
@@ -424,10 +460,10 @@ def createViolentForm(request):
 		form = ViolentQuestionaireForm(request.POST)
 		if form.is_valid():
 			form.save()
-			return redirect('/')
+			return redirect('home_Officer')
 
 	context = {'form':form}
-	return render(request, 'crime/ViolentQuestionaireForm.html', context)
+	return render(request, 'crime/StationOfficer/ViolentQuestionaireForm.html', context)
 
 def createRobberyForm(request):
 	form = RobberyQuestionaireForm()
@@ -435,10 +471,10 @@ def createRobberyForm(request):
 		form = RobberyQuestionaireForm(request.POST)
 		if form.is_valid():
 			form.save()
-			return redirect('/')
+			return redirect('home_Officer')
 
 	context = {'form':form}
-	return render(request, 'crime/RobberyQuestionaireForm.html', context)
+	return render(request, 'crime/StationOfficer/RobberyQuestionaireForm.html', context)
 
 def createQuestion(request):
 	form = QuestionForm()
@@ -449,11 +485,11 @@ def createQuestion(request):
 			return redirect('QuestionList')
 
 	context = {'form':form}
-	return render(request, 'crime/question_form.html', context)
+	return render(request, 'crime/RIBHQ/question_form.html', context)
 
 def QuestionList(request):
     questions = Question.objects.all()
-    return render(request, 'crime/questionList.html', {'questions':questions})
+    return render(request, 'crime/RIBHQ/questionList.html', {'questions':questions})
 
 def createAnswer(request):
 	form = AnswerForm()
@@ -464,13 +500,16 @@ def createAnswer(request):
 			return redirect('AnswerList')
 
 	context = {'form':form}
-	return render(request, 'crime/answer_form.html', context)
+	return render(request, 'crime/RIBHQ/answer_form.html', context)
 
 def AnswerList(request):
     answers = Answer.objects.all()
-    return render(request, 'crime/answerList.html', {'answers':answers})
+    return render(request, 'crime/RIBHQ/answerList.html', {'answers':answers})
 
-def createCAQS(request):
+def createCAQS(request, pk_suspect):
+
+	suspect = Suspect.objects.get(id=pk_suspect)
+
 	form = CAQSForm()
 	if request.method == 'POST':
 		form = CAQSForm(request.POST)
@@ -478,12 +517,12 @@ def createCAQS(request):
 			form.save()
 			return redirect('home_Officer')
 
-	context = {'form':form}
-	return render(request, 'crime/cransquestsusp_Form.html', context)
+	context = {'form':form, 'suspect':suspect}
+	return render(request, 'crime/StationOfficer/cransquestsusp_Form.html', context)
 
 def CAQSList(request):
     quesans = CAQS.objects.all()
-    return render(request, 'crime/questAnsList.html', {'quesans':quesans})
+    return render(request, 'crime/StationOfficer/questAnsList.html', {'quesans':quesans})
 
 def createCrime(request):
 	form = CrimeForm()
@@ -494,11 +533,11 @@ def createCrime(request):
 			return redirect('CrimeList')
 
 	context = {'form':form}
-	return render(request, 'crime/crime_form.html', context)
+	return render(request, 'crime/RIBHQ/crime_form.html', context)
 
 def CrimeList(request):
     crimes = Crime.objects.all()
-    return render(request, 'crime/crimeList.html', {'crimes':crimes})
+    return render(request, 'crime/RIBHQ/crimeList.html', {'crimes':crimes})
 
 
 def generalStatisticalReport(request):
@@ -518,7 +557,7 @@ def generalStatisticalReport(request):
     
     
     context = {'stations':stations,'cases':cases,'suspects':suspects,'officers':officers,'reporters':reporters}
-    return render(request, 'crime/GeneralReport.html', context)
+    return render(request, 'crime/RIBHQ/GeneralReport.html', context)
 
 
 
@@ -542,3 +581,43 @@ def some_view(request):
     # present the option to save the file.
 	buffer.seek(0)
 	return FileResponse(buffer, as_attachment=True, filename='hello.pdf')
+
+def printSuspectsHQ(request):
+	template = get_template('crime/Reports/printSuspectsHQ.html')
+
+	suspects = Suspect.objects.all()
+
+	context = {'suspects':suspects}
+	html = template.render(context)
+	pdf= render_to_pdf('crime/Reports/printSuspectsHQ.html', context)
+	if pdf:
+		response = HttpResponse(pdf, content_type='application/pdf')
+		file_name = "Suspests List"
+		content = "inline; filename='%s'" %(file_name)
+		download = request.GET.get("download")
+		if download:
+			content = "attachment; filename='%s'" %(file_name)
+		response['Content-Disposition'] = content
+		return response
+		return HttpResponse*"Not found"
+
+
+def printRIBStationHQ(request):
+	template = get_template('crime/Reports/printRIBStationHQ.html')
+
+	ribstations = RIBStation.objects.all()
+
+	context = {'ribstations':ribstations}
+	html = template.render(context)
+	pdf= render_to_pdf('crime/Reports/printRIBStationHQ.html', context)
+	if pdf:
+		response = HttpResponse(pdf, content_type='application/pdf')
+		file_name = "RIBStation List"
+		content = "inline; filename='%s'" %(file_name)
+		download = request.GET.get("download")
+		if download:
+			content = "attachment; filename='%s'" %(file_name)
+		response['Content-Disposition'] = content
+		return response
+		return HttpResponse*"Not found"
+

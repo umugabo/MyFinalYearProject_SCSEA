@@ -1,0 +1,88 @@
+{%  extends 'crime/StationOfficer/mainOfficer.html' %}
+
+
+{% block content %}
+
+	<br>
+
+<div class="row">
+	<div class="col-md">
+		<div class="card card-body">
+			
+		<div class="card card-body">
+
+			<h7><strong>Suspect Information</strong></h7>
+			<hr>
+			<p>Full Name:  {{suspect.f_name}} {{suspect.l_name}}&nbsp;&nbsp;
+			Identification: {{suspect.suspectNID}}&nbsp;&nbsp;
+			Phone: {{suspect.phone}},&nbsp;&nbsp;&nbsp;&nbsp;
+			Father:  {{suspect.father_name}},&nbsp;&nbsp;&nbsp;&nbsp;
+			Mother:  {{suspect.mother_name}},&nbsp;&nbsp;&nbsp;	<br>
+			Location: ( {{suspect.province}},{{suspect.district}},{{suspect.sector}}{{suspect.cell}},{{suspect.village}} )</p>
+		</div>
+	</div>
+</div></div>
+
+
+<br>
+<div class="row">
+	<div class="col">
+		<div class="card card-body">
+			<form method="get">
+			<h5>The Suspect <strong>"{{suspect.l_name}}</strong>" has the following Witmesses</h5>
+		    {% comment %} <button class="btn btn-primary" type="submit">Search</button> {% endcomment %}
+		  </form>
+		</div>
+	</div>
+	
+</div>
+<br>
+
+<div class="row">
+	<div class="col-md">
+		<div class="card card-body">
+			<a class="btn btn-primary  btn-sm btn-block" href="{% url 'create_reporter' suspect.id %}">Add Witmess</a>
+
+			<table class="table table-sm">
+				<tr>
+					<th>Witmess ID</th>
+					<th>witness Name</th>
+					<th>Witmess Phone</th>
+					 <th>Witmess Relation</th> 
+					 <th>Is {{suspect.f_name}} guilty?</th>
+					 <th>Note</th> 
+                    
+				</tr>
+				{% for reporter in reporters %}
+
+				<tr>
+					<td>{{reporter.reporterNID }}</td>
+					<td>{{reporter.f_name}} {{reporter.l_name}}</td>
+					<td>{{reporter.phone}}</td>
+					<td>{{reporter.relation}}</td> 
+                    <td>{{reporter.vote}}</td>
+					<td>{{reporter.note}}</td>
+					
+					<td>
+						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						  Questionaire
+						</a>
+						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+						  <a class="dropdown-item" href="{% url 'createMurderForm' %}">Murder Form</a>
+						  <div class="dropdown-divider"></div>
+						  <a class="dropdown-item" href="{% url 'createViolentForm' %}">Violent Form</a>
+						  <div class="dropdown-divider"></div>
+						  <a class="dropdown-item" href="{% url 'createRobberyForm' %}">Robbery Form</a>
+						</div>
+					</td>
+
+					{% comment %} <td><a class="btn btn-sm btn-info" href="{% url 'create_reporter' suspect.id %}">Link To Witmess</a> {% endcomment %}
+					{% comment %} <td><a class="btn btn-sm btn-danger" href="{% url 'delete_suspect' suspect.id %}">Delete</a></td> {% endcomment %}
+				</tr>
+				{% endfor %}
+			</table>
+		</div>
+	</div>
+</div>
+
+{% endblock %}

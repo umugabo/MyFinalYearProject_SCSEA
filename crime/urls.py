@@ -18,6 +18,7 @@ urlpatterns = [
     path('logout',views.logoutUser, name='logout'),
     path('error401', views.error401, name='error401'),
     path('errorDelete', views.errorDelete, name='errorDelete'),
+    path('errorDeleteCase', views.errorDeleteCase, name='errorDeleteCase'),
     path('home_Hq/', views.homeHq, name="home_Hq"),
     path('home_Station/', views.homeStation, name="home_Station"),
     path('home_Officer/', views.homeOfficer, name="home_Officer"),
@@ -47,7 +48,7 @@ urlpatterns = [
     path('viewCaseSuspects/<str:case_pk>/', views.viewCaseSuspects, name="viewCaseSuspects"),
     path('createQuestion/', views.createQuestion, name="createQuestion"),
     path('createAnswer/', views.createAnswer, name="createAnswer"),
-    path('createCAQS/', views.createCAQS, name="createCAQS"),
+    path('createCAQS/<str:pk_suspect>', views.createCAQS, name="createCAQS"),
     path('CAQSList/', views.CAQSList, name="CAQSList"),
     path('createCrime/', views.createCrime, name="createCrime"),
     path('CrimeList/', views.CrimeList, name="CrimeList"),
@@ -55,6 +56,9 @@ urlpatterns = [
     path('AnswerList/', views.AnswerList, name="AnswerList"),
     path('generalStatisticalReport/', views.generalStatisticalReport, name="generalStatisticalReport"),
     path('some_view/', views.some_view, name="some_view"),
+
+    path('printSuspectsHQ/', views.printSuspectsHQ, name="printSuspectsHQ"),
+    path('printRIBStationHQ/', views.printRIBStationHQ, name="printRIBStationHQ"),
 
 
 
