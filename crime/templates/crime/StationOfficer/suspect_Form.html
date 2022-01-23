@@ -18,7 +18,7 @@
 </style>
 	<div class="row">
 	<br><br>
-<h3>Suspect Registration on the case with Case Code:"<strong>{{case.case_name}}</strong>" CaseType:"{{case.crimeType}}" Victim:{{case.victim}}</h3>
+<h3>Suspect Reg on the case with Case Code:"<strong>{{case.case_name}}</strong>" CaseType:"<strong>{{case.crimeType}}</strong>" Victim:"<strong>{{case.victim_name}}</strong>"</h3>
 	<div class="col-md-12">
 
 		<div class="card card-body">
@@ -46,6 +46,7 @@
 				</div>
                 <div class="form-group">
 				{{form.village|as_crispy_field}}
+				{{form.ribstation|as_crispy_field}}
 				{{form.note|as_crispy_field}}
 				{% comment %} {{form.case|as_crispy_field}} {% endcomment %}
 				

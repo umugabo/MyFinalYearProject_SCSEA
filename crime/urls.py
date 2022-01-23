@@ -56,9 +56,11 @@ urlpatterns = [
     path('AnswerList/', views.AnswerList, name="AnswerList"),
     path('generalStatisticalReport/', views.generalStatisticalReport, name="generalStatisticalReport"),
     path('some_view/', views.some_view, name="some_view"),
-
+    path('printOfficerHQ/', views.printOfficerHQ, name="printOfficerHQ"),
     path('printSuspectsHQ/', views.printSuspectsHQ, name="printSuspectsHQ"),
     path('printRIBStationHQ/', views.printRIBStationHQ, name="printRIBStationHQ"),
+    path('printCasaesHQ/', views.printCasaesHQ, name="printCasaesHQ"),
+    path('printWitnessHQ/', views.printWitnessHQ, name="printWitnessHQ")
 
 
 

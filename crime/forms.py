@@ -92,7 +92,7 @@ class SuspectForm(forms.ModelForm):
     class Meta:
         model = Suspect
         # fields = '__all__'
-        fields = ('suspectNID','f_name','l_name','gender','dob','phone','relation','father_name','mother_name','province','district','cell','village','note')
+        fields = ('suspectNID','f_name','l_name','gender','dob','phone','relation','father_name','mother_name','province','district','cell','village','ribstation','note')
         labels = {
             'suspectNID':'Suspect Id',
             'f_name':'First Name',
@@ -107,6 +107,7 @@ class SuspectForm(forms.ModelForm):
             'district':'District',
             'cell':'Cell',
             'village':'Village',
+            'ribstation':'RIBStation',
             'note':'Short Note',
             }
 

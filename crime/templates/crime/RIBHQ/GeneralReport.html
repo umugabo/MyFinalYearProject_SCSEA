@@ -20,25 +20,25 @@
 					<h4>All RIBStation Commanders In RWANDA</h4>
           <table><tr><td>
           <a class="btn btn-warning" href="{% url 'home_Hq' %}">Close</a></tr></td>
-          <tr><td><a class="btn btn-primary  btn-sm btn-block" href="{% url 'printRIBStationHQ' %}">Generate PDF</a>
+          <tr><td><a class="btn btn-primary  btn-sm btn-block" href="{% url 'printOfficerHQ' %}">Generate PDF</a>
           </tr></td></table>
 				</div>
 				<div class="card card-body">
 					<table class="table">
 						<tr>
-              <th>Officer ID</th>
+             				 <th>Officer ID</th>
 							<th>Full Names</th>
 							<th>Recruit Year</th>	
-              <th>Rank</th>	
-              <th>RIBStation</th>						
+              				<th>Rank</th>	
+             				<th>RIBStation</th>						
 						</tr>
 						{% for officer in officers %}
 							<tr>
 								<td>{{officer.OfficerNationalId}}</td>
 								<td>{{officer.f_name}} {{officer.l_name}}</td>
 								<td>{{officer.recruit_year}}</td>
-                <td>{{officer.rank}}</td>
-                <td>{{officer.ribstation}}</td>
+                				<td>{{officer.rank}}</td>
+                				<td>{{officer.ribstation}}</td>
 							</tr>
 						{% endfor %}
 						
@@ -56,7 +56,7 @@
 					<h5>All RIBStations In RWANDA</h5>
           <table><tr><td>
             <a class="btn btn-warning" href="{% url 'home_Hq' %}">Close</a></tr></td>
-            <tr><td><a class="btn btn-primary  btn-sm btn-block" href="">Generate PDF</a>
+            <tr><td><a class="btn btn-primary  btn-sm btn-block" href="{% url 'printRIBStationHQ' %}">Generate PDF</a>
             </tr></td></table>
 				</div>
 				<div class="card card-body">
@@ -87,7 +87,7 @@
 					<h5>Existing Cases in All RIBStation</h5>
           <table><tr><td>
             <a class="btn btn-warning" href="{% url 'home_Hq' %}">Close</a></tr></td>
-            <tr><td><a class="btn btn-primary  btn-sm btn-block" href="">Generate PDF</a>
+            <tr><td><a class="btn btn-primary  btn-sm btn-block" href="{% url 'printCasaesHQ' %}">Generate PDF</a>
             </tr></td></table>
 				</div>
 				<div class="card card-body">
@@ -157,7 +157,7 @@
 					<h5>All of Witness of the Suspect in All Cases</h5>
           <table><tr><td>
             <a class="btn btn-warning" href="{% url 'home_Hq' %}">Close</a></tr></td>
-            <tr><td><a class="btn btn-primary  btn-sm btn-block" href="">Generate PDF</a>
+            <tr><td><a class="btn btn-primary  btn-sm btn-block" href="{% url 'printWitnessHQ' %}">Generate PDF</a>
             </tr></td></table>
 				</div>
 				<div class="card card-body">

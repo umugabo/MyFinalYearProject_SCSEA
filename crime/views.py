@@ -224,6 +224,9 @@ def homeOfficer(request):
 	
 	return render(request, 'crime/StationOfficer/DashboardOfficer.html', context)
 
+
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBHeadquarter'])
 def createRIBStation(request):
 	form = RibstationForm()
 	if request.method == 'POST':
@@ -240,6 +243,8 @@ def RIBstationList(request):
     stations = RIBStation.objects.all()
     return render(request, 'crime/RIBHQ/RIBstationList.html', {'stations':stations})
 
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBHeadquarter'])
 def createStationName(request):
 	form = RibstationForm()
 	if request.method == 'POST':
@@ -270,7 +275,7 @@ def officerList(request):
 	user = request.user
 	ribstation = RIBStation.objects.get(user=user)
 
-	officers = Officer.objects.filter(ribstation=ribstation)
+	officers = StationUser.objects.filter(ribstation=ribstation)
 	return render(request, 'crime/RIBStation/officerList.html', {'officers':officers})
 
 def caseList(request):
@@ -358,6 +363,8 @@ def createSuspect(request, case_pk):
 			# suspect.ribstation = ribstation
 			case.status = 'Studied'
 			suspect.stationuser = stationuser
+			# suspect.ribstation = ribstation
+
 			suspect.save()
 			case.suspects.add(suspect)
 			return redirect('home_Officer')
@@ -476,6 +483,8 @@ def createRobberyForm(request):
 	context = {'form':form}
 	return render(request, 'crime/StationOfficer/RobberyQuestionaireForm.html', context)
 
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBHeadquarter'])
 def createQuestion(request):
 	form = QuestionForm()
 	if request.method == 'POST':
@@ -487,10 +496,14 @@ def createQuestion(request):
 	context = {'form':form}
 	return render(request, 'crime/RIBHQ/question_form.html', context)
 
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBHeadquarter'])
 def QuestionList(request):
     questions = Question.objects.all()
     return render(request, 'crime/RIBHQ/questionList.html', {'questions':questions})
 
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBHeadquarter'])
 def createAnswer(request):
 	form = AnswerForm()
 	if request.method == 'POST':
@@ -502,6 +515,8 @@ def createAnswer(request):
 	context = {'form':form}
 	return render(request, 'crime/RIBHQ/answer_form.html', context)
 
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBHeadquarter'])
 def AnswerList(request):
     answers = Answer.objects.all()
     return render(request, 'crime/RIBHQ/answerList.html', {'answers':answers})
@@ -524,6 +539,9 @@ def CAQSList(request):
     quesans = CAQS.objects.all()
     return render(request, 'crime/StationOfficer/questAnsList.html', {'quesans':quesans})
 
+
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBHeadquarter'])
 def createCrime(request):
 	form = CrimeForm()
 	if request.method == 'POST':
@@ -535,11 +553,15 @@ def createCrime(request):
 	context = {'form':form}
 	return render(request, 'crime/RIBHQ/crime_form.html', context)
 
+
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBHeadquarter'])
 def CrimeList(request):
     crimes = Crime.objects.all()
     return render(request, 'crime/RIBHQ/crimeList.html', {'crimes':crimes})
 
-
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBHeadquarter'])
 def generalStatisticalReport(request):
     n_suspects = 0
     user = request.user
@@ -582,6 +604,9 @@ def some_view(request):
 	buffer.seek(0)
 	return FileResponse(buffer, as_attachment=True, filename='hello.pdf')
 
+
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBHeadquarter'])
 def printSuspectsHQ(request):
 	template = get_template('crime/Reports/printSuspectsHQ.html')
 
@@ -601,7 +626,8 @@ def printSuspectsHQ(request):
 		return response
 		return HttpResponse*"Not found"
 
-
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBHeadquarter'])
 def printRIBStationHQ(request):
 	template = get_template('crime/Reports/printRIBStationHQ.html')
 
@@ -621,3 +647,67 @@ def printRIBStationHQ(request):
 		return response
 		return HttpResponse*"Not found"
 
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBHeadquarter'])
+def printOfficerHQ(request):
+	template = get_template('crime/Reports/printOfficersHQ.html')
+
+	officers = Officer.objects.all()
+
+	context = {'officers':officers}
+	html = template.render(context)
+	pdf= render_to_pdf('crime/Reports/printOfficersHQ.html', context)
+	if pdf:
+		response = HttpResponse(pdf, content_type='application/pdf')
+		file_name = "RIBOfficers List"
+		content = "inline; filename='%s'" %(file_name)
+		download = request.GET.get("download")
+		if download:
+			content = "attachment; filename='%s'" %(file_name)
+		response['Content-Disposition'] = content
+		return response
+		return HttpResponse*"Not found"
+
+
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBHeadquarter'])
+def printCasaesHQ(request):
+	template = get_template('crime/Reports/printcasesHQ.html')
+
+	cases = Case.objects.all()
+
+	context = {'cases':cases}
+	html = template.render(context)
+	pdf= render_to_pdf('crime/Reports/printcasesHQ.html', context)
+	if pdf:
+		response = HttpResponse(pdf, content_type='application/pdf')
+		file_name = "All Cases List"
+		content = "inline; filename='%s'" %(file_name)
+		download = request.GET.get("download")
+		if download:
+			content = "attachment; filename='%s'" %(file_name)
+		response['Content-Disposition'] = content
+		return response
+		return HttpResponse*"Not found"
+
+
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBHeadquarter'])
+def printWitnessHQ(request):
+	template = get_template('crime/Reports/printwitnessHQ.html')
+
+	repoters = Reporter.objects.all()
+
+	context = {'repoters':repoters}
+	html = template.render(context)
+	pdf= render_to_pdf('crime/Reports/printwitnessHQ.html', context)
+	if pdf:
+		response = HttpResponse(pdf, content_type='application/pdf')
+		file_name = "Witnesses List"
+		content = "inline; filename='%s'" %(file_name)
+		download = request.GET.get("download")
+		if download:
+			content = "attachment; filename='%s'" %(file_name)
+		response['Content-Disposition'] = content
+		return response
+		return HttpResponse*"Not found"
