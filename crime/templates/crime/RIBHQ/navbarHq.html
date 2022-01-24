@@ -36,9 +36,9 @@
       <li class="nav-item">
         <a class="nav-link" href="">Officer</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'some_view' %}">Result</a>
-      </li>              
+      <li class="{% if 'ribStationReport' in request.path %} nav-item active {% endif %}">
+        <a class="nav-link" href="{% url 'ribStationReport' %}">Reports</a>
+      </li>             
   </div>
   
    <ul class="list-unstyled CTAs">

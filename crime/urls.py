@@ -60,7 +60,10 @@ urlpatterns = [
     path('printSuspectsHQ/', views.printSuspectsHQ, name="printSuspectsHQ"),
     path('printRIBStationHQ/', views.printRIBStationHQ, name="printRIBStationHQ"),
     path('printCasaesHQ/', views.printCasaesHQ, name="printCasaesHQ"),
-    path('printWitnessHQ/', views.printWitnessHQ, name="printWitnessHQ")
+    path('printWitnessHQ/', views.printWitnessHQ, name="printWitnessHQ"),
+    path('ribStationReport/', views.ribStationReport, name="ribStationReport"),
+    path('caseReportFromRibstation/', views.caseReportFromRibstation, name="caseReportFromRibstation"),
+
 
 
 

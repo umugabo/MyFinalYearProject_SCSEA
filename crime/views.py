@@ -141,6 +141,7 @@ def homeHq(request):
 	total_cases = cases.count()
 	finished = cases.filter(status='Finished').count()
 	pending = cases.filter(status='Pending').count()
+	studied = cases.filter(status='Studied').count()
 
 	cases_remera = Case.objects.filter(ribstation = 1).count()
 	cases_kicukiro = Case.objects.filter(ribstation = 2).count()
@@ -166,7 +167,7 @@ def homeHq(request):
 	murder_cases = Case.objects.filter(crimeType = 'Murder').count()
 
 	context = {'cases':cases, 'suspects':suspects,'stations':stations,
-	'total_casess':total_cases,'finished':finished,'officers':officers,
+	'total_casess':total_cases,'finished':finished,'officers':officers,'studied':studied,
 	'pending':pending, 'cases_remera':cases_remera,'cases_kicukiro':cases_kicukiro, 
 	'cases_rwezamenyo': cases_rwezamenyo, 'january':january, 'february':february, 'march': march,
 	'april': april, 'may': may, 'june': june, 'july': july, 'august': august, 'september':september, 
@@ -195,9 +196,9 @@ def homeStation(request):
 	total_cases = cases.count()
 	finished = cases.filter(status='Finished').count()
 	pending = cases.filter(status='Pending').count()
-	
+	studied = cases.filter(status='Studied').count()
 	context = {'cases':cases, 'suspects':suspects,
-    'total_casess':total_cases,'finished':finished,
+    'total_casess':total_cases,'finished':finished,'studied':studied,
     'pending':pending, 'page_obj':page_obj }
 	
 	return render(request, 'crime/RIBStation/DashboardStation.html', context)
@@ -217,10 +218,10 @@ def homeOfficer(request):
 	total_cases = cases.count()
 	finished = cases.filter(status='Finished').count()
 	pending = cases.filter(status='Pending').count()
-	
+	studied = cases.filter(status='Studied').count()
 	context = {'cases':cases, 'suspects':suspects,
     'total_casess':total_cases,'finished':finished,
-    'pending':pending }
+    'pending':pending,'studied':studied }
 	
 	return render(request, 'crime/StationOfficer/DashboardOfficer.html', context)
 
@@ -350,7 +351,7 @@ def deleteCase(request, pk):
 def createSuspect(request, case_pk):
 	user = request.user
 	case = Case.objects.get(id=case_pk) 
-
+	
 	# ribstation = RIBStation.objects.get(user=user)
 
 	stationuser = StationUser.objects.get(user=user)
@@ -361,11 +362,14 @@ def createSuspect(request, case_pk):
 		if form.is_valid():
 			suspect = form.save(commit=False)
 			# suspect.ribstation = ribstation
-			case.status = 'Studied'
+			
 			suspect.stationuser = stationuser
 			# suspect.ribstation = ribstation
-
+			case.status = 'Studied'
+			case.save()
 			suspect.save()
+			
+			
 			case.suspects.add(suspect)
 			return redirect('home_Officer')
 
@@ -704,6 +708,52 @@ def printWitnessHQ(request):
 	if pdf:
 		response = HttpResponse(pdf, content_type='application/pdf')
 		file_name = "Witnesses List"
+		content = "inline; filename='%s'" %(file_name)
+		download = request.GET.get("download")
+		if download:
+			content = "attachment; filename='%s'" %(file_name)
+		response['Content-Disposition'] = content
+		return response
+		return HttpResponse*"Not found"
+
+
+
+def ribStationReport(request):
+
+	rib_stations = RIBStation.objects.all()
+	cases = Case.objects.all()
+	station_user = StationUser.objects.all()
+	context = {'rib_stations':rib_stations, 'cases':cases, 'station_user':station_user}
+	return render(request, 'crime/Reports/RIBStationReport.html',context)
+
+
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBHeadquarter'])
+def caseReportFromRibstation(request):
+	template = get_template('crime/Reports/printCasePerStation.html')
+
+	try:
+		station = request.GET.get('station')
+		case = request.GET.get('case')
+		officer = request.GET.get('officer')
+
+	except:
+		station = None
+		case = None
+		officer = None
+	if station:
+		if case:
+			if officer:
+				cases = Case.objects.filter(ribstation=station, id=case, stationuser=officer)
+				print(cases)
+	
+
+	context = {'cases':cases}
+	html = template.render(context)
+	pdf= render_to_pdf('crime/Reports/printCasePerStation.html', context)
+	if pdf:
+		response = HttpResponse(pdf, content_type='application/pdf')
+		file_name = "Case List"
 		content = "inline; filename='%s'" %(file_name)
 		download = request.GET.get("download")
 		if download:
