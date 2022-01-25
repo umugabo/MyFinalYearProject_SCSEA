@@ -63,6 +63,8 @@ urlpatterns = [
     path('printWitnessHQ/', views.printWitnessHQ, name="printWitnessHQ"),
     path('ribStationReport/', views.ribStationReport, name="ribStationReport"),
     path('caseReportFromRibstation/', views.caseReportFromRibstation, name="caseReportFromRibstation"),
+    path('suspectReportFromCase/', views.suspectReportFromCase, name="suspectReportFromCase"),
+    path('compareTwoRibstation/', views.compareTwoRibstation, name="compareTwoRibstation"),
 
 
 

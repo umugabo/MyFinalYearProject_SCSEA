@@ -1,10 +1,37 @@
 {% extends 'crime/RIBHQ/mainHq.html' %}
 
 {% block content %}
-{% comment %} 
-		<br>
-			<a class="btn btn-primary  btn-sm btn-block" href="">Add Station Name</a> {% endcomment %}
 
+
+<br>
+<div class="row">
+
+<hr>
+		<div class="card card-body">
+			<a class="btn btn-primary  btn-sm btn-block" href="{% url 'createRIBStation' %}">Add RIBStations
+</a>
+<table class="table table-sm">
+<tr>
+<th>User</th>
+<th>Station Name</th>
+<th>Location</th>
+{% comment %} <th>Update</th> {% endcomment %}
+<th>Delete</th>
+</tr>
+{% for station in stations %}
+		<tr>
+			<td>{{station.user}}</td>
+			<td>{{station.station_name}}</td>
+			<td>{{station.province}}</td>
+			 {% comment %} <td><a class="btn btn-sm btn-info" href="">Update</a></td> {% endcomment %}
+			 <td><a class="btn btn-sm btn-danger" href="{% url 'errorDelete' %}">Delete</a></td>
+
+	 
+		</tr>
+{% endfor %} 
+
+</table>
+{% comment %} 
 		<div class="row">
 			<div class="col-md">
 				<div class="card card-body">
@@ -30,6 +57,6 @@
 				</div>
 			</div>
 			
-		</div>
+		</div> {% endcomment %}
 
 {% endblock content %}

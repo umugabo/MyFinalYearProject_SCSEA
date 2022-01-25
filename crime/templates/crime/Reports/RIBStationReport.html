@@ -151,23 +151,27 @@
     </div>
     <div class="col-md-4">
         <button type="button" class="btn btn-success btn-block" data-toggle="modal" data-target="#myModal2">
-            Generate Report Based on Comparison
+            Generate Report Based on Case Suspect
         </button>
     </div>
+
+    
     <div class="col-md-4">
         <button type="button" class="btn btn-info btn-block" data-toggle="modal" data-target="#myModal3">
-            Generate Report for School Comparision
+            Generate Report for RIBStation Comparision
         </button>
     </div>
 </div>
+
+
 <br><br>
-<div class="row">
+{% comment %} <div class="row">
     <dic class="col-md-4">
         <button type="button" class="btn btn-secondary btn-block" data-toggle="modal" data-target="#myModal4">
             Compare 2 Schools Based to Quater
         </button>
     </dic>
-</div>
+</div> {% endcomment %}
 
 
 <!-- The Modal -->
@@ -177,7 +181,7 @@
 
             <!-- Modal Header -->
             <div class="modal-header">
-                <h4 class="modal-title">Generate report based on choices</h4>
+                <h4 class="modal-title">Generate report based on Case choices</h4>
                 <button type="button" class="close" data-dismiss="modal">×</button>
             </div>
 
@@ -222,15 +226,9 @@
                                 </div>
                             </div>
                         
-                        {% comment %} <div class="form-group">
-                            <label for="">Year:</label>
+                        </div>
 
-                            <input type="text" class="form-control" role="search" placeholder="Search by Year"
-                                name='year'>
-                        </div> {% endcomment %}
-                    </div>
-
-                        <button class="btn btn-primary btn-sm">Generate Report</button>
+                        <button class="btn btn-primary btn-sm">Generate Case Report</button>
                     </form>
 
 
@@ -248,63 +246,55 @@
 
 
 
+
+
+
+
+
+
 <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="false">
     <div class="modal-dialog">
         <div class="modal-content">
 
             <!-- Modal Header -->
             <div class="modal-header">
-                <h4 class="modal-title">Generate report based Comparison</h4>
+                <h4 class="modal-title">Generate report based Suspects</h4>
                 <button type="button" class="close" data-dismiss="modal">×</button>
             </div>
 
             <!-- Modal body -->
             <div class="modal-body">
-
+                <form role="search" action='{% url 'suspectReportFromCase' %}'>
                 <div class="container">
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label for="">District:</label>
-                                <select class="form-control" name="district" id="districts2">
-                                    <option selected>Select Districts</option>
-                                    {% for district in districts %}
-                                    <option value="{{district.id}}">{{district.district_name}}</option>
+                                <label for="">RIBStation:</label>
+                                <select class="form-control" name="station" id="stations">
+                                    <option selected>Select RIBStation</option>
+                                    {% for stations in rib_stations %}
+                                    <option value="{{stations.id}}">{{stations.station_name}}</option>
                                     {% endfor %}
                                 </select>
                             </div>
                         </div>
                     </div>
-                    
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <select class="form-control" name="sector" id="sectors2">
-                                    <option selected>Select Sector</option>
+                                <label for="">Case:</label>
+                                <select class="form-control" name="case" id="cases">
+                                    <option selected>Select Case</option>
+                                    {% for case in cases %}
+                            <option value="{{case.id}}">{{case.case_name}}</option>
+                            {% endfor %}
                                 </select>
                             </div>
                         </div>
-                            
-                        </div>
-                            <form role="search" action='yearMark'>
 
-
-                                <div class="form-group">
-                                    <select class="form-control" name="school" id="res2">
-                                        <option selected>Select School</option>
-                                    </select>
-                                </div>
-
-                                <div class="form-group">
-                                    <input type="text" class="form-control" role="search" placeholder="Year 1"
-                                        name='year1'>
-                                </div>
-                                <div class="form-group">
-                                    <input type="text" class="form-control" role="search" placeholder="Year 2"
-                                        name='year2'>
-                                </div>
-
-                                <button class="btn btn-primary btn-sm">Generate Report</button>
+                    </div>
+ 
+                                <button class="btn btn-primary btn-sm">Generate Suspect Report</button>
                             </form>
 
                     
@@ -325,62 +315,73 @@
 
 
 
+
+
+
+
+
+
+
 <div class="modal fade" id="myModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="false">
     <div class="modal-dialog">
         <div class="modal-content">
 
             <!-- Modal Header -->
             <div class="modal-header">
-                <h4 class="modal-title">Generate report based on choices</h4>
+                <h4 class="modal-title">Generate report based on Crime In Staton</h4>
                 <button type="button" class="close" data-dismiss="modal">×</button>
             </div>
 
             <!-- Modal body -->
             <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label for="">District:</label>
-                            <select class="form-control" name="district" id="districts3">
-                                <option selected>Select Districts</option>
-                                {% for district in districts %}
-                                <option value="{{district.id}}">{{district.district_name}}</option>
-                                {% endfor %}
-                            </select>
+                <form role="search" action='{% url 'compareTwoRibstation' %}'>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="">RIBStation 1:</label>
+                                <select class="form-control" name="station1" id="station1">
+                                    <option>Select RIBStation</option>
+                                    {% for station1 in rib_stations %}
+                                    <option value="{{station1.id}}">{{station1.station_name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
                         </div>
                     </div>
-                </div>
                 
                 <div class="form-group">
-                    <select class="form-control" name="" id="sectors3">
-                        <option selected>Select Sectors</option>
+                    <label for="">Crime Type:</label>
+                    <select class="form-control" name="crimetype" id="crimetype">
+                        <option selected disable>Select Crime Type</option>
+                        <option value="Robbery">Robbery</option>
+                        <option value="Violent">Violent</option>
+                        <option value="Murder">Murder</option>
                     </select>
                 </div>
 
-                <form role="search" action='twoSchoolComparisonSameYear'>
+                
+                <div class="container">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <div class="form-group">
-                                <select class="form-control" name="school1" id="res3">
-                                    <option selected>Select School 1</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <input type="text" class="form-control" role="search" placeholder="Search by Year"
-                                    name='year'>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <select class="form-control" name="school2" id="res4">
-                                    <option selected>Select School 2</option>
+                                <label for="">RIBStation 2:</label>
+                                <select class="form-control" name="station2" id="station2">
+                                    <option selected>Select RIBStation</option>
+                                    {% for station2 in rib_stations %}
+                                    <option value="{{station2.id}}">{{station2.station_name}}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                         </div>
                     </div>
+                    </div>
 
-                    <button class="btn btn-primary btn-sm">Generate Report</button>
+                
+
+                    <button class="btn btn-primary btn-sm">Generate Comparison Report</button>
                 </form>
+            </form>
             </div>
 
         </div>
@@ -392,8 +393,13 @@
 
     </div>
 </div>
+</div>
 
-<div class="modal fade" id="myModal4" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="false">
+
+
+
+
+{% comment %} <div class="modal fade" id="myModal4" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="false">
     <div class="modal-dialog">
         <div class="modal-content">
 
@@ -468,20 +474,24 @@
         </div>
 
     </div>
-</div>
+</div> {% endcomment %}
+
+
+
+
 <br><br>
 <div class="row">
 
 <div class="col-md-6">
     
     <div class="card bg-white text-black shadow md-4">
-      <p class="text-center">Gender Students' Partcipating in all registered students</p> <br>
+      <p class="text-center">Suspect Gender 'In all RIBStation '</p> <br>
       <canvas id="myChart" width="500" height="200"></canvas>
     </div>
 </div>
 <div class="col-md-6">
     <div class="card bg-white text-black shadow md-4">
-        <p class="text-center">Physical Disability Students' Partcipating in all registered students</p> <br>
+        <p class="text-center"> Suspects with Physical Disability ' In all RIBStation '</p> <br>
         <canvas id="myChart1" width="500" height="200"></canvas>
       </div>
 </div>

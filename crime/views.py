@@ -29,7 +29,7 @@ def error401(request):
 def errorDelete(request):
 
     context = {}
-    return render(request, 'crime/deleteRequest.html', context)
+    return render(request, 'crime/RIBHQ/deleteRequest.html', context)
 
 def errorDeleteCase(request):
 
@@ -751,6 +751,103 @@ def caseReportFromRibstation(request):
 	context = {'cases':cases}
 	html = template.render(context)
 	pdf= render_to_pdf('crime/Reports/printCasePerStation.html', context)
+	if pdf:
+		response = HttpResponse(pdf, content_type='application/pdf')
+		file_name = "Case List"
+		content = "inline; filename='%s'" %(file_name)
+		download = request.GET.get("download")
+		if download:
+			content = "attachment; filename='%s'" %(file_name)
+		response['Content-Disposition'] = content
+		return response
+		return HttpResponse*"Not found"
+
+
+def ribSuspectReport(request):
+
+	rib_stations = RIBStation.objects.all()
+	cases = Case.objects.all()
+	suspects = Suspect.objects.all()
+	context = {'rib_stations':rib_stations, 'cases':cases, 'suspects':suspects}
+	return render(request, 'crime/Reports/RIBStationReport.html',context)
+
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBHeadquarter'])
+def suspectReportFromCase(request):
+	template = get_template('crime/Reports/printSuspectPerCase.html')
+
+	try:
+		station = request.GET.get('station')
+		case = request.GET.get('case')
+		
+
+	except:
+		station = None
+		case = None
+		
+	if station:
+		if case:
+				# case = Case.objects.filter(ribstation=station, id=case)
+				case = Case.objects.get(id=case, ribstation=station)
+				suspects = case.suspects.all()
+
+			
+
+	context = {'suspects':suspects}
+	html = template.render(context)
+	pdf= render_to_pdf('crime/Reports/printSuspectPerCase.html', context)
+	if pdf:
+		response = HttpResponse(pdf, content_type='application/pdf')
+		file_name = "Suspect List"
+		content = "inline; filename='%s'" %(file_name)
+		download = request.GET.get("download")
+		if download:
+			content = "attachment; filename='%s'" %(file_name)
+		response['Content-Disposition'] = content
+		return response
+		return HttpResponse*"Not found"
+
+
+
+
+def ribCompareReport(request):
+
+	rib_stations = RIBStation.objects.all()
+	
+
+	context = {'rib_stations':rib_stations, 'cases':cases, 'suspects':suspects, 'evidences':evidences, 'witness':witness}
+	return render(request, 'crime/Reports/RIBStationReport.html',context)
+
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBHeadquarter'])
+def compareTwoRibstation(request):
+	template = get_template('crime/Reports/printCompareRIBstation.html')
+
+	try:
+		station1 = request.GET.get('station1')
+		station2 = request.GET.get('station2')
+		crimetype = request.GET.get('crimetype')
+	except:
+		station1 = None
+		station2 = None
+		crimetype = None
+		
+	if station1:
+		if station2:
+			if crimetype:
+				ribstation1 = RIBStation.objects.get(id=station1)
+				station1_name = ribstation1.station_name
+				
+				ribstation2 = RIBStation.objects.get(id=station2)
+				station2_name = ribstation2.station_name
+				cases_station1 = Case.objects.filter(ribstation=ribstation1, crimeType=crimetype).count()
+				cases_station2 = Case.objects.filter(ribstation=ribstation2, crimeType=crimetype).count()
+			
+
+	context = {'crimetype':crimetype, 'cases_station1':cases_station1, 'cases_station2': cases_station2,
+	 		  'station1_name':station1_name, 'station2_name':station2_name}
+	html = template.render(context)
+	pdf= render_to_pdf('crime/Reports/printCompareRIBstation.html', context)
 	if pdf:
 		response = HttpResponse(pdf, content_type='application/pdf')
 		file_name = "Case List"

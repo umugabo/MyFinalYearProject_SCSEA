@@ -83,7 +83,7 @@ class RibstationForm(forms.ModelForm):
         model = RIBStation
         fields = ('user','station_name','province')
         labels = {
-            'user':'Station user',
+            'user':'Station Commander',
             'station_name':'Station Name',
             'province':'Province',
             }
