@@ -1,0 +1,18 @@
+The system has got Four type of Users
+===============================
+
+1)RIB HEADQUARTER
+   *UserName:RIBHQ
+   *Password:investigation
+
+2)RIB STATION
+   *UserName:Remerastation,KicukiroStation,RwezamenyoStation
+   *Password:investigation
+
+3)Station Users
+   *UserName:Lt.Bruno,Lt.Patrick,Lt.Alfred
+   *Password:investigation
+
+4)RIB Super User
+   *UserName:yves
+   *Password:mgb

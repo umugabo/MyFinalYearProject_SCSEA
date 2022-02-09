@@ -65,8 +65,8 @@
         </div> {% endcomment %}
 
         
-        <li class="nav-item">
-        <a class="nav-link" href="">Result</a>
+        <li class="{% if 'casesAnalyse' in request.path %} nav-item active {% endif %}">
+        <a class="nav-link" href="{% url 'casesAnalyse' %}">Primary Suspect</a>
       </li>
          </div>
          <ul class="list-unstyled CTAs">

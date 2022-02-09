@@ -30,8 +30,8 @@
         <a class="nav-link" href="{% url 'officerList' %}">Station Officers</a>
       </li>
 
-      <li class="{% if 'officerList' in request.path %} nav-item active {% endif %}">
-        <a class="nav-link" href="">Reports</a>
+      <li class="{% if 'stationStatReporting' in request.path %} nav-item active {% endif %}">
+        <a class="nav-link" href="{% url 'stationStatReporting' %}">Reports</a>
       </li>
         {% comment %} <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

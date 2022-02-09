@@ -64,16 +64,7 @@
 					<td>{{reporter.note}}</td>
 					
 					<td>
-						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						  Questionaire
-						</a>
-						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-						  <a class="dropdown-item" href="{% url 'createMurderForm' %}">Murder Form</a>
-						  <div class="dropdown-divider"></div>
-						  <a class="dropdown-item" href="{% url 'createViolentForm' %}">Violent Form</a>
-						  <div class="dropdown-divider"></div>
-						  <a class="dropdown-item" href="{% url 'createRobberyForm' %}">Robbery Form</a>
-						</div>
+						<td><a class="btn btn-sm btn-info" href="{% url 'createCAQW' reporter.id %}">Ask Questions</a></td>
 					</td>
 
 					{% comment %} <td><a class="btn btn-sm btn-info" href="{% url 'create_reporter' suspect.id %}">Link To Witmess</a> {% endcomment %}

@@ -1,27 +1,5 @@
 {% extends 'crime/RIBHQ/mainHq.html' %}
 {% load static %}
-{% block myBootstrapFiles %}
-
-<link rel="stylesheet" href="{% static 'css/simple-sidebar.css'%}">
-
-<script src="{% static 'js/jquery-1.11.1.min.js' %}"></script>
-
-<script src="{% static 'js/bootstrap.min.js' %}"></script>
-
-<script src="{% static '/js/chartjs/Chart.min.js' %}"></script>
-<link rel="stylesheet" href="{% static '/css/chartcss/Chart.min.css'%}">
-
-<!-- Bootstrap CSS CDN -->
-
-<link rel="stylesheet" href="{% static 'css/bootstraphome.min.css' %}">
-
-
-
-
-
-
-{% endblock %}
-
 
 {% block jquery %}
 <script>
@@ -397,225 +375,85 @@
 
 
 
-
-
-{% comment %} <div class="modal fade" id="myModal4" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="false">
-    <div class="modal-dialog">
-        <div class="modal-content">
-
-            <!-- Modal Header -->
-            <div class="modal-header">
-                <h4 class="modal-title">Generate report based on choices</h4>
-                <button type="button" class="close" data-dismiss="modal">×</button>
-            </div>
-
-            <!-- Modal body -->
-            <div class="modal-body">
-
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label for="">District:</label>
-                            <select class="form-control" name="district" id="districts4">
-                                <option selected>Select Districts</option>
-                                {% for district in districts %}
-                                <option value="{{district.id}}">{{district.district_name}}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <select class="form-control" name="sector" id="sectors4">
-                        <option selected>Select Sector</option>
-                    </select>
-                </div>
-
-                <form role="search" action='twoSchoolComparisonSameYearQuater'>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <select class="form-control" name="school1" id="res5">
-                                    <option selected>Select School 1</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <input type="text" class="form-control" role="search" placeholder="Search by Year"
-                                    name='year'>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <select class="form-control" name="school2" id="res6">
-                                    <option selected>Select School 2</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <select class="form-control" name="quater">
-                                    <option selected disabled>Select Quater</option>
-                                    <option value="QUATER1">QUATER1</option>
-                                    <option value="QUATER2">QUATER2</option>
-                                    <option value="QUATER3">QUATER3</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <button class="btn btn-primary btn-sm">Generate Report</button>
-                </form>
-            </div>
-
-        </div>
-
-        <!-- Modal footer -->
-        <div class="modal-footer">
-            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-        </div>
-
-    </div>
-</div> {% endcomment %}
-
-
-
-
 <br><br>
 <div class="row">
+	<div class="col-md-6">
+		<canvas id="myChart" width="200" height="100"></canvas>
+	</div>
 
-<div class="col-md-6">
-    
-    <div class="card bg-white text-black shadow md-4">
-      <p class="text-center">Suspect Gender 'In all RIBStation '</p> <br>
-      <canvas id="myChart" width="500" height="200"></canvas>
-    </div>
+	<div class="col-md-6">
+		<canvas id="myChart1" width="200" height="100"></canvas>
+	</div>
 </div>
-<div class="col-md-6">
-    <div class="card bg-white text-black shadow md-4">
-        <p class="text-center"> Suspects with Physical Disability ' In all RIBStation '</p> <br>
-        <canvas id="myChart1" width="500" height="200"></canvas>
-      </div>
-</div>
-    
-
+<br><br>
 <script>
-  $(document).ready(function(){
-      var ctx = document.getElementById('myChart').getContext('2d');
-var myChart = new Chart(ctx, {
-type: 'pie',
-data: {
-  // labels: [{% for school in qs %}'{{ school.sector }}',{% endfor %}],
-  labels: ['Male Students ','Female Students'],
-  datasets: [{
-      label: '# of Students with the following range of numbers',
-      
-        {% for obj in answers %}
-      data: [(({{obj.0}}*100)/{{obj.4}}).toFixed(1),(({{obj.1}}*100)/{{obj.4}}).toFixed(1)],
-        {% endfor %}
-
-      backgroundColor: [
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-      ],
-      borderColor: [
-          'rgba(255, 99, 132, 1)',
-          'rgba(54, 162, 235, 1)',
-      ],
-      borderWidth: 1
-  }]
-},
-options: {
+const ctx = document.getElementById('myChart').getContext('2d');
+const myChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+        labels: ['Male', 'Female'],
+        datasets: [{
+            label: '# of Gender per RIB Station',
+            data: ['{{male}}', '{{female}}'],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+            ],
+            borderColor: [
+                'rgba(255, 99, 13, 1)',
+                'rgba(54, 162, 23, 1)',
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
         scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero: true
-                }
-            }]
-        },
-        plugins: {
-          datalabels: {
-            color: '#000',
-            {% comment %} anchor: 'end',
-            align: 'start', {% endcomment %}
-            offset: -10,
-            {% comment %} borderWidth: 2,
-            borderColor: '#808080',
-            borderRadius: 50, {% endcomment %}
-            {% comment %} backgroundColor: (context) => {
-              return context.dataset.backgroundColor;
-            }, {% endcomment %}
-            font: {
-              weight: 'bold',
-              size: '10'
-            },
-            formatter: (value) => {
-              return value + '%';
+            y: {
+                beginAtZero: true
             }
-          }
         }
-      }
+    }
 });
-  }); 
-</script>
-<script>
-    $(document).ready(function(){
-        var ctx = document.getElementById('myChart1').getContext('2d');
-  var myChart = new Chart(ctx, {
-  type: 'pie',
-  data: {
-    // labels: [{% for school in qs %}'{{ school.sector }}',{% endfor %}],
-    labels: ['Physical Disability Students ','NO Physical Disability Students'],
-    datasets: [{
-        label: '# of Students with the following range of numbers',
-        
-          {% for obj in answers %}
-        data: [(({{obj.2}}*100)/{{obj.4}}).toFixed(1),(({{obj.3}}*100)/{{obj.4}}).toFixed(1)],
-          {% endfor %}
-  
-        backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-        ],
-        borderColor: [
-            'rgba(255, 99, 132, 1)',
-            'rgba(54, 162, 235, 1)',
-        ],
-        borderWidth: 1
-    }]
-  },
-  options: {
-        scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero: true
-                }
-            }]
-        },
-        plugins: {
-          datalabels: {
-            color: '#000',
-            {% comment %} anchor: 'end',
-            align: 'start', {% endcomment %}
-            offset: -10,
-            {% comment %} borderWidth: 2,
-            borderColor: '#808080',
-            borderRadius: 50, {% endcomment %}
-            {% comment %} backgroundColor: (context) => {
-              return context.dataset.backgroundColor;
-            }, {% endcomment %}
-            font: {
-              weight: 'bold',
-              size: '10'
-            },
-            formatter: (value) => {
-              return value + '%';
-            }
-          }
-        }
-      }
-  });
-    }); 
-  </script>
- 
 
-</div>
+const ctx1 = document.getElementById('myChart1').getContext('2d');
+const myChart1 = new Chart(ctx1, {
+    type: 'pie',
+    data: {
+        labels: ['Captain', 'Major' , 'General'],
+        datasets: [{
+            label: '# of Rank Of Officer',
+            data: ['{{Captain}}', '{{male}}', '{{female}}'],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)',
+				'rgba(255, 99, 132, 1)',
+                
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+
+</script>
+
 {% endblock %}

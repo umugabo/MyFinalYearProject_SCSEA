@@ -24,8 +24,11 @@
       <li class="{% if 'CrimeList' in request.path %} nav-item active {% endif %}">
         <a class="nav-link" href="{% url 'CrimeList' %}">RIB Crimes</a>
       </li>
-      <li class="{% if 'QuestionList' in request.path %} nav-item active {% endif %}">
-        <a class="nav-link" href="{% url 'QuestionList' %}">RIB Questions</a>
+      <li class="{% if 'QuestionSuspList' in request.path %} nav-item active {% endif %}">
+        <a class="nav-link" href="{% url 'QuestionSuspList' %}">Suspect Questions</a>
+      </li>
+      <li class="{% if 'QuestionRepoList' in request.path %} nav-item active {% endif %}">
+        <a class="nav-link" href="{% url 'QuestionRepoList' %}">Witness Questions</a>
       </li>
       <li class="{% if 'AnswerList' in request.path %} nav-item active {% endif %}">
         <a class="nav-link" href="{% url 'AnswerList' %}">RIB Answers</a>

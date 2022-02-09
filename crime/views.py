@@ -8,16 +8,19 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import connection
 from django.http import HttpResponse
+from django.forms import inlineformset_factory
 from django .http import HttpResponse,JsonResponse
 from .models import *
 import datetime
+from django.db.models import Count
 from django.contrib import messages
 from .decorators import unauthenticated_user, allowed_users
-from .forms import CrimeForm,CAQSForm,AnswerForm,QuestionForm,StationUserForm,RibOfficerRegistrationForm,CaseForm,SuspectForm,EvidenceForm,RibstationForm,OfficerForm,ReporterForm,MurderQuestionaireForm,ViolentQuestionaireForm,RobberyQuestionaireForm
+from .forms import CrimeForm,CAQSForm,CAQWForm,AnswerForm,QuestionForm,QuestionRepoForm,StationUserForm,RibOfficerRegistrationForm,CaseForm,SuspectForm,EvidenceForm,RibstationForm,OfficerForm,ReporterForm
 import reportlab
 import io
 from django.http import FileResponse
 from reportlab.pdfgen import canvas
+
 
 # Create your views here.
 
@@ -208,7 +211,6 @@ def homeStation(request):
 def homeOfficer(request):
 	user = request.user
 	stationuser = StationUser.objects.get(user=user)
-	print(stationuser)
 	
 	cases = Case.objects.filter(stationuser=stationuser)
 	
@@ -312,7 +314,6 @@ def createCase(request):
 	ribstation = RIBStation.objects.get(user=user)
 	form = CaseForm()
 	if request.method == 'POST':
-		#print('Printing POST:', request.POST)
 		form = CaseForm(request.POST)
 		if form.is_valid():
 			case = form.save(commit=False)
@@ -351,9 +352,6 @@ def deleteCase(request, pk):
 def createSuspect(request, case_pk):
 	user = request.user
 	case = Case.objects.get(id=case_pk) 
-	
-	# ribstation = RIBStation.objects.get(user=user)
-
 	stationuser = StationUser.objects.get(user=user)
 
 	form = SuspectForm()
@@ -361,21 +359,18 @@ def createSuspect(request, case_pk):
 		form = SuspectForm(request.POST)
 		if form.is_valid():
 			suspect = form.save(commit=False)
-			# suspect.ribstation = ribstation
-			
 			suspect.stationuser = stationuser
-			# suspect.ribstation = ribstation
 			case.status = 'Studied'
 			case.save()
 			suspect.save()
-			
-			
 			case.suspects.add(suspect)
 			return redirect('home_Officer')
 
 	context = {'form':form, 'case':case}
 	return render(request, 'crime/StationOfficer/suspect_form.html', context)
 
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['StationUser'])
 def viewCaseSuspects(request, case_pk):
 
 	case = Case.objects.get(id=case_pk)
@@ -411,7 +406,7 @@ def createEvidence(request, suspect_pk):
 	suspect = Suspect.objects.get(id=suspect_pk)
 	form = EvidenceForm()
 	if request.method == 'POST':
-		#print('Printing POST:', request.POST)
+	
 		form = EvidenceForm(request.POST)
 		if form.is_valid():
 			evidence = form.save()
@@ -454,57 +449,43 @@ def reporterList(request):
     reporter = Reporter.objects.all()
     return render(request, 'crime/StationOfficer/reportertList.html', {'reporter':reporter})
 
-def createMurderForm(request):
-	form = MurderQuestionaireForm()
-	if request.method == 'POST':
-		form = MurderQuestionaireForm(request.POST)
-		if form.is_valid():
-			form.save()
-			return redirect('home_Officer')
-
-	context = {'form':form}
-	return render(request, 'crime/StationOfficer/MurderQuestionaireForm.html', context)
-
-def createViolentForm(request):
-	form = ViolentQuestionaireForm()
-	if request.method == 'POST':
-		form = ViolentQuestionaireForm(request.POST)
-		if form.is_valid():
-			form.save()
-			return redirect('home_Officer')
-
-	context = {'form':form}
-	return render(request, 'crime/StationOfficer/ViolentQuestionaireForm.html', context)
-
-def createRobberyForm(request):
-	form = RobberyQuestionaireForm()
-	if request.method == 'POST':
-		form = RobberyQuestionaireForm(request.POST)
-		if form.is_valid():
-			form.save()
-			return redirect('home_Officer')
-
-	context = {'form':form}
-	return render(request, 'crime/StationOfficer/RobberyQuestionaireForm.html', context)
-
 @login_required(login_url='login_view')
 @allowed_users(allowed_roles=['RIBHeadquarter'])
-def createQuestion(request):
+def createQuestionForSuspect(request):
 	form = QuestionForm()
 	if request.method == 'POST':
 		form = QuestionForm(request.POST)
 		if form.is_valid():
 			form.save()
-			return redirect('QuestionList')
+			return redirect('QuestionSuspList')
 
 	context = {'form':form}
 	return render(request, 'crime/RIBHQ/question_form.html', context)
 
 @login_required(login_url='login_view')
 @allowed_users(allowed_roles=['RIBHeadquarter'])
-def QuestionList(request):
-    questions = Question.objects.all()
+def createQuestionForReporter(request):
+	form = QuestionRepoForm()
+	if request.method == 'POST':
+		form = QuestionRepoForm(request.POST)
+		if form.is_valid():
+			form.save()
+			return redirect('QuestionRepoList')
+
+	context = {'form':form}
+	return render(request, 'crime/RIBHQ/questionForReporter.html', context)
+
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBHeadquarter'])
+def QuestionSuspList(request):
+    questions = QuestionSuspect.objects.all()
     return render(request, 'crime/RIBHQ/questionList.html', {'questions':questions})
+
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBHeadquarter'])
+def QuestionRepoList(request):
+    questions = QuestionReporter.objects.all()
+    return render(request, 'crime/RIBHQ/questionRepoList.html', {'questions':questions})
 
 @login_required(login_url='login_view')
 @allowed_users(allowed_roles=['RIBHeadquarter'])
@@ -526,22 +507,37 @@ def AnswerList(request):
     return render(request, 'crime/RIBHQ/answerList.html', {'answers':answers})
 
 def createCAQS(request, pk_suspect):
-
+	QuestionFormSet = inlineformset_factory(Suspect, CAQS, fields=('question', 'answer'), extra=3 )
 	suspect = Suspect.objects.get(id=pk_suspect)
-
-	form = CAQSForm()
+	formset = QuestionFormSet(queryset=CAQS.objects.none(),instance=suspect)
 	if request.method == 'POST':
-		form = CAQSForm(request.POST)
-		if form.is_valid():
-			form.save()
+		formset = QuestionFormSet(request.POST,instance=suspect)
+
+		if formset.is_valid():
+			formset.save()
 			return redirect('home_Officer')
 
-	context = {'form':form, 'suspect':suspect}
+	context = {'form':formset, 'suspect':suspect}
 	return render(request, 'crime/StationOfficer/cransquestsusp_Form.html', context)
 
 def CAQSList(request):
     quesans = CAQS.objects.all()
     return render(request, 'crime/StationOfficer/questAnsList.html', {'quesans':quesans})
+
+
+def createCAQW(request, pk_witness):
+	QuestionFormSet = inlineformset_factory(Reporter, CAQW, fields=('question', 'answer'), extra=3 )
+	reporter = Reporter.objects.get(id=pk_witness)
+	formset = QuestionFormSet(queryset=CAQW.objects.none(),instance=reporter)
+	if request.method == 'POST':
+		formset = QuestionFormSet(request.POST,instance=reporter)
+
+		if formset.is_valid():
+			formset.save()
+			return redirect('home_Officer')
+
+	context = {'form':formset, 'reporter':reporter}
+	return render(request, 'crime/StationOfficer/cransquestWitness_Form.html', context)
 
 
 @login_required(login_url='login_view')
@@ -586,6 +582,27 @@ def generalStatisticalReport(request):
     return render(request, 'crime/RIBHQ/GeneralReport.html', context)
 
 
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['StationUser'])
+def casesAnalyse(request):
+	user = request.user
+	stationuser = StationUser.objects.get(user=user)	
+	cases = Case.objects.filter(stationuser=stationuser, status='Studied')	
+	suspects = Suspect.objects.filter(stationuser=stationuser)
+	
+	context = {'cases':cases, 'suspects':suspects}
+	
+	return render(request, 'crime/StationOfficer/caselistAnalysis.html', context)
+
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['StationUser'])
+def analyseCaseSuspects(request, case_pk):
+
+	case = Case.objects.get(id=case_pk)
+	suspects = case.suspects.all()
+
+	context = {'suspects':suspects, 'case':case}
+	return render(request, 'crime/StationOfficer/caseSuspectsAnalysis.html', context)
 
 def some_view(request):
 	suspect = Suspect.objects.all()
@@ -607,16 +624,21 @@ def some_view(request):
     # present the option to save the file.
 	buffer.seek(0)
 	return FileResponse(buffer, as_attachment=True, filename='hello.pdf')
-
+#=========================================
+#A SECTION OF ALL REPORTS IMPLEMENTATION
+#========================================
 
 @login_required(login_url='login_view')
 @allowed_users(allowed_roles=['RIBHeadquarter'])
 def printSuspectsHQ(request):
+	user = request.user
+	rib_hq = RIBHeadquarter.objects.get(user=user)
+	ribLocation = rib_hq.province
 	template = get_template('crime/Reports/printSuspectsHQ.html')
 
 	suspects = Suspect.objects.all()
 
-	context = {'suspects':suspects}
+	context = {'suspects':suspects,'user':user,'rib_hq':rib_hq,'ribLocation':ribLocation}
 	html = template.render(context)
 	pdf= render_to_pdf('crime/Reports/printSuspectsHQ.html', context)
 	if pdf:
@@ -633,11 +655,14 @@ def printSuspectsHQ(request):
 @login_required(login_url='login_view')
 @allowed_users(allowed_roles=['RIBHeadquarter'])
 def printRIBStationHQ(request):
+	user = request.user
+	rib_hq = RIBHeadquarter.objects.get(user=user)
+	ribLocation = rib_hq.province
 	template = get_template('crime/Reports/printRIBStationHQ.html')
 
 	ribstations = RIBStation.objects.all()
 
-	context = {'ribstations':ribstations}
+	context = {'ribstations':ribstations,'user':user,'rib_hq':rib_hq,'ribLocation':ribLocation}
 	html = template.render(context)
 	pdf= render_to_pdf('crime/Reports/printRIBStationHQ.html', context)
 	if pdf:
@@ -654,11 +679,14 @@ def printRIBStationHQ(request):
 @login_required(login_url='login_view')
 @allowed_users(allowed_roles=['RIBHeadquarter'])
 def printOfficerHQ(request):
+	user = request.user
+	rib_hq = RIBHeadquarter.objects.get(user=user)
+	ribLocation = rib_hq.province
 	template = get_template('crime/Reports/printOfficersHQ.html')
 
 	officers = Officer.objects.all()
 
-	context = {'officers':officers}
+	context = {'officers':officers,'user':user,'rib_hq':rib_hq,'ribLocation':ribLocation}
 	html = template.render(context)
 	pdf= render_to_pdf('crime/Reports/printOfficersHQ.html', context)
 	if pdf:
@@ -676,11 +704,14 @@ def printOfficerHQ(request):
 @login_required(login_url='login_view')
 @allowed_users(allowed_roles=['RIBHeadquarter'])
 def printCasaesHQ(request):
+	user = request.user
+	rib_hq = RIBHeadquarter.objects.get(user=user)
+	ribLocation = rib_hq.province
 	template = get_template('crime/Reports/printcasesHQ.html')
 
 	cases = Case.objects.all()
 
-	context = {'cases':cases}
+	context = {'cases':cases,'user':user,'rib_hq':rib_hq,'ribLocation':ribLocation}
 	html = template.render(context)
 	pdf= render_to_pdf('crime/Reports/printcasesHQ.html', context)
 	if pdf:
@@ -698,11 +729,14 @@ def printCasaesHQ(request):
 @login_required(login_url='login_view')
 @allowed_users(allowed_roles=['RIBHeadquarter'])
 def printWitnessHQ(request):
+	user = request.user
+	rib_hq = RIBHeadquarter.objects.get(user=user)
+	ribLocation = rib_hq.province
 	template = get_template('crime/Reports/printwitnessHQ.html')
 
 	repoters = Reporter.objects.all()
 
-	context = {'repoters':repoters}
+	context = {'repoters':repoters,'user':user,'rib_hq':rib_hq,'ribLocation':ribLocation}
 	html = template.render(context)
 	pdf= render_to_pdf('crime/Reports/printwitnessHQ.html', context)
 	if pdf:
@@ -716,20 +750,56 @@ def printWitnessHQ(request):
 		return response
 		return HttpResponse*"Not found"
 
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['StationUser'])
+def printEvidence(request):
+	user = request.user
+	rib_user = StationUser.objects.get(user=user)
+
+	suspect = Suspect.objects.filter()
+	template = get_template('crime/Reports/printEvidence.html')
+
+	evidences = suspect.evidences.all()
+
+	context = {'suspect':suspect, 'evidences':evidences,'user':user,'rib_user':rib_user}
+	html = template.render(context)
+	pdf= render_to_pdf('crime/Reports/printEvidence.html', context)
+	if pdf:
+		response = HttpResponse(pdf, content_type='application/pdf')
+		file_name = "Evidence of Suspect"
+		content = "inline; filename='%s'" %(file_name)
+		download = request.GET.get("download")
+		if download:
+			content = "attachment; filename='%s'" %(file_name)
+		response['Content-Disposition'] = content
+		return response
+		return HttpResponse*"Not found"
 
 
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBHeadquarter'])
 def ribStationReport(request):
 
 	rib_stations = RIBStation.objects.all()
 	cases = Case.objects.all()
 	station_user = StationUser.objects.all()
-	context = {'rib_stations':rib_stations, 'cases':cases, 'station_user':station_user}
+	male= Suspect.objects.filter(gender='M').count()
+	female= Suspect.objects.filter(gender='F').count()
+	Captain = StationUser.objects.filter(rank = 'Captain').count()
+	Major = StationUser.objects.filter(rank = 'Major').count()
+	General = StationUser.objects.filter(rank = 'General').count()
+
+	context = {'rib_stations':rib_stations, 'cases':cases, 'station_user':station_user,
+	'male':male, 'female':female,'Captain':Captain, 'Major':Major, 'General':General}
 	return render(request, 'crime/Reports/RIBStationReport.html',context)
 
 
 @login_required(login_url='login_view')
 @allowed_users(allowed_roles=['RIBHeadquarter'])
 def caseReportFromRibstation(request):
+	user = request.user
+	rib_hq = RIBHeadquarter.objects.get(user=user)
+	ribLocation = rib_hq.province
 	template = get_template('crime/Reports/printCasePerStation.html')
 
 	try:
@@ -748,7 +818,7 @@ def caseReportFromRibstation(request):
 				print(cases)
 	
 
-	context = {'cases':cases}
+	context = {'cases':cases,'user':user,'rib_hq':rib_hq,'ribLocation':ribLocation}
 	html = template.render(context)
 	pdf= render_to_pdf('crime/Reports/printCasePerStation.html', context)
 	if pdf:
@@ -762,7 +832,8 @@ def caseReportFromRibstation(request):
 		return response
 		return HttpResponse*"Not found"
 
-
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBHeadquarter'])
 def ribSuspectReport(request):
 
 	rib_stations = RIBStation.objects.all()
@@ -774,12 +845,14 @@ def ribSuspectReport(request):
 @login_required(login_url='login_view')
 @allowed_users(allowed_roles=['RIBHeadquarter'])
 def suspectReportFromCase(request):
+	user = request.user
+	rib_hq = RIBHeadquarter.objects.get(user=user)
+	ribLocation = rib_hq.province
 	template = get_template('crime/Reports/printSuspectPerCase.html')
 
 	try:
 		station = request.GET.get('station')
-		case = request.GET.get('case')
-		
+		case = request.GET.get('case')		
 
 	except:
 		station = None
@@ -790,10 +863,9 @@ def suspectReportFromCase(request):
 				# case = Case.objects.filter(ribstation=station, id=case)
 				case = Case.objects.get(id=case, ribstation=station)
 				suspects = case.suspects.all()
-
 			
 
-	context = {'suspects':suspects}
+	context = {'suspects':suspects,'user':user,'rib_hq':rib_hq,'ribLocation':ribLocation}
 	html = template.render(context)
 	pdf= render_to_pdf('crime/Reports/printSuspectPerCase.html', context)
 	if pdf:
@@ -809,10 +881,14 @@ def suspectReportFromCase(request):
 
 
 
-
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBHeadquarter'])
 def ribCompareReport(request):
+	
 
 	rib_stations = RIBStation.objects.all()
+	case = Case.objects.all()
+	cases = Case.objects.all().count()
 	
 
 	context = {'rib_stations':rib_stations, 'cases':cases, 'suspects':suspects, 'evidences':evidences, 'witness':witness}
@@ -821,8 +897,16 @@ def ribCompareReport(request):
 @login_required(login_url='login_view')
 @allowed_users(allowed_roles=['RIBHeadquarter'])
 def compareTwoRibstation(request):
+	user = request.user
+	rib_hq = RIBHeadquarter.objects.get(user=user)
+	ribLocation = rib_hq.province
 	template = get_template('crime/Reports/printCompareRIBstation.html')
 
+	evidences_station1=0
+	evidences_station2=0
+	witness_station1=0
+	witness_station2=0
+	
 	try:
 		station1 = request.GET.get('station1')
 		station2 = request.GET.get('station2')
@@ -835,17 +919,62 @@ def compareTwoRibstation(request):
 	if station1:
 		if station2:
 			if crimetype:
+				suspects = Suspect.objects.all()
 				ribstation1 = RIBStation.objects.get(id=station1)
 				station1_name = ribstation1.station_name
 				
+				cases_station1 = Case.objects.filter(ribstation=ribstation1, crimeType=crimetype).count()
+				if cases_station1 == 0:
+					suspects_station1 = 0
+					if suspects_station1 == 0:
+						evidences_station1 = 0
+						witness_station1 = 0
+					
+
+
 				ribstation2 = RIBStation.objects.get(id=station2)
 				station2_name = ribstation2.station_name
-				cases_station1 = Case.objects.filter(ribstation=ribstation1, crimeType=crimetype).count()
+				
 				cases_station2 = Case.objects.filter(ribstation=ribstation2, crimeType=crimetype).count()
-			
+				if cases_station2 == 0:
+					suspects_station2 = 0
+					if suspects_station2 == 0:
+						evidence_station2 = 0
+						witness_station2 = 0
+					
+				cases_suspects1 = Case.objects.filter(ribstation=ribstation1, crimeType=crimetype)
+				cases_suspects2 = Case.objects.filter(ribstation=ribstation2, crimeType=crimetype)
+				
+				
+				
+				for case1 in cases_suspects1:
+					suspects_station1 = case1.suspects.all().count()
+					suspects_s1 = case1.suspects.all()
+
+					for suspect in suspects_s1:
+						evidences = suspect.evidences.all().count()
+						evidences_station1 = evidences_station1 + evidences
+						reporters = suspect.reporters.all().count()
+						witness_station1 = witness_station1 + reporters
+				
+				for case2 in cases_suspects2:
+					suspects_station2 = case2.suspects.all().count()
+					suspects_s2 = case2.suspects.all()
+
+					for suspect in suspects_s2:
+						evidences = suspect.evidences.all().count()
+						evidences_station2 = evidences_station2 + evidences
+						reporters = suspect.reporters.all().count()
+						witness_station2 = witness_station2 + reporters
+						
 
 	context = {'crimetype':crimetype, 'cases_station1':cases_station1, 'cases_station2': cases_station2,
-	 		  'station1_name':station1_name, 'station2_name':station2_name}
+	 		  'station1_name':station1_name, 'station2_name':station2_name, 
+			   'suspects_station1':suspects_station1, 'suspects_station2':suspects_station2,
+			  'evidences_station1':evidences_station1,'evidences_station2':evidences_station2,
+			  'witness_station1':witness_station1,'witness_station2':witness_station2,
+			  'user':user,'rib_hq':rib_hq,'ribLocation':ribLocation
+			   }
 	html = template.render(context)
 	pdf= render_to_pdf('crime/Reports/printCompareRIBstation.html', context)
 	if pdf:
@@ -858,3 +987,168 @@ def compareTwoRibstation(request):
 		response['Content-Disposition'] = content
 		return response
 		return HttpResponse*"Not found"
+
+
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBHeadquarter'])
+def printCaseInfo(request):
+	template = get_template('crime/Reports/printCaseStation.html')
+
+	cases = Case.objects.all()
+
+	context = {'cases':cases}
+	html = template.render(context)
+	pdf= render_to_pdf('crime/Reports/printCaseStation.html', context)
+	if pdf:
+		response = HttpResponse(pdf, content_type='application/pdf')
+		file_name = "All Cases List"
+		content = "inline; filename='%s'" %(file_name)
+		download = request.GET.get("download")
+		if download:
+			content = "attachment; filename='%s'" %(file_name)
+		response['Content-Disposition'] = content
+		return response
+		return HttpResponse*"Not found"
+
+
+
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBStation'])
+def stationStatReporting(request):
+
+	user = request.user
+	rib_station = RIBStation.objects.get(user=user)
+	cases = Case.objects.filter(ribstation=rib_station)
+
+	male= Suspect.objects.filter(ribstation=rib_station, gender='M').count()
+	female= Suspect.objects.filter(ribstation=rib_station, gender='F').count()
+	Captain = StationUser.objects.filter(ribstation=rib_station, rank = 'Captain').count()
+	Major = StationUser.objects.filter(ribstation=rib_station, rank = 'Major').count()
+	General = StationUser.objects.filter(ribstation=rib_station, rank = 'General').count()
+
+
+	context = {'cases':cases,
+	'male':male, 'female':female}
+	return render(request, 'crime/Reports/stationReporting.html',context)
+
+
+
+
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBStation'])
+def StationCaseInfo(request):
+	template = get_template('crime/Reports/printCaseStationInfo.html')
+	user = request.user
+	rib_station = RIBStation.objects.get(user=user)
+	ribLocation = rib_station.province
+	
+	try:	
+		case = request.GET.get('case')	
+	except:
+		
+		case = None		
+	
+	if case:	
+			case = Case.objects.filter(id=case)
+			
+	context = {'case':case,'user':user, 'ribLocation':ribLocation}
+	html = template.render(context)
+	pdf= render_to_pdf('crime/Reports/printCaseStationInfo.html', context)
+	if pdf:
+		response = HttpResponse(pdf, content_type='application/pdf')
+		file_name = "Case Information"
+		content = "inline; filename='%s'" %(file_name)
+		download = request.GET.get("download")
+		if download:
+			content = "attachment; filename='%s'" %(file_name)
+		response['Content-Disposition'] = content
+		return response
+		return HttpResponse*"Not found"
+
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBStation'])
+def CompareCaseSuspectReport(request):
+
+	user = request.user
+	rib_station = RIBStation.objects.get(user=user)
+	cases = Case.objects.filter(ribstation=rib_station)
+	
+	context = {'cases':cases} 
+	return render(request, 'crime/Reports/RIBStationReport.html',context)
+
+
+
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBStation'])
+def printSuspectsOnTwoCase(request):
+	
+	template = get_template('crime/Reports/printSuspectsOnTwoCase.html')
+	user = request.user
+	rib_station = RIBStation.objects.get(user=user)
+	ribLocation = rib_station.province
+	
+	try:
+		case1 = request.GET.get('case1')
+		case2 = request.GET.get('case2')
+	except:	
+		case1 = None
+		case2 = None
+
+	if case1:	
+		first_case = Case.objects.get(id=case1)
+		nameC1 = first_case.case_name
+		cases_suspects1 = first_case.suspects.all()
+		if case2:
+			second_case = Case.objects.get(id=case2)
+			nameC2 = second_case.case_name
+			cases_suspects2 = second_case.suspects.all()
+
+	context = {'cases_suspects1':cases_suspects1, 'cases_suspects2':cases_suspects2,
+				'nameC1':nameC1 ,'nameC2':nameC2, 'user':user,'ribLocation':ribLocation}
+	html = template.render(context)
+	pdf= render_to_pdf('crime/Reports/printSuspectsOnTwoCase.html', context)
+	if pdf:
+		response = HttpResponse(pdf, content_type='application/pdf')
+		file_name = "Suspect List on Two Cases"
+		content = "inline; filename='%s'" %(file_name)
+		download = request.GET.get("download")
+		if download:
+			content = "attachment; filename='%s'" %(file_name)
+		response['Content-Disposition'] = content
+		return response
+		return HttpResponse*"Not found"
+
+
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['StationUser'])
+def presentPrimarySuspect(request):
+	user = request.user
+	rib_user = StationUser.objects.get(user=user)
+	template = get_template('crime/Reports/printPrimarySuspect.html')
+
+	suspects = Suspect.objects.filter(stationuser=rib_user)
+
+	context = {'suspects':suspects,'user':user,'rib_user':rib_user}
+	html = template.render(context)
+	pdf= render_to_pdf('crime/Reports/printPrimarySuspect.html', context)
+	if pdf:
+		response = HttpResponse(pdf, content_type='application/pdf')
+		file_name = "Primary Suspests List"
+		content = "inline; filename='%s'" %(file_name)
+		download = request.GET.get("download")
+		if download:
+			content = "attachment; filename='%s'" %(file_name)
+		response['Content-Disposition'] = content
+		return response
+		return HttpResponse*"Not found"
+
+
+
+
+
+
+
+
+
+
+	

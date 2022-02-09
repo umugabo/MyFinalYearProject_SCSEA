@@ -10,9 +10,10 @@
 
 			<form action="" method="POST">
 				{% csrf_token %}
+				{{form.questionId|as_crispy_field}}
 				{{form.questionName|as_crispy_field}}
 				<center>
-				<a class="btn btn-warning" href="{% url 'QuestionList' %}">Cancel</a>
+				<a class="btn btn-warning" href="{% url 'QuestionSuspList' %}">Cancel</a>
 				<input type="submit" name="Submit" class="btn btn-info">
 			</form>
 

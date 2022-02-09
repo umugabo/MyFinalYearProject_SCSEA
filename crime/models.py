@@ -110,7 +110,7 @@ class Officer(models.Model):
 
 class Evidence(models.Model):
     evidenceCategory = models.CharField(max_length=15, choices=EVIDENCECATEGORY, default="Select Category")
-    evidence_note = models.CharField(max_length=255)
+    evidence_note = models.TextField(max_length=255)
     points =  models.CharField(max_length=10, blank=False)
     officerimage = models.ImageField(upload_to='images/', max_length=154, blank=True, null=True)
     
@@ -125,7 +125,6 @@ class Reporter(models.Model):
     phone =  models.CharField(max_length=10, blank=False)
     relation = models.CharField(max_length=30, blank=False)   
     vote = models.CharField(max_length=3, choices=VOTE)
-    # suspect = models.ForeignKey(Suspect, on_delete=models.CASCADE)
     note = models.TextField(max_length=100, blank=True)
     
   
@@ -164,7 +163,7 @@ class Suspect(models.Model):
     district = models.CharField(max_length=100, blank=True)
     cell = models.CharField(max_length=100, blank=True)
     village = models.CharField(max_length=100, blank=True)
-    note = models.CharField(max_length=150, blank=False)
+    note = models.TextField(max_length=150, blank=False)
     evidences = models.ManyToManyField(Evidence, blank=True, null=True)
     reporters = models.ManyToManyField(Reporter, blank=True, null=True)
     ribstation = models.ForeignKey(RIBStation, on_delete=models.CASCADE, null=True, blank=True)
@@ -191,9 +190,6 @@ class Case(models.Model):
 
 
 
-
-
-
 class Admin(models.Model):
     user = models.OneToOneField(User,null=True, on_delete=models.CASCADE)
     adminNationalId = models.CharField(max_length=16, blank=False)
@@ -217,95 +213,6 @@ class RIBHeadquarter(models.Model):
 
 
 
-
-
-class MurderQuestions(models.Model):
-    reporterNID = models.CharField(max_length=16, blank=False)
-    case = models.ForeignKey(Case, on_delete=models.CASCADE)
-    q1 = models.CharField(max_length=3, choices=VOTE) 
-    q2 = models.CharField(max_length=50, choices=WHERE)
-    q6 = models.CharField(max_length=3, choices=VOTE)
-    q3 = models.CharField(max_length=3, choices=VOTE)
-    q4 = models.CharField(max_length=3, choices=VOTE)
-    q5 = models.CharField(max_length=10, blank=False)
-    date_arrested = models.DateTimeField(auto_now_add=True,null=True) 
-    vote = models.CharField(max_length=3, choices=VOTE)  
-    q7 = models.CharField(max_length=3, choices=VOTE)
-    q8 = models.DateField()
-    q9 = models.CharField(max_length=100, blank=True) 
-    q10 = models.CharField(max_length=100, blank=True) 
-    q11 = models.CharField(max_length=3, choices=VOTE) 
-    q12 = models.CharField(max_length=10, blank=False)
-    q13 = models.CharField(max_length=100, choices=REASON) 
-    q14 = models.CharField(max_length=100, blank=True)
-    q15 = models.CharField(max_length=300, blank=True)
-    q16 = models.CharField(max_length=1, blank=True)
-    note = models.CharField(max_length=150, blank=False)
-    suspect = models.ForeignKey(Suspect, on_delete=models.CASCADE, null=True, blank=True)
-    
-  
-    def __str__(self):
-        return self.reporterNID 
-
-class ViolentQuestions(models.Model):
-    reporterNID = models.CharField(max_length=16, blank=False)
-    case = models.ForeignKey(Case, on_delete=models.CASCADE)
-    q1 = models.CharField(max_length=3, choices=VOTE) 
-    q2 = models.CharField(max_length=50, choices=WHERE)
-    q6 = models.CharField(max_length=3, choices=VOTE)
-    q3 = models.CharField(max_length=3, choices=VOTE)
-    q4 = models.CharField(max_length=3, choices=VOTE)
-    q5 = models.CharField(max_length=10, blank=False)
-    date_arrested = models.DateTimeField(auto_now_add=True,null=True) 
-    vote = models.CharField(max_length=3, choices=VOTE)  
-    q7 = models.CharField(max_length=3, choices=VOTE)
-    q8 = models.DateField()
-    q9 = models.CharField(max_length=100, blank=True) 
-    q10 = models.CharField(max_length=100, blank=True) 
-    q11 = models.CharField(max_length=3, choices=VOTE) 
-    q12 = models.CharField(max_length=10, blank=False)
-    q13 = models.CharField(max_length=100, choices=REASON) 
-    q14 = models.CharField(max_length=100, blank=True)
-    q15 = models.CharField(max_length=300, blank=True)
-    q16 = models.CharField(max_length=1, blank=True)
-    note = models.CharField(max_length=150, blank=False)
-    suspect = models.ForeignKey(Suspect, on_delete=models.CASCADE, null=True, blank=True)
-
-  
-    def __str__(self):
-        return self.reporterNID
-
-class RobberyQuestions(models.Model):
-    reporterNID = models.CharField(max_length=16, blank=False)
-    case = models.ForeignKey(Case, on_delete=models.CASCADE)
-    q1 = models.CharField(max_length=3, choices=VOTE) 
-    q2 = models.CharField(max_length=50, choices=WHERE)
-    q6 = models.CharField(max_length=3, choices=VOTE)
-    q3 = models.CharField(max_length=3, choices=VOTE)
-    q4 = models.CharField(max_length=3, choices=VOTE)
-    q5 = models.CharField(max_length=10, blank=False)
-    date_arrested = models.DateTimeField(auto_now_add=True,null=True) 
-    vote = models.CharField(max_length=3, choices=VOTE)  
-    q7 = models.CharField(max_length=3, choices=VOTE)
-    q8 = models.DateField()
-    q9 = models.CharField(max_length=100, blank=True) 
-    q10 = models.CharField(max_length=100, blank=True) 
-    q11 = models.CharField(max_length=3, choices=VOTE) 
-    q12 = models.CharField(max_length=10, blank=False)
-    q13 = models.CharField(max_length=100, choices=REASON) 
-    q14 = models.CharField(max_length=100, blank=True)
-    q15 = models.CharField(max_length=300, blank=True)
-    q16 = models.CharField(max_length=1, blank=True)
-    note = models.CharField(max_length=150, blank=False)
-    suspect = models.ForeignKey(Suspect, on_delete=models.CASCADE, null=True, blank=True)
-
-    
-  
-    def __str__(self):
-        return self.reporterNID
-
-
-
 class Crime(models.Model):
     
     crimeName = models.CharField(max_length=30, blank=False)
@@ -313,8 +220,9 @@ class Crime(models.Model):
     def __str__(self):
         return self.crimeName 
 
-class Question(models.Model):
-    
+class QuestionSuspect(models.Model):
+
+    questionId = models.CharField(max_length=4 ,null=True, blank=True)
     questionName = models.TextField(blank=False)
         
     def __str__(self):
@@ -329,11 +237,25 @@ class Answer(models.Model):
 
 class CAQS(models.Model):
     
-    crime = models.ForeignKey(Crime, on_delete=models.CASCADE, null=True, blank=True)
-    question = models.ForeignKey(Question, on_delete=models.CASCADE, null=True, blank=True)
+    question = models.ForeignKey(QuestionSuspect, on_delete=models.CASCADE, null=True, blank=True)
     suspect = models.ForeignKey(Suspect, on_delete=models.CASCADE, null=True, blank=True)
     answer = models.ForeignKey(Answer, on_delete=models.CASCADE, null=True, blank=True)
         
     # def __str__(self):
     #     return self.question
 
+class QuestionReporter(models.Model):
+    
+    questionId = models.CharField(max_length=4, null=True, blank=True)
+    questionName = models.TextField(blank=False)
+        
+    def __str__(self):
+        return self.questionName 
+
+class CAQW(models.Model):
+    witness = models.ForeignKey(Reporter, on_delete=models.CASCADE, null=True, blank=True)
+    question = models.ForeignKey(QuestionReporter, on_delete=models.CASCADE, null=True, blank=True)
+    answer = models.ForeignKey(Answer, on_delete=models.CASCADE, null=True, blank=True)
+
+# def __str__(self):
+    #     return self.question
