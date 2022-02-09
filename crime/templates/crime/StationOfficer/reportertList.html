@@ -1,5 +1,15 @@
 {%  extends 'crime/StationOfficer/mainOfficer.html' %}
 {% block content %}
+<!--Message line-->
+{% block myheader %}
+{% for message in messages %}
+<div class="alert alert-success">
+  <strong>Success!</strong> {{message}}.
+</div>    
+{% endfor %}
+{% endblock %}
+<!--End of Message line-->
+
 <h5>Crime Suspect Witness:</h5>
 <a class="btn btn-primary btn-sm btn-block" href="{% url 'create_reporter' %}">Add Reporter</a>
 <hr>

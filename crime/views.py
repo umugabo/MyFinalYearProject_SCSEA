@@ -236,6 +236,7 @@ def createRIBStation(request):
 		form = RibstationForm(request.POST)
 		if form.is_valid():
 			form.save()
+			messages.success(request, 'RIBStation has been created Successfully')
 			return redirect('home_Hq')
 
 	context = {'form':form}
@@ -254,6 +255,7 @@ def createStationName(request):
 		form = RibstationForm(request.POST)
 		if form.is_valid():
 			form.save()
+			messages.success(request, 'Station has been Created Successfully')
 			return redirect('home_HQ')
 
 	context = {'form':form}
@@ -269,6 +271,7 @@ def createOfficer(request):
 			stationUser = form.save(commit=False)
 			stationUser.ribstation = ribstation
 			stationUser.save(stationUser)
+			messages.success(request, 'RIB Officer has been created Successfully')
 			return redirect('home_Station')
 
 	context = {'form':form}
@@ -320,6 +323,7 @@ def createCase(request):
 			case.ribstation = ribstation
 			case.status = 'Pending'
 			case.save()
+			messages.success(request, 'Case has been Innitiated Successfully')
 			return redirect('home_Station')
 
 	context = {'form':form}
@@ -364,6 +368,7 @@ def createSuspect(request, case_pk):
 			case.save()
 			suspect.save()
 			case.suspects.add(suspect)
+			messages.success(request, 'Suspect has been Linked to case Successfully')
 			return redirect('home_Officer')
 
 	context = {'form':form, 'case':case}
@@ -411,6 +416,7 @@ def createEvidence(request, suspect_pk):
 		if form.is_valid():
 			evidence = form.save()
 			suspect.evidences.add(evidence)
+			messages.success(request, 'Evidence has been Linked Successfully')
 			return redirect('home_Officer')
 
 	context = {'form':form, 'suspect':suspect}
@@ -440,6 +446,7 @@ def createReporter(request, suspect_pk):
 		if form.is_valid():
 			reporter = form.save()
 			suspect.reporters.add(reporter)
+			messages.success(request, 'Witness has been Linked Successfully')
 			return redirect('home_Officer')
 
 	context = {'form':form, 'suspect':suspect}
@@ -457,6 +464,7 @@ def createQuestionForSuspect(request):
 		form = QuestionForm(request.POST)
 		if form.is_valid():
 			form.save()
+			messages.success(request, 'Question has been Posted Successfully')
 			return redirect('QuestionSuspList')
 
 	context = {'form':form}
@@ -495,6 +503,7 @@ def createAnswer(request):
 		form = AnswerForm(request.POST)
 		if form.is_valid():
 			form.save()
+			messages.success(request, 'Answer has been Posted Successfully')
 			return redirect('AnswerList')
 
 	context = {'form':form}
@@ -515,6 +524,7 @@ def createCAQS(request, pk_suspect):
 
 		if formset.is_valid():
 			formset.save()
+			messages.success(request, 'Questions have been Linked to Suspect Successfully')
 			return redirect('home_Officer')
 
 	context = {'form':formset, 'suspect':suspect}
@@ -534,6 +544,7 @@ def createCAQW(request, pk_witness):
 
 		if formset.is_valid():
 			formset.save()
+			messages.success(request, 'Qeustions has been Linked to Witness Successfully')
 			return redirect('home_Officer')
 
 	context = {'form':formset, 'reporter':reporter}
@@ -548,6 +559,7 @@ def createCrime(request):
 		form = CrimeForm(request.POST)
 		if form.is_valid():
 			form.save()
+			messages.success(request, 'Crime has been Created Successfully')
 			return redirect('CrimeList')
 
 	context = {'form':form}
