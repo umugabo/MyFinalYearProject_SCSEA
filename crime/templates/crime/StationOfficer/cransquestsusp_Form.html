@@ -6,7 +6,10 @@
 <div class="card card-body">
 			<form action="" method="POST">
 				{% csrf_token %}
-            	
+                <center>
+                    <a class="btn btn-warning" href="{% url 'home_Officer' %}">Cancel</a>
+                    <input type="submit" name="Submit" class="btn btn-info">           
+                    </center>
                     <div class="contain">
                         <div class="form-group">
                             {{ form.management_form }}

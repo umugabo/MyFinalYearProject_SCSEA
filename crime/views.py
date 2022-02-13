@@ -54,7 +54,7 @@ def register_ribofficer(request):
             StationUser.objects.create(
                 user=user,
             )
-            # messages.success(request, 'Hospital Agent has been successfully registered')
+            # messages.success(request, 'RIB Agent has been successfully registered')
             
             return redirect('createOfficer')
     
@@ -107,7 +107,7 @@ def login_view(request):
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
-            # log the user in
+            # log the allowed user in
             user = form.get_user()
             login(request, user)
             if RIBHeadquarter.objects.filter(user=user):
@@ -177,7 +177,7 @@ def homeHq(request):
 	'october': october, 'november': november, 'december': december,
 	'robbery_cases':robbery_cases, 'violent_cases':violent_cases, 'murder_cases':murder_cases
 	  }
-
+	messages.success(request, 'Logged In as RIB Headquater User')
 	return render(request, 'crime/RIBHQ/DashboardHq.html', context)
 
 
@@ -203,7 +203,7 @@ def homeStation(request):
 	context = {'cases':cases, 'suspects':suspects,
     'total_casess':total_cases,'finished':finished,'studied':studied,
     'pending':pending, 'page_obj':page_obj }
-	
+	messages.success(request, 'Logged In as RIBStation User')
 	return render(request, 'crime/RIBStation/DashboardStation.html', context)
 
 @login_required(login_url='login_view')
@@ -224,7 +224,7 @@ def homeOfficer(request):
 	context = {'cases':cases, 'suspects':suspects,
     'total_casess':total_cases,'finished':finished,
     'pending':pending,'studied':studied }
-	
+	messages.success(request, 'Logged In as Station Officer')
 	return render(request, 'crime/StationOfficer/DashboardOfficer.html', context)
 
 
@@ -516,7 +516,7 @@ def AnswerList(request):
     return render(request, 'crime/RIBHQ/answerList.html', {'answers':answers})
 
 def createCAQS(request, pk_suspect):
-	QuestionFormSet = inlineformset_factory(Suspect, CAQS, fields=('question', 'answer'), extra=3 )
+	QuestionFormSet = inlineformset_factory(Suspect, CAQS, fields=('question', 'answer'), extra=10 )
 	suspect = Suspect.objects.get(id=pk_suspect)
 	formset = QuestionFormSet(queryset=CAQS.objects.none(),instance=suspect)
 	if request.method == 'POST':

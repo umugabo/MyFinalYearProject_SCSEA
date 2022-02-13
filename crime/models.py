@@ -71,17 +71,17 @@ class Sector(models.Model):
     def __str__(self):
         return self.sect_name
 
-class Cell(models.Model):
-    cel_name = models.CharField(max_length=30)
+# class Cell(models.Model):
+#     cel_name = models.CharField(max_length=30)
     
-    def __str__(self):
-        return self.cel_name
+#     def __str__(self):
+#         return self.cel_name
 
-class Village(models.Model):
-    vil_name = models.CharField(max_length=30)
+# class Village(models.Model):
+#     vil_name = models.CharField(max_length=30)
     
-    def __str__(self):
-        return self.vil_name
+#     def __str__(self):
+#         return self.vil_name
 
 
 
