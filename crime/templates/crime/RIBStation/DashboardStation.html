@@ -16,13 +16,13 @@
 <table class="table table-sm">
 <tr>
 <th>CaseCode</th>
-<th>Victim</th>
+<th>Victim Name</th>
 <th>Phone</th>
 <th>Type</th>
 <th>Status</th>
-<th>Officer</th>
+<th>Officer Incharge</th>
 {% comment %} <th>Update</th> {% endcomment %}
-<th>Delete</th>
+<th>Send Request</th>
 {% comment %} <th>Add Suspect</th>
 <th>Suspects</th>  {% endcomment %}
 </tr>
@@ -36,7 +36,7 @@
 			<td>{{case.stationuser}}</td>
 			{% comment %} <td><a class="btn btn-sm btn-info" href="{% url 'update_case' case.id %}">Update</a></td> {% endcomment %}
 			{% comment %} Put this code inside to Delete{% url 'delete_case' case.id %} {% endcomment %}
-			<td><a class="btn btn-sm btn-danger" href="{% url 'errorDeleteCase' %}">Delete</a></td>
+			<td><a class="btn btn-sm btn-danger" href="{% url 'errorDeleteCase' %}">Request Delete</a></td>
 			
 			
 			

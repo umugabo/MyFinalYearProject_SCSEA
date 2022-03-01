@@ -113,10 +113,11 @@ class Evidence(models.Model):
     evidenceCategory = models.CharField(max_length=15, choices=EVIDENCECATEGORY, default="Select Category")
     evidence_note = models.TextField(max_length=255)
     points =  models.CharField(max_length=10, blank=False)
-    officerimage = models.ImageField(upload_to='images/', max_length=154, blank=True, null=True)
-    
+    # evidencerimage = models.ImageField(upload_to='images', blank=True, null=True)
+    evidencerimage = models.ImageField(default="profile1.png", null=True, blank=True)
     def __str__(self):
         return self.evidenceCategory
+        
 class Reporter(models.Model):
     reporterNID = models.CharField(max_length=16, unique=True, blank=False)
     f_name = models.CharField(max_length=30, blank=False)
@@ -172,6 +173,31 @@ class Suspect(models.Model):
   
     def __str__(self):
         return self.f_name  
+
+class SuspectCriminalRecord(models.Model):
+    suspectNID = models.CharField(max_length=16, unique=True, blank=False)
+    f_name = models.CharField(max_length=30, blank=False)
+    l_name = models.CharField(max_length=30, blank=False)
+    gender = models.CharField(max_length=1, choices=GENDER)
+    dob = models.DateField()
+    phone =  models.CharField(max_length=10, blank=False)
+    date_arrested = models.DateTimeField(auto_now_add=True,null=True) 
+    relation = models.CharField(max_length=30, blank=False)   
+    father_name = models.CharField(max_length=100, blank=True)
+    mother_name = models.CharField(max_length=100, blank=True)
+    province = models.CharField(max_length=100, blank=True)
+    district = models.CharField(max_length=100, blank=True)
+    cell = models.CharField(max_length=100, blank=True)
+    village = models.CharField(max_length=100, blank=True)
+    note = models.TextField(max_length=150, blank=False)
+    evidences = models.ManyToManyField(Evidence, blank=True, null=True)
+    reporters = models.ManyToManyField(Reporter, blank=True, null=True)
+    ribstation = models.ForeignKey(RIBStation, on_delete=models.CASCADE, null=True, blank=True)
+    stationuser = models.ForeignKey(StationUser, on_delete=models.CASCADE, null=True, blank=True)
+  
+    def __str__(self):
+        return self.f_name  
+
 
 class Crime(models.Model):
     

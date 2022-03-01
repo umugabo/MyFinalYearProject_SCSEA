@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import RIBHeadquarter,RIBStation,StationUser, Reporter, Crime ,  Answer, QuestionSuspect , QuestionReporter, CAQS,CAQW,Case, Officer, Evidence, Suspect, Admin, Sector , Province , District
+from .models import SuspectCriminalRecord, RIBHeadquarter,RIBStation,StationUser, Reporter, Crime ,  Answer, QuestionSuspect , QuestionReporter, CAQS,CAQW,Case, Officer, Evidence, Suspect, Admin, Sector , Province , District
 
 
 # Register your models here.
@@ -10,6 +10,7 @@ admin.site.register(Case),
 admin.site.register(Officer),
 admin.site.register(Evidence), 
 admin.site.register(Suspect),
+admin.site.register(SuspectCriminalRecord),
 admin.site.register(Admin), 
 admin.site.register(Reporter),
 admin.site.register(Province), 

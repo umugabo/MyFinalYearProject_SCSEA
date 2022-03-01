@@ -151,6 +151,8 @@ def homeHq(request):
 	cases_remera = Case.objects.filter(ribstation = 1).count()
 	cases_kicukiro = Case.objects.filter(ribstation = 2).count()
 	cases_rwezamenyo = Case.objects.filter(ribstation = 3).count()
+	cases_muhanga = Case.objects.filter(ribstation = 4).count()
+	cases_nyagatare = Case.objects.filter(ribstation = 5).count()
 
 	year = datetime.datetime.now().year
 
@@ -174,7 +176,8 @@ def homeHq(request):
 	context = {'cases':cases, 'suspects':suspects,'stations':stations,
 	'total_casess':total_cases,'finished':finished,'officers':officers,'studied':studied,
 	'pending':pending, 'cases_remera':cases_remera,'cases_kicukiro':cases_kicukiro, 
-	'cases_rwezamenyo': cases_rwezamenyo, 'january':january, 'february':february, 'march': march,
+	'cases_rwezamenyo': cases_rwezamenyo,'cases_muhanga': cases_muhanga,'cases_nyagatare': cases_nyagatare, 
+	'january':january, 'february':february, 'march': march,
 	'april': april, 'may': may, 'june': june, 'july': july, 'august': august, 'september':september, 
 	'october': october, 'november': november, 'december': december,
 	'robbery_cases':robbery_cases, 'violent_cases':violent_cases, 'murder_cases':murder_cases
@@ -228,6 +231,24 @@ def homeOfficer(request):
 	messages.success(request, 'Logged In as Station Officer')
 	return render(request, 'crime/StationOfficer/DashboardOfficer.html', context)
 
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['StationUser'])
+def crimeSuspect(request):
+	user = request.user
+	stationuser = StationUser.objects.get(user=user)
+	
+	cases = Case.objects.filter(stationuser=stationuser)
+	
+	suspects = Suspect.objects.filter(stationuser=stationuser)
+	total_suspects = suspects.count()
+	total_cases = cases.count()
+	finished = cases.filter(status='Finished').count()
+	pending = cases.filter(status='Pending').count()
+	studied = cases.filter(status='Studied').count()
+	context = {'cases':cases, 'suspects':suspects,
+    'total_suspects':total_suspects,'finished':finished,
+    'pending':pending,'studied':studied }
+	return render(request, 'crime/StationOfficer/case_suspect.html', context)
 
 @login_required(login_url='login_view')
 @allowed_users(allowed_roles=['RIBHeadquarter'])
@@ -381,8 +402,8 @@ def createSuspect(request, case_pk):
 			case.save()
 			suspect.save()
 			case.suspects.add(suspect)
-			messages.success(request, 'Suspect has been Linked to case Successfully')
-			return redirect('home_Officer')
+			messages.success(request, 'Suspect has been Linked to case The Successfully')
+			return redirect('crimeSuspect')
 
 	context = {'form':form, 'case':case}
 	return render(request, 'crime/StationOfficer/suspect_form.html', context)
@@ -425,7 +446,7 @@ def createEvidence(request, suspect_pk):
 	form = EvidenceForm()
 	if request.method == 'POST':
 	
-		form = EvidenceForm(request.POST)
+		form = EvidenceForm(request.POST, request.FILES)
 		if form.is_valid():
 			evidence = form.save()
 			suspect.evidences.add(evidence)

@@ -10,6 +10,8 @@ from django.contrib import admin
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from crime.views import login
+from django.conf import settings
+from django.conf.urls.static import static
 urlpatterns = [
     path('', views.index, name="index"),
     path('login_view/', views.login_view, name="login_view"),
@@ -37,6 +39,7 @@ urlpatterns = [
     path('create_suspect/<str:case_pk>/', views.createSuspect, name="create_suspect"),
     path('suspectList/', views.suspectList, name="suspectList"),
     path('criminalRecord/', views.criminalRecord, name="criminalRecord"),
+    path('crimeSuspect/', views.crimeSuspect, name="crimeSuspect"),
     path('update_suspect/<str:case_pk>/', views.updateSuspect, name="update_suspect"),
     path('delete_suspect/<str:case_pk>/', views.deleteSuspect, name="delete_suspect"),
     path('create_evidence/<str:suspect_pk>/', views.createEvidence, name="create_evidence"),
@@ -84,3 +87,6 @@ urlpatterns = [
 
 
  ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)

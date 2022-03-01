@@ -9,6 +9,7 @@
 {% endblock styles %}
 
  <img src="{% static 'images/RIB_Banner_final.gif' %}"alt="logo" height="110" width="1350">
+ <center><b>{% now "jS F Y H:i" %}</b></center>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,6 +46,7 @@
           <a class="dropdown-item" href="{% url 'createRobberyForm' %}">Robbery Form</a>
         </div> {% endcomment %}
          </div>
+         
          <ul class="list-unstyled CTAs">
        {% csrf_token%}
         <a href="{% url 'logout' %}" style="background-color: #7CFC00 " class="btn btn-primary btn-block mt-5" >LOGOUT {{request.user}}</a>

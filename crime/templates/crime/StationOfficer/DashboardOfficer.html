@@ -47,41 +47,5 @@
 </table>
 </div>
 </div>
-
-
-
-<h5>Crime Suspect of all case:</h5>
-<hr>
-<div class="card card-body">
-{% comment %} <a class="btn btn-primary btn-sm btn-block" href="{% url 'create_suspect' %}">Add Suspect
-</a> {% endcomment %}
-<table class="table table-sm">
-<tr>
-<th>Identification</th>
-<th>Name</th>
-<th>Phone</th>
-<th>Date Arrested</th>
-<th>Details of the Case</th>
-<th>Relation</th>
-<th>View</th>
-
-</tr>
-{% for suspect in suspects %}
-					<tr>
-						<td>{{suspect.suspectNID}}</td>
-						<td>{{suspect.f_name}}</td>
-						<td>{{suspect.phone}}</td>
-						<td>{{suspect.date_arrested}}</td>
-						<td>{{suspect.note}}</td>
-						<td>{{suspect.relation}}</td>
-						<td><a class="btn btn-sm btn-info" href="{% url 'suspect' suspect.id %}">View</a></td>
-						
-
-					</tr>
-				{% endfor %}
-</table>
-
-</div>
-
 {% endblock %}
    

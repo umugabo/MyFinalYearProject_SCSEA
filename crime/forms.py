@@ -4,7 +4,7 @@ from datetime import date
 import datetime
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Crime,CAQS,CAQW,Answer,QuestionSuspect,QuestionReporter,StationUser, Case,Suspect,Evidence,RIBStation,Officer,Reporter
+from .models import SuspectCriminalRecord,Crime,CAQS,CAQW,Answer,QuestionSuspect,QuestionReporter,StationUser, Case,Suspect,Evidence,RIBStation,Officer,Reporter
 
 
 class RibOfficerRegistrationForm(UserCreationForm):
@@ -90,6 +90,7 @@ class RibstationForm(forms.ModelForm):
 
 class SuspectForm(forms.ModelForm):
     class Meta:
+        model = SuspectCriminalRecord
         model = Suspect
         # fields = '__all__'
         fields = ('suspectNID','f_name','l_name','gender','dob','phone','relation','father_name','mother_name','province','district','cell','village','ribstation','note')
@@ -114,10 +115,10 @@ class SuspectForm(forms.ModelForm):
 class EvidenceForm(forms.ModelForm):
     class Meta:
         model = Evidence
-        fields = ('evidenceCategory','evidence_note','officerimage','points')
+        fields = ('evidenceCategory','evidence_note','evidencerimage','points')
         labels = {
             'evidenceCategory':'Evidence Category',
-            'officerimage':'Evidence Photo',
+            'evidencerimage':'Evidence Photo',
             'points':'Points Gainned',
             'evidence_note':'Short note',
             }

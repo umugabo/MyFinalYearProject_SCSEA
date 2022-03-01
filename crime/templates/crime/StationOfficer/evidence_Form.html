@@ -1,5 +1,4 @@
 {%  extends 'crime/StationOfficer/mainOfficer.html' %}
-
 {% load crispy_forms_tags %}
 {% load static %}
 {% block content %}
@@ -32,20 +31,20 @@
 	<div class="col-md-12">
 		<div class="card card-body">
             
-			<form action="" method="POST">
+			<form action="" method="POST" enctype="multipart/form-data">
 				{% csrf_token %}
 				<div class="contain">
 				{{form.evidenceCategory|as_crispy_field}}			
 				{{form.points|as_crispy_field}}
-				{{form.officerimage|as_crispy_field}}
+				{{form.evidencerimage|as_crispy_field}}
 				{{form.evidence_note|as_crispy_field}}	
-			
+				
 				
 				<center>
 				<a class="btn btn-warning" href="{% url 'evidence' %}">Cancel</a>
 				<input type="submit" name="Submit" class="btn btn-info"></div>
 			</form>
-
+		
 		</div>
 	</div>
 </div>
