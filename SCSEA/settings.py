@@ -80,12 +80,12 @@ WSGI_APPLICATION = 'SCSEA.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.db.backends.mysql',
         'NAME': 'scsea_db',
-        'USER': 'postgres',
-        'PASSWORD': 'mgb',
-        'HOST': 'localhost',
-        'PORT': '5432'
+        'USER': 'Edison',
+        'PASSWORD': 'lewandowiski',
+        'HOST': '127.0.0.1',
+        'PORT': '3306'
     }
 }
 
