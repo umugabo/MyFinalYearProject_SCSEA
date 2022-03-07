@@ -27,6 +27,7 @@ CRIMETYPE = [
     ("Robbery", "Robbery"),
     ("Violent", "Violent"),
     ("Murder", "Murder"),
+    # ("Cyber", "Cyber"),
     ]
 STATUS = [
     ("Pending", "Pending"),
@@ -117,7 +118,7 @@ class Evidence(models.Model):
     def __str__(self):
         return self.evidenceCategory
 class Reporter(models.Model):
-    reporterNID = models.CharField(max_length=16, blank=False)
+    reporterNID = models.CharField(max_length=16, unique=True, blank=False)
     f_name = models.CharField(max_length=30, blank=False)
     l_name = models.CharField(max_length=30, blank=False)
     gender = models.CharField(max_length=1, choices=GENDER)
@@ -149,7 +150,7 @@ class StationUser(models.Model):
         return self.f_name 
 
 class Suspect(models.Model):
-    suspectNID = models.CharField(max_length=16, blank=False)
+    suspectNID = models.CharField(max_length=16, unique=True, blank=False)
     f_name = models.CharField(max_length=30, blank=False)
     l_name = models.CharField(max_length=30, blank=False)
     gender = models.CharField(max_length=1, choices=GENDER)
@@ -172,13 +173,22 @@ class Suspect(models.Model):
     def __str__(self):
         return self.f_name  
 
+class Crime(models.Model):
+    
+    crimeName = models.CharField(max_length=30, blank=False)
+        
+    def __str__(self):
+        return self.crimeName 
+
+
 class Case(models.Model):
     case_name = models.CharField(max_length=7)
     victim_name = models.CharField(max_length=90, blank=True, null=True)
+    victim_age = models.DateField(blank=True, null=True)
     reporter_name = models.CharField(max_length=90, blank=True, null=True)
     reporter_phone = models.CharField(max_length=10, blank=True, null=True)
     victim_address = models.CharField(max_length=90, blank=True, null=True)
-    crimeType = models.CharField(max_length=15, choices=CRIMETYPE, default="Select Crime")
+    crimeType = models.CharField(max_length=30,null=True, choices=CRIMETYPE)
     case_desc = models.TextField()
     stationuser = models.ForeignKey(StationUser, on_delete=models.CASCADE, null=True, blank=True)
     suspects = models.ManyToManyField(Suspect, blank=True, null=True)
@@ -212,17 +222,9 @@ class RIBHeadquarter(models.Model):
         return self.station_name  
 
 
-
-class Crime(models.Model):
-    
-    crimeName = models.CharField(max_length=30, blank=False)
-        
-    def __str__(self):
-        return self.crimeName 
-
 class QuestionSuspect(models.Model):
 
-    questionId = models.CharField(max_length=4 ,null=True, blank=True)
+    questionId = models.CharField(max_length=4 ,null=True, unique=True, blank=True)
     questionName = models.TextField(blank=False)
         
     def __str__(self):
@@ -246,7 +248,7 @@ class CAQS(models.Model):
 
 class QuestionReporter(models.Model):
     
-    questionId = models.CharField(max_length=4, null=True, blank=True)
+    questionId = models.CharField(max_length=4, null=True, unique=True, blank=True)
     questionName = models.TextField(blank=False)
         
     def __str__(self):

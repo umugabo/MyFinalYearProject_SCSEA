@@ -20,6 +20,7 @@ import reportlab
 import io
 from django.http import FileResponse
 from reportlab.pdfgen import canvas
+from .filters import SuspectFilter
 
 
 # Create your views here.
@@ -100,6 +101,7 @@ def registerPage(request):
 def index(request):
 	
 	context = {}
+	messages.success(request, 'Welcome To SCSEA System')
 	return render(request, 'crime/index.html', context)	
 
 @unauthenticated_user
@@ -216,7 +218,6 @@ def homeOfficer(request):
 	
 	suspects = Suspect.objects.filter(stationuser=stationuser)
 	total_suspects = suspects.count()
-	print(total_suspects)
 	total_cases = cases.count()
 	finished = cases.filter(status='Finished').count()
 	pending = cases.filter(status='Pending').count()
@@ -312,6 +313,18 @@ def suspectList(request):
     suspect = Suspect.objects.all()
     return render(request, 'crime/StationOfficer/suspectList.html', {'suspect':suspect})
 
+def criminalRecord(request):
+	# case = Case.objects.get(id=case_pk)
+	# suspects = case.suspects.all()
+	suspects = Suspect.objects.all()
+	myFilter = SuspectFilter(request.GET, queryset=suspects)
+	suspects = myFilter.qs 
+    
+	context = {'suspects':suspects,
+	'myFilter':myFilter}
+	return render(request, 'crime/RIBHQ/criminalRecordList.html', context)
+    
+
 def createCase(request):
 	user = request.user
 	ribstation = RIBStation.objects.get(user=user)
@@ -324,7 +337,7 @@ def createCase(request):
 			case.status = 'Pending'
 			case.save()
 			messages.success(request, 'Case has been Innitiated Successfully')
-			return redirect('home_Station')
+			return redirect('caseList')
 
 	context = {'form':form}
 	return render(request, 'crime/RIBStation/case_form.html', context)
@@ -582,14 +595,7 @@ def generalStatisticalReport(request):
     stations = RIBStation.objects.all()
     suspects = Suspect.objects.all()
     reporters = Reporter.objects.all()
-	
-  
-
-    # cursor = connection.cursor()
-    # male_female = "select sum(case when gender='M' then 1 else 0 end) as male_count,sum(case when gender='F' then 1 else 0 end) as female_count, sum(case when physical_disability='YES' then 1 else 0 end) as disability_count,sum(case when physical_disability='NO' then 1 else 0 end) as no_disability_count, count(*) as n_students from student_student inner join student_classe on student_classe.id=student_student.classe_id inner join student_school on student_school.id=student_classe.school_id where student_student.year_reg=%s and student_school.id=%s" %(year, stations.id)
-    # cursor.execute(male_female)
-    
-    
+ 
     context = {'stations':stations,'cases':cases,'suspects':suspects,'officers':officers,'reporters':reporters}
     return render(request, 'crime/RIBHQ/GeneralReport.html', context)
 
@@ -618,24 +624,14 @@ def analyseCaseSuspects(request, case_pk):
 
 def some_view(request):
 	suspect = Suspect.objects.all()
-	
-    # Create a file-like buffer to receive PDF data.
 	buffer = io.BytesIO()
-
-    # Create the PDF object, using the buffer as its "file."
 	p = canvas.Canvas(buffer)
-    # Draw things on the PDF. Here's where the PDF generation happens.
-    # See the ReportLab documentation for the full list of functionality.
 	p.drawString(100, 100, "This is the Evidence of Suspect,.")
-	# s.drawString(100, 100, "{{suspect}}")
-    # Close the PDF object cleanly, and we're done.
 	p.showPage()
 	p.save()
-
-    # FileResponse sets the Content-Disposition header so that browsers
-    # present the option to save the file.
 	buffer.seek(0)
 	return FileResponse(buffer, as_attachment=True, filename='hello.pdf')
+	
 #=========================================
 #A SECTION OF ALL REPORTS IMPLEMENTATION
 #========================================
@@ -827,7 +823,7 @@ def caseReportFromRibstation(request):
 		if case:
 			if officer:
 				cases = Case.objects.filter(ribstation=station, id=case, stationuser=officer)
-				print(cases)
+				
 	
 
 	context = {'cases':cases,'user':user,'rib_hq':rib_hq,'ribLocation':ribLocation}
@@ -1153,6 +1149,18 @@ def presentPrimarySuspect(request):
 		response['Content-Disposition'] = content
 		return response
 		return HttpResponse*"Not found"
+
+
+def ajaxSearch(request):
+    if 'term' in request.GET:
+        qs = Suspect.objects.filter(f_name__icontains=request.GET.get('term'))
+        qs = Suspect.objects.filter(f_name__istartswith=request.GET.get('term'))
+        f_name = list()
+        for susp in qs:
+            f_name.append(susp.f_name)
+        return JsonResponse(f_name, safe=False)
+    context = {}
+    return render(request, 'ajaxSuspectForm.html', context)
 
 
 

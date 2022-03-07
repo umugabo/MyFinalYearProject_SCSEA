@@ -185,6 +185,10 @@ class QuestionForm(forms.ModelForm):
             'questionId': 'Id of the Question',
             'questionName':'Describe the Question To Be Asked Suspects',
             }
+        widgets = {
+            'questionId': forms.TextInput(attrs={'value':'VIO'}),
+            'questionName': forms.Textarea(attrs={'placeholder':'Question To be asked'})
+        }
 
 class QuestionRepoForm(forms.ModelForm):
     class Meta:

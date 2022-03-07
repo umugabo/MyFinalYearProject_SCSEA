@@ -36,6 +36,7 @@ urlpatterns = [
     path('delete_case/<str:pk>/', views.deleteCase, name="delete_case"),
     path('create_suspect/<str:case_pk>/', views.createSuspect, name="create_suspect"),
     path('suspectList/', views.suspectList, name="suspectList"),
+    path('criminalRecord/', views.criminalRecord, name="criminalRecord"),
     path('update_suspect/<str:case_pk>/', views.updateSuspect, name="update_suspect"),
     path('delete_suspect/<str:case_pk>/', views.deleteSuspect, name="delete_suspect"),
     path('create_evidence/<str:suspect_pk>/', views.createEvidence, name="create_evidence"),

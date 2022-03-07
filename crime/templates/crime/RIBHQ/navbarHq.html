@@ -36,12 +36,13 @@
       <li class="{% if 'generalStatisticalReport' in request.path %} nav-item active {% endif %}">
         <a class="nav-link" href="{% url 'generalStatisticalReport' %}">General Report</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="">Officer</a>
-      </li>
+    
       <li class="{% if 'ribStationReport' in request.path %} nav-item active {% endif %}">
-        <a class="nav-link" href="{% url 'ribStationReport' %}">Reports</a>
-      </li>             
+        <a class="nav-link" href="{% url 'ribStationReport' %}">Statistical Reports</a>
+      </li>   
+      <li class="{% if 'criminalRecord' in request.path %} nav-item active {% endif %}">
+        <a class="nav-link" href="{% url 'criminalRecord' %}">Criminal Record Reports</a>
+      </li>           
   </div>
   
    <ul class="list-unstyled CTAs">

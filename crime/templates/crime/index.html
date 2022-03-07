@@ -7,9 +7,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WelcomePage</title>
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/></head>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <!-- style css -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <!-- responsive-->
+    <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+    <!-- awesome fontfamily -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
     <script src="{% static 'js/jquery-1.11.1.min.js' %}"></script>
 </head>
 <body>
+
+  {% comment %} <!-- loader  -->
+<div class="loader_bg">
+  <div class="loader"><img src="{% static 'images/loading.gif' %}" /></div>
+</div>
+<!-- end loader -->  
+<div id="mySidepanel" class="sidepanel"> {% endcomment %}
     <div class="container"><br>
     <h4 align="center">WELCOME TO SMART CRIME SCENE EVIDENCES ANALYSIS (SCSEA)</h4>
     <a href="{% url 'login_view' %}" style="background-color: white-blue" class="btn btn-primary btn-block mt-1" >LOGIN </a>
@@ -24,19 +41,10 @@
 
            <ul class="navbar-nav">
             <li class="nav-item">
-                
-         
-        {% comment %} <a href="{% url 'login_view' %}" style="background-color: white-blue" class="btn btn-primary btn-block mt-5" >LOGIN {{request.user}}</a> {% endcomment %}
-      
-    
-            
-                <!-- <button class="btn btn-sm btn-primary">Login</button> -->
            
         </div>
       </nav>
-    
-
-   
+       
         <div id="demo" class="carousel slide" data-ride="carousel">
   
             <ul class="carousel-indicators">
@@ -78,5 +86,16 @@
     <script src="{% static 'js/jquery-3.5.1.slim.min.js' %}" crossorigin="anonymous"></script>
     <script src="{% static 'js/popper.min.js' %}" crossorigin="anonymous"></script>
     <script src="{% static 'js/bootstrap.min.js' %}" crossorigin="anonymous"></script>
+    <script src="{% static 'js/jquery.min.js "></script>
+    <script src="{% static 'js/bootstrap.bundle.min.js ' %}"></script>
+    <script src="{% static 'js/jquery-3.0.0.min.js ' %}"></script>
+    <script src="{% static 'js/custom.js ' %}"></script>
+    <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+<script>
+   {% for message in messages %}
+   alertify.set('notifier','position', 'top-center');
+   alertify.success('{{message}}');
+   {% endfor %}
+</script>
 </body>
 </html>
