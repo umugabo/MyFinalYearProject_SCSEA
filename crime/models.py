@@ -9,6 +9,12 @@ GENDER = [
     ("F", "FEMALE"),
 ]
 
+SUSPECTSTATUS = [
+    ("Free of Crime", "free"),
+    ("Middle", "middle"),
+    ("Primary Suspect", "primary_suspect"),
+]
+
 LEVEL_CHOICES = [
     ('Easy', 'Easy'),
     ('Middle', 'Middle'),
@@ -170,6 +176,7 @@ class Suspect(models.Model):
     mother_name = models.CharField(max_length=100, blank=True)
     crime_rate = models.FloatField(default=0) # over 50 marks
     evidence_rate = models.FloatField(default=0) # over 50 marks
+    suspect_status = models.CharField(max_length=100, blank=False,choices=SUSPECTSTATUS, default='free')
     province = models.CharField(max_length=100, blank=True)
     district = models.CharField(max_length=100, blank=True)
     cell = models.CharField(max_length=100, blank=True)

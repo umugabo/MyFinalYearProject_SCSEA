@@ -21,6 +21,7 @@ import io
 from django.http import FileResponse
 from reportlab.pdfgen import canvas
 from .filters import SuspectFilter
+from collections import Counter
 
 
 # Create your views here.
@@ -448,8 +449,58 @@ def createEvidence(request, suspect_pk):
 	
 		form = EvidenceForm(request.POST, request.FILES)
 		if form.is_valid():
+			# print(str(form.cleaned_data['level']))
+			if str(form.cleaned_data['level'])  == 'Easy' :
+				Suspect.objects.filter(id=suspect_pk).update(evidence_rate=20.0)
+			if str(form.cleaned_data['level'])  == 'Middle' :
+				Suspect.objects.filter(id=suspect_pk).update(evidence_rate=30.0)
+			if str(form.cleaned_data['level'])  == 'Difficult' :
+				Suspect.objects.filter(id=suspect_pk).update(evidence_rate=50.0)
+
 			evidence = form.save()
 			suspect.evidences.add(evidence)
+
+			"""
+			implement calculation to add status of primary suspect after 
+			some calculations
+			"""
+			suspect_rate_total = 0
+			evidence_rate_total = 0
+
+			suspects_rates = Suspect.objects.filter(id=suspect_pk).values_list('crime_rate',flat=True)[0]
+			evidences_rates = Suspect.objects.filter(id=suspect_pk).values_list('evidence_rate',flat=True)[0]
+
+			for suspect_rate in suspects_rates :
+				suspect_rate_total = suspect_rate_total + suspect_rate
+
+			for evidence_rate in evidences_rates :
+				evidence_rate_total = evidence_rate_total + evidence_rate
+
+
+			"""
+			Calcualte the total of evidences rate over 50 plus the 
+			rate of suspect answers rate over 50
+			"""
+			total_rate = suspect_rate_total + evidence_rate_total
+			
+			suspect_for_update = Suspect.objects.filter(id=suspect_pk)
+
+			if total_rate >= 75:
+				# implement changing status to primary suspect here
+				print("primary suspect")
+				suspect_for_update.update(suspect_status='primary_suspect')
+			elif total_rate >=50 and total_rate < 75 :
+				#implement status middle status continue investigation
+				print("Continue investigation to suspect")
+				suspect_for_update.update(suspect_status='middle')
+			else:
+				# implement Free
+				print("the suspect is free")
+				suspect_for_update.update(suspect_status='free')
+
+
+
+
 			messages.success(request, 'Evidence has been Linked Successfully')
 			return redirect('home_Officer')
 
@@ -549,18 +600,35 @@ def AnswerList(request):
     answers = Answer.objects.all()
     return render(request, 'crime/RIBHQ/answerList.html', {'answers':answers})
 
+
+
 def createCAQS(request, pk_suspect):
-	QuestionFormSet = inlineformset_factory(Suspect, CAQS, fields=('question', 'answer'), extra=10 )
+	questions = QuestionSuspect.objects.all()
+	QuestionFormSet = inlineformset_factory(Suspect, CAQS, fields=('question', 'answer'), extra=questions.count() )
 	suspect = Suspect.objects.get(id=pk_suspect)
 	formset = QuestionFormSet(queryset=CAQS.objects.none(),instance=suspect)
 	if request.method == 'POST':
 		formset = QuestionFormSet(request.POST,instance=suspect)
 
-		if formset.is_valid():
-			formset.save()
-			messages.success(request, 'Questions have been Linked to Suspect Successfully')
-			return redirect('home_Officer')
+		if formset.is_valid():	
+			count=0
+			for form in formset:
+				if str(form.cleaned_data['answer']) == "yes":
+					count+=1
+					form.save()
 
+			"""
+			  calculate the rate over 50 of from suspect answers
+			  find the average based on lenght of questions.
+			  and return the rate of Yes ones. means total marks will be
+			  calculated out of 50.
+			"""
+			rate = 50 * float(count)/float(questions.count())
+			Suspect.objects.filter(id=pk_suspect).update(crime_rate=rate)
+			
+			messages.success(request, 'Questions have been Linked to Suspect Successfully')
+			return redirect('home_Officer')	
+	
 	context = {'form':formset, 'suspect':suspect}
 	return render(request, 'crime/StationOfficer/cransquestsusp_Form.html', context)
 
