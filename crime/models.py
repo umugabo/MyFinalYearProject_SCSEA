@@ -9,6 +9,12 @@ GENDER = [
     ("F", "FEMALE"),
 ]
 
+LEVEL_CHOICES = [
+    ('Easy', 'Easy'),
+    ('Middle', 'Middle'),
+    ('Difficult', 'Difficult'),
+    ]
+
 EVIDENCECATEGORY = [
     ("Physical", "Physical"),
     ("Logical", "Logical"),
@@ -110,13 +116,14 @@ class Officer(models.Model):
         return self.f_name 
 
 class Evidence(models.Model):
+    title =  models.CharField(max_length=100, blank=False, null=False, default='')
     evidenceCategory = models.CharField(max_length=15, choices=EVIDENCECATEGORY, default="Select Category")
     evidence_note = models.TextField(max_length=255)
-    points =  models.CharField(max_length=10, blank=False)
+    level =  models.CharField(max_length=30, blank=False, choices=LEVEL_CHOICES, default='')
     # evidencerimage = models.ImageField(upload_to='images', blank=True, null=True)
     evidencerimage = models.ImageField(default="profile1.png", null=True, blank=True)
     def __str__(self):
-        return self.evidenceCategory
+        return self.title
         
 class Reporter(models.Model):
     reporterNID = models.CharField(max_length=16, unique=True, blank=False)
@@ -161,6 +168,8 @@ class Suspect(models.Model):
     relation = models.CharField(max_length=30, blank=False)   
     father_name = models.CharField(max_length=100, blank=True)
     mother_name = models.CharField(max_length=100, blank=True)
+    crime_rate = models.FloatField(default=0) # over 50 marks
+    evidence_rate = models.FloatField(default=0) # over 50 marks
     province = models.CharField(max_length=100, blank=True)
     district = models.CharField(max_length=100, blank=True)
     cell = models.CharField(max_length=100, blank=True)
