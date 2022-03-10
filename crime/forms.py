@@ -115,11 +115,11 @@ class SuspectForm(forms.ModelForm):
 class EvidenceForm(forms.ModelForm):
     class Meta:
         model = Evidence
-        fields = ('evidenceCategory','evidence_note','evidencerimage','points')
+        fields = ('title','evidenceCategory','evidence_note','evidencerimage','level')
         labels = {
             'evidenceCategory':'Evidence Category',
             'evidencerimage':'Evidence Photo',
-            'points':'Points Gainned',
+            'level':'Evidence level',
             'evidence_note':'Short note',
             }
 
