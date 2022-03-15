@@ -443,7 +443,33 @@ def deleteSuspect(request, case_pk):
 	return render(request, 'crime/StationOfficer/deleteSuspect.html', context)
 
 def createEvidence(request, suspect_pk):
+	# variable to store current evidence value.
+	current_evidence_rate = Suspect.objects.filter(id=suspect_pk).values_list('evidence_rate',flat=True)[0]
+	# Number of evidences for a suspect.
+
+	suspect_evidences_length = Suspect.objects.filter(id=suspect_pk).values_list("evidences", flat=True).count()
+
+	print(" sel "+str(suspect_evidences_length))
+	print(" current ev "+str(current_evidence_rate))
+
+	sel = 0
+	if current_evidence_rate == 0.0:
+		sel = 1
+	elif suspect_evidences_length == 1 :
+		sel = suspect_evidences_length + 1
+	else: 
+		sel = suspect_evidences_length + 1
+	"""
+	calculate the rate of evidence according to the evidence. 
+	"""
+	print("length is "+ str(suspect_evidences_length))
+	rate_for_easy = (current_evidence_rate + 20 ) / sel
+	rate_for_medium = (current_evidence_rate + 30 ) / sel
+	rate_for_Difficult = (current_evidence_rate + 50 ) / sel 
+
+
 	suspect = Suspect.objects.get(id=suspect_pk)
+
 	form = EvidenceForm()
 	if request.method == 'POST':
 	
@@ -451,37 +477,38 @@ def createEvidence(request, suspect_pk):
 		if form.is_valid():
 			# print(str(form.cleaned_data['level']))
 			if str(form.cleaned_data['level'])  == 'Easy' :
-				Suspect.objects.filter(id=suspect_pk).update(evidence_rate=20.0)
+				Suspect.objects.filter(id=suspect_pk).update(evidence_rate=rate_for_easy)
 			if str(form.cleaned_data['level'])  == 'Middle' :
-				Suspect.objects.filter(id=suspect_pk).update(evidence_rate=30.0)
+				Suspect.objects.filter(id=suspect_pk).update(evidence_rate=rate_for_medium)
 			if str(form.cleaned_data['level'])  == 'Difficult' :
-				Suspect.objects.filter(id=suspect_pk).update(evidence_rate=50.0)
+				Suspect.objects.filter(id=suspect_pk).update(evidence_rate=rate_for_Difficult)
 
 			evidence = form.save()
 			suspect.evidences.add(evidence)
 
 			"""
 			implement calculation to add status of primary suspect after 
-			some calculations
 			"""
-			suspect_rate_total = 0
-			evidence_rate_total = 0
+		
 
-			suspects_rates = Suspect.objects.filter(id=suspect_pk).values_list('crime_rate',flat=True)[0]
-			evidences_rates = Suspect.objects.filter(id=suspect_pk).values_list('evidence_rate',flat=True)[0]
+			suspects_rate = Suspect.objects.filter(id=suspect_pk).values_list('crime_rate',flat=True)[0]
+			evidences_rate = Suspect.objects.filter(id=suspect_pk).values_list('evidence_rate',flat=True)[0]
 
-			for suspect_rate in suspects_rates :
-				suspect_rate_total = suspect_rate_total + suspect_rate
+			# for suspect_rate in suspects_rates :
+			# 	suspect_rate_total = suspect_rate_total + suspect_rate
 
-			for evidence_rate in evidences_rates :
-				evidence_rate_total = evidence_rate_total + evidence_rate
+			# for evidence_rate in evidences_rates :
+			# 	evidence_rate_total = evidence_rate_total + evidence_rate
 
+			print('suspect rate is' + str(suspects_rate))
+			print('evidence rate is' + str(evidences_rate))
 
 			"""
 			Calcualte the total of evidences rate over 50 plus the 
 			rate of suspect answers rate over 50
 			"""
-			total_rate = suspect_rate_total + evidence_rate_total
+			total_rate = suspects_rate + evidences_rate
+			print('the total is '+ str(total_rate))
 			
 			suspect_for_update = Suspect.objects.filter(id=suspect_pk)
 
