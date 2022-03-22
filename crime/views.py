@@ -486,6 +486,14 @@ def createEvidence(request, suspect_pk):
 			evidence = form.save()
 			suspect.evidences.add(evidence)
 
+
+
+			""""""
+			# reporters = Suspect.objects.filter(id=1).values_list("reporters", flat=True)
+
+			# for reporter in reporters:
+			# 	print(reporter)
+
 			"""
 			implement calculation to add status of primary suspect after 
 			"""
@@ -493,21 +501,19 @@ def createEvidence(request, suspect_pk):
 
 			suspects_rate = Suspect.objects.filter(id=suspect_pk).values_list('crime_rate',flat=True)[0]
 			evidences_rate = Suspect.objects.filter(id=suspect_pk).values_list('evidence_rate',flat=True)[0]
+			witness_rate = Suspect.objects.filter(id=suspect_pk).values_list('witness_rate',flat=True)[0]
 
-			# for suspect_rate in suspects_rates :
-			# 	suspect_rate_total = suspect_rate_total + suspect_rate
-
-			# for evidence_rate in evidences_rates :
-			# 	evidence_rate_total = evidence_rate_total + evidence_rate
 
 			print('suspect rate is' + str(suspects_rate))
 			print('evidence rate is' + str(evidences_rate))
+			print('witness rate is' + str(witness_rate))
 
 			"""
-			Calcualte the total of evidences rate over 50 plus the 
-			rate of suspect answers rate over 50
+			calculate the total of evidences rate over 50 plus the 
+			rate of suspect answers rate over 50 plus evidence rate over
 			"""
-			total_rate = suspects_rate + evidences_rate
+			total_rate_over = (suspects_rate + evidences_rate + witness_rate) / 150
+			total_rate = total_rate_over * 100
 			print('the total is '+ str(total_rate))
 			
 			suspect_for_update = Suspect.objects.filter(id=suspect_pk)
@@ -525,11 +531,9 @@ def createEvidence(request, suspect_pk):
 				print("the suspect is free")
 				suspect_for_update.update(suspect_status='free')
 
-
-
-
 			messages.success(request, 'Evidence has been Linked Successfully')
 			return redirect('home_Officer')
+
 
 	context = {'form':form, 'suspect':suspect}
 	return render(request, 'crime/StationOfficer/evidence_form.html', context)
@@ -665,16 +669,36 @@ def CAQSList(request):
 
 
 def createCAQW(request, pk_witness):
-	QuestionFormSet = inlineformset_factory(Reporter, CAQW, fields=('question', 'answer'), extra=3 )
+	suspect = Suspect.objects.filter(reporters__id=pk_witness)
+	questions = QuestionReporter.objects.all()
+	QuestionFormSet = inlineformset_factory(Reporter, CAQW, fields=('question', 'answer'), extra=questions.count())
 	reporter = Reporter.objects.get(id=pk_witness)
 	formset = QuestionFormSet(queryset=CAQW.objects.none(),instance=reporter)
 	if request.method == 'POST':
 		formset = QuestionFormSet(request.POST,instance=reporter)
 
 		if formset.is_valid():
-			formset.save()
+			count=0
+			for form in formset:
+				if str(form.cleaned_data['answer']) == "yes":
+					count+=1
+					form.save()
+
+			"""
+			  calculate the rate over 50 of from suspect answers
+			  find the average based on lenght of questions.
+			  and return the rate of Yes ones. means total marks will be
+			  calculated out of 50.
+			"""
+			rate = 50 * float(count)/float(questions.count())
+			suspect.update(witness_rate=rate)
+
+
+
+			
 			messages.success(request, 'Qeustions has been Linked to Witness Successfully')
 			return redirect('home_Officer')
+
 
 	context = {'form':formset, 'reporter':reporter}
 	return render(request, 'crime/StationOfficer/cransquestWitness_Form.html', context)

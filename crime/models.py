@@ -175,6 +175,7 @@ class Suspect(models.Model):
     father_name = models.CharField(max_length=100, blank=True)
     mother_name = models.CharField(max_length=100, blank=True)
     crime_rate = models.FloatField(default=0) # over 50 marks
+    witness_rate = models.FloatField(default=0) # over 50 marks
     evidence_rate = models.FloatField(default=0) # over 50 marks
     suspect_status = models.CharField(max_length=100, blank=False,choices=SUSPECTSTATUS, default='free')
     province = models.CharField(max_length=100, blank=True)
