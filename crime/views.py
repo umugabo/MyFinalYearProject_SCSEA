@@ -1302,8 +1302,30 @@ def ajaxSearch(request):
     context = {}
     return render(request, 'ajaxSuspectForm.html', context)
 
+def primaryOrReleaseReport(request, pk_suspect):
+	user = request.user
+	template = get_template('crime/Reports/primaryOrReleaseReport.html')
+	today = datetime.datetime.now()
 
+	suspect = Suspect.objects.get(id=pk_suspect)
+	case = suspect.case_set.first()
+	reporters = suspect.reporters.all()
+	evidences = suspect.evidences.all()
+ 
 
+	context = {'user':user, 'suspect':suspect, 'case':case, 'reporters':reporters, 'evidences':evidences, 'today':today}
+	html = template.render(context)
+	pdf= render_to_pdf('crime/Reports/primaryOrReleaseReport.html', context)
+	if pdf:
+		response = HttpResponse(pdf, content_type='application/pdf')
+		file_name = "Primary or Release Suspect Report"
+		content = "inline; filename='%s'" %(file_name)
+		download = request.GET.get("download")
+		if download:
+			content = "attachment; filename='%s'" %(file_name)
+		response['Content-Disposition'] = content
+		return response
+		return HttpResponse*"Not found"
 
 
 

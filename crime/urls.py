@@ -79,6 +79,8 @@ urlpatterns = [
     path('printSuspectsOnTwoCase/', views.printSuspectsOnTwoCase, name="printSuspectsOnTwoCase"),
     path('presentPrimarySuspect/', views.presentPrimarySuspect, name="presentPrimarySuspect"),
     
+    path('primaryOrReleaseReport/<str:pk_suspect>/', views.primaryOrReleaseReport, name='primaryOrReleaseReport'),
+    
 
 
 
