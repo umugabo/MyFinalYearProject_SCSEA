@@ -89,6 +89,7 @@ class RibstationForm(forms.ModelForm):
             }
 
 class SuspectForm(forms.ModelForm):
+    dob =forms.DateField(widget=DateInput)
     class Meta:
         model = SuspectCriminalRecord
         model = Suspect

@@ -28,7 +28,7 @@
              Station User: <strong>{{suspect.stationuser.f_name}} {{suspect.stationuser.f_name}}</strong><br> <br>
              Date: <strong>{{today}}</strong> <br><br>
             
-            <center><strong><h2>Primary or Release Suspect Report</strong> </center><br>
+            <center><strong><h2>Primary Suspect Detection or Suspect Release Report</strong> </center><br>
     
         </div>
  
@@ -60,6 +60,7 @@
                 {% endfor %}
             </ul>
             {% endif %}
+            
             <br><br>
             <p style="line-height: 1.8; font-size: 11px;">
                 {% if suspect.suspect_status == "Free of Crime" %} This is officialy prove that <strong>you are free from the above case</strong> for the reason of processes went through to find primary suspects

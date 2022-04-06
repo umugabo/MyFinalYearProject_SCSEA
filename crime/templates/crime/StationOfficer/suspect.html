@@ -65,7 +65,11 @@
 	<div class="col-md">
 		<div class="card card-body">
 			<table class="table table-sm">
-				<tr><a class="btn btn-primary  btn-sm btn-block" href="{% url 'printEvidence' %}">Generate PDF</a>
+				
+	{% comment %} Report Generation of primary suspect to PDF {% endcomment %}
+
+				<tr><a class="btn btn-primary  btn-sm btn-block" href="{% url 'primaryOrReleaseReport' suspect.id %}">Generate PDF</a>
+					
 					<th>Suspect</th>
 					<th>Evidence Type</th>
 					<th>Notes on the Evidence</th>

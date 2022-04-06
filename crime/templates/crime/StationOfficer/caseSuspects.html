@@ -26,7 +26,7 @@
                         
                         </tr>
                         {% for suspect in suspects %}
-                                            <tr>
+                                            <br>
                                                 <td>{{suspect.suspectNID}}</td>
                                                 <td>{{suspect.f_name}} {{suspect.l_name}}</td>
                                                 <td>{{suspect.phone}}</td>
@@ -36,9 +36,12 @@
                                                 <td><a class="btn btn-sm btn-info" href="{% url 'createCAQS' suspect.id %}">Ask Questions</a></td>
                                                 <td><a class="btn btn-sm btn-info" href="{% url 'suspect' suspect.id %}">View Evidence</a></td>
                                                 <td><a class="btn btn-sm btn-info" href="{% url 'witnes' suspect.id%}">View Witness</a></td>
+                                               
+                                                {% comment %} Function that present primary suspect report decision {% endcomment %}
+                                                <tr><a class="btn btn-sm btn-info" href="{% url 'findPrimarySuspect' suspect.id %}">Present Primary Suspects on this case</a></tr>
                                                 
                         
-                                            </tr>
+                                            </br>
                                         {% endfor %}
                         </table>
 				</div>
