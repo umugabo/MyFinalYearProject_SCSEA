@@ -486,51 +486,6 @@ def createEvidence(request, suspect_pk):
 			evidence = form.save()
 			suspect.evidences.add(evidence)
 
-
-
-			""""""
-			# reporters = Suspect.objects.filter(id=1).values_list("reporters", flat=True)
-
-			# for reporter in reporters:
-			# 	print(reporter)
-
-			"""
-			implement calculation to add status of primary suspect after 
-			"""
-		
-
-			suspects_rate = Suspect.objects.filter(id=suspect_pk).values_list('crime_rate',flat=True)[0]
-			evidences_rate = Suspect.objects.filter(id=suspect_pk).values_list('evidence_rate',flat=True)[0]
-			witness_rate = Suspect.objects.filter(id=suspect_pk).values_list('witness_rate',flat=True)[0]
-
-
-			print('suspect rate is' + str(suspects_rate))
-			print('evidence rate is' + str(evidences_rate))
-			print('witness rate is' + str(witness_rate))
-
-			"""
-			calculate the total of evidences rate over 50 plus the 
-			rate of suspect answers rate over 50 plus evidence rate over
-			"""
-			total_rate_over = (suspects_rate + evidences_rate + witness_rate) / 150
-			total_rate = total_rate_over * 100
-			print('the total is '+ str(total_rate))
-			
-			suspect_for_update = Suspect.objects.filter(id=suspect_pk)
-
-			if total_rate >= 75:
-				# implement changing status to primary suspect here
-				print("primary suspect")
-				suspect_for_update.update(suspect_status='primary_suspect')
-			elif total_rate >=50 and total_rate < 75 :
-				#implement status middle status continue investigation
-				print("Continue investigation to suspect")
-				suspect_for_update.update(suspect_status='middle')
-			else:
-				# implement Free
-				print("the suspect is free")
-				suspect_for_update.update(suspect_status='free')
-
 			messages.success(request, 'Evidence has been Linked Successfully')
 			return redirect('home_Officer')
 
@@ -538,6 +493,49 @@ def createEvidence(request, suspect_pk):
 	context = {'form':form, 'suspect':suspect}
 	return render(request, 'crime/StationOfficer/evidence_form.html', context)
 
+
+def find_primary_suspects(request, suspect_pk):
+
+	"""
+	implement calculation to add status of primary suspect after 
+	"""
+	suspects_rate = Suspect.objects.filter(id=suspect_pk).values_list('crime_rate',flat=True)[0]
+	evidences_rate = Suspect.objects.filter(id=suspect_pk).values_list('evidence_rate',flat=True)[0]
+	witness_rate = Suspect.objects.filter(id=suspect_pk).values_list('witness_rate',flat=True)[0]
+
+
+	print('suspect rate is' + str(suspects_rate))
+	print('evidence rate is' + str(evidences_rate))
+	print('witness rate is' + str(witness_rate))
+
+	"""
+	calculate the total of evidences rate over 50 plus the 
+	rate of suspect answers rate over 50 plus evidence rate over
+	"""
+	total_rate_over = (suspects_rate + evidences_rate + witness_rate) / 150
+	total_rate = total_rate_over * 100
+	print('the total is '+ str(total_rate))
+	
+	suspect_for_update = Suspect.objects.filter(id=suspect_pk)
+
+	if total_rate >= 75:
+		# implement changing status to primary suspect here
+		print("primary suspect")
+		suspect_for_update.update(suspect_status='primary_suspect')
+	elif total_rate >=50 and total_rate < 75 :
+		#implement status middle status continue investigation
+		print("Continue investigation to suspect")
+		suspect_for_update.update(suspect_status='middle')
+	else:
+		# implement Free
+		print("the suspect is free")
+		suspect_for_update.update(suspect_status='free')
+
+		
+
+	messages.success(request, 'Primary calculated successfully')
+	context = {'suspect':Suspect.objects.get(id=suspect_pk),'evidences':Suspect.objects.get(id=suspect_pk).evidences.all(),'evidence_count':Suspect.objects.get(id=suspect_pk).evidences.all().count()}
+	return render(request, 'crime/StationOfficer/suspect.html', context)
 
 
 def updateEvidence(request, pk):

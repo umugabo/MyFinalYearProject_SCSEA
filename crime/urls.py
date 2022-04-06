@@ -80,6 +80,7 @@ urlpatterns = [
     path('presentPrimarySuspect/', views.presentPrimarySuspect, name="presentPrimarySuspect"),
     
     path('primaryOrReleaseReport/<str:pk_suspect>/', views.primaryOrReleaseReport, name='primaryOrReleaseReport'),
+    path('findPrimary/<str:suspect_pk>/', views.find_primary_suspects, name='findPrimarySuspect'),
     
 
 
