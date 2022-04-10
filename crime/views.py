@@ -15,7 +15,7 @@ import datetime
 from django.db.models import Count
 from django.contrib import messages
 from .decorators import unauthenticated_user, allowed_users
-from .forms import CrimeForm,CAQSForm,CAQWForm,AnswerForm,QuestionForm,QuestionRepoForm,StationUserForm,RibOfficerRegistrationForm,CaseForm,SuspectForm,EvidenceForm,RibstationForm,OfficerForm,ReporterForm
+from .forms import CrimeForm,CAQSForm,CAQWForm,AnswerForm,QuestionForm,QuestionRepoForm,StationUserForm,RibOfficerRegistrationForm,CaseForm,SuspectForm,EvidenceForm,RibstationForm,OfficerForm,ReporterForm,StationNameRegistrationForm
 import reportlab
 import io
 from django.http import FileResponse
@@ -69,19 +69,15 @@ def register_stationName(request):
         if form.is_valid():
             user = form.save()
             username = form.cleaned_data.get('username')
-            group = Group.objects.get(name='StationUser')
+            group = Group.objects.get(name='RIBStation')
             user.groups.add(group)
 			
-
-            StationUser.objects.create(
-                user=user,
-            )
-            # messages.success(request, 'Hospital Agent has been successfully registered')
+            # messages.success(request, 'RIBStation has been successfully registered')
             
-            return redirect('createOfficer')
+            return redirect('createRIBStation')
     
     context = {'form':form}
-    return render(request, 'crime/RIBStation/register_StationName.html', context)
+    return render(request, 'crime/RIBHQ/register_StationName.html', context)
 
 @unauthenticated_user
 def registerPage(request):
@@ -258,7 +254,7 @@ def createRIBStation(request):
 		if form.is_valid():
 			form.save()
 			messages.success(request, 'RIBStation has been created Successfully')
-			return redirect('home_Hq')
+			return redirect('RIBstationList')
 
 	context = {'form':form}
 	return render(request, 'crime/RIBHQ/ribstation_Form.html', context)
