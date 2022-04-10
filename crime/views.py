@@ -53,12 +53,10 @@ def register_ribofficer(request):
             user.groups.add(group)
 			
 
-            StationUser.objects.create(
-                user=user,
-            )
+          
             # messages.success(request, 'RIB Agent has been successfully registered')
             
-            return redirect('createOfficer')
+            return redirect('officerList')
     
     context = {'form':form}
     return render(request, 'crime/RIBStation/register_ribofficer.html', context)
