@@ -56,7 +56,7 @@ def register_ribofficer(request):
           
             # messages.success(request, 'RIB Agent has been successfully registered')
             
-            return redirect('officerList')
+            return redirect('createOfficer')
     
     context = {'form':form}
     return render(request, 'crime/RIBStation/register_ribofficer.html', context)
@@ -289,7 +289,7 @@ def createOfficer(request):
 			stationUser.ribstation = ribstation
 			stationUser.save(stationUser)
 			messages.success(request, 'RIB Officer has been created Successfully')
-			return redirect('home_Station')
+			return redirect('officerList')
 
 	context = {'form':form}
 	return render(request, 'crime/RIBStation/officer_form.html', context)

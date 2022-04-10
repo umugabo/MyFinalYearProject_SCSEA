@@ -266,12 +266,14 @@ class RIBHeadquarter(models.Model):
 
 
 class QuestionSuspect(models.Model):
-
     questionId = models.CharField(max_length=4 ,null=True, unique=True, blank=True)
     questionName = models.TextField(blank=False)
+    crimeType = models.CharField(max_length=40, blank=True, null=True, choices=CRIMETYPE)
         
     def __str__(self):
         return self.questionName 
+
+
 
 class Answer(models.Model):
     
@@ -289,14 +291,15 @@ class CAQS(models.Model):
     # def __str__(self):
     #     return self.question
 
-class QuestionReporter(models.Model):
-    
+class QuestionReporter(models.Model):    
     questionId = models.CharField(max_length=4, null=True, unique=True, blank=True)
     questionName = models.TextField(blank=False)
+    crimeType = models.CharField(max_length=40,null=True,blank=True, choices=CRIMETYPE)
+
         
     def __str__(self):
         return self.questionName 
-
+        
 class CAQW(models.Model):
     witness = models.ForeignKey(Reporter, on_delete=models.CASCADE, null=True, blank=True)
     question = models.ForeignKey(QuestionReporter, on_delete=models.CASCADE, null=True, blank=True)

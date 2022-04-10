@@ -21,16 +21,18 @@
         <a class="nav-link" href="{% url 'home_Station' %}">Dashboard </a>
       </li>
 
+     
+      
+      <li class="{% if 'officerList' in request.path %} nav-item active {% endif %}">
+        <a class="nav-link" href="{% url 'officerList' %}">Station Officers</a>
+      </li>
+
       <li class="{% if 'caseList' in request.path %} nav-item active {% endif %}">
         <a class="nav-link" href="{% url 'caseList' %}">Crime Case</a>
       </li>    
         
       </li>
       
-      <li class="{% if 'officerList' in request.path %} nav-item active {% endif %}">
-        <a class="nav-link" href="{% url 'officerList' %}">Station Officers</a>
-      </li>
-
       <li class="{% if 'stationStatReporting' in request.path %} nav-item active {% endif %}">
         <a class="nav-link" href="{% url 'stationStatReporting' %}">Reports</a>
       </li>
