@@ -512,11 +512,11 @@ def find_primary_suspects(request, suspect_pk):
 	
 	suspect_for_update = Suspect.objects.filter(id=suspect_pk)
 
-	if total_rate >= 75:
+	if total_rate >= 50:
 		# implement changing status to primary suspect here
 		print("primary suspect")
 		suspect_for_update.update(suspect_status='primary_suspect')
-	elif total_rate >=50 and total_rate < 75 :
+	elif total_rate >=25 and total_rate < 50 :
 		#implement status middle status continue investigation
 		print("Continue investigation to suspect")
 		suspect_for_update.update(suspect_status='middle')
@@ -525,7 +525,7 @@ def find_primary_suspects(request, suspect_pk):
 		print("the suspect is free")
 		suspect_for_update.update(suspect_status='free')
 
-		
+	print("primary calculated success")
 
 	messages.success(request, 'Primary calculated successfully')
 	context = {'suspect':Suspect.objects.get(id=suspect_pk),'evidences':Suspect.objects.get(id=suspect_pk).evidences.all(),'evidence_count':Suspect.objects.get(id=suspect_pk).evidences.all().count()}
@@ -628,7 +628,7 @@ def AnswerList(request):
 def createCAQS(request, pk_suspect):
 	questions = QuestionSuspect.objects.all()
 	QuestionFormSet = inlineformset_factory(Suspect, CAQS, fields=('question', 'answer'), extra=questions.count() )
-	suspect = Suspect.objects.get(id=pk_suspect)
+	suspect = Suspect.objects.filter(id=pk_suspect)
 	formset = QuestionFormSet(queryset=CAQS.objects.none(),instance=suspect)
 	if request.method == 'POST':
 		formset = QuestionFormSet(request.POST,instance=suspect)
