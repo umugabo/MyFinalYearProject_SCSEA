@@ -128,7 +128,7 @@ class Evidence(models.Model):
     evidence_note = models.TextField(max_length=255)
     level =  models.CharField(max_length=30, blank=False, choices=LEVEL_CHOICES, default='')
     # evidencerimage = models.ImageField(upload_to='images', blank=True, null=True)
-    evidencerimage = models.ImageField(default="profile1.png", null=True, blank=True)
+    evidencerimage = models.ImageField(upload_to='upload/', null=True, blank=True)
     def __str__(self):
         return self.title
         

@@ -30,15 +30,15 @@
 							<th>Level</th>	
 							<th>Update</th>							
 						</tr>
-						{% for i in evidences %}
+						{% for evidence in evidences %}
 							<tr>
 								{% comment %} <td>{{i.suspect}}</td> {% endcomment %}
-								<td>{{i.title}}</td>
-								<td>{{i.evidenceCategory}}</td>
-								<td>{{i.evidence_note}}</td>
-                                <td>{{i.image}}</td>
-                                <td>{{i.level}}</td>
-								<td><a class="btn btn-sm btn-info" href="{% url 'update_evidence' i.id %}">Update</a></td>
+								<td>{{evidence.title}}</td>
+								<td>{{evidence.evidenceCategory}}</td>
+								<td>{{evidence.evidence_note}}</td>
+                                <td><img src="{{evidencerimage.url}}" alt="Evidence Photo" width="90" height="50"></td>
+                                <td>{{evidence.level}}</td>
+								<td><a class="btn btn-sm btn-info" href="{% url 'update_evidence' evidence.id %}">Update</a></td>
 							</tr>
 						{% endfor %}
 						

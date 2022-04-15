@@ -12,6 +12,7 @@ from django.forms import inlineformset_factory
 from django .http import HttpResponse,JsonResponse
 from .models import *
 import datetime
+from django.views.generic import DetailView
 from django.db.models import Count
 from django.contrib import messages
 from .decorators import unauthenticated_user, allowed_users
@@ -308,9 +309,10 @@ def caseList(request):
 	return render(request, 'crime/RIBStation/caseList.html', {'cases':cases})
 
 def evidenceList(request):
-    evidences = Evidence.objects.all()
-    return render(request, 'crime/StationOfficer/evidenceList.html', {'evidences':evidences})
-
+	suspect = Suspect.objects.all()
+	evidences = Evidence.objects.all()
+	return render(request, 'crime/StationOfficer/evidenceList.html', {'suspect':suspect, 'evidences':evidences})
+	
 def witnes(request, pk_susp):
     suspect = Suspect.objects.get(id=pk_susp)
     reporters = suspect.reporters.all()
@@ -771,7 +773,7 @@ def generalStatisticalReport(request):
 def casesAnalyse(request):
 	user = request.user
 	stationuser = StationUser.objects.get(user=user)	
-	cases = Case.objects.filter(stationuser=stationuser, status='Studied')	
+	cases = Case.objects.filter(stationuser=stationuser, status='Finished')	
 	suspects = Suspect.objects.filter(stationuser=stationuser)
 	
 	context = {'cases':cases, 'suspects':suspects}
@@ -1355,6 +1357,8 @@ def primaryOrReleaseReport(request, pk_suspect):
 		response['Content-Disposition'] = content
 		return response
 		return HttpResponse*"Not found"
+
+
 
 
 
