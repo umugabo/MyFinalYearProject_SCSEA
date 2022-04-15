@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+import africastalking
 
 
 # Create your models here.
@@ -189,7 +190,23 @@ class Suspect(models.Model):
     stationuser = models.ForeignKey(StationUser, on_delete=models.CASCADE, null=True, blank=True)
   
     def __str__(self):
-        return self.f_name  
+        return self.f_name 
+
+    @staticmethod
+    def send_sms(phone_number , message):
+        username = "tusifu"  # use 'sandbox' for development in the test environment
+        api_key = "c1b79e7560de16b8aa9a43b7c31123f9b2148d4bb17a6d33a1dfcf95701f08b3"  # use your sandbox app API key for development in the test environment
+        africastalking.initialize(username, api_key)
+        # Initialize a service e.g. SMS
+        sms = africastalking.SMS
+
+        # Or use it asynchronously
+        def on_finish(error, response):
+            if error is not None:
+                raise error
+            print(response)
+        response = sms.send(message, [phone_number], callback=on_finish)
+        print(response)
 
 class SuspectCriminalRecord(models.Model):
     suspectNID = models.CharField(max_length=16, unique=True, blank=False)
