@@ -294,7 +294,7 @@ class QuestionSuspect(models.Model):
 
 class Answer(models.Model):
     
-    AnswerName = models.TextField(blank=False)
+    AnswerName = models.TextField(default="not_applied",blank=False)
         
     def __str__(self):
         return self.AnswerName 

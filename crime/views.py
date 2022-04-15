@@ -341,6 +341,9 @@ def criminalRecord(request):
 	return render(request, 'crime/RIBHQ/criminalRecordList.html', context)
     
 
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBStation'])
+
 def createCase(request):
 	user = request.user
 	ribstation = RIBStation.objects.get(user=user)
@@ -436,6 +439,8 @@ def deleteSuspect(request, case_pk):
 	context = {'item':suspect}
 	return render(request, 'crime/StationOfficer/deleteSuspect.html', context)
 
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['StationUser'])
 def createEvidence(request, suspect_pk):
 	# variable to store current evidence value.
 	current_evidence_rate = Suspect.objects.filter(id=suspect_pk).values_list('evidence_rate',flat=True)[0]
@@ -487,9 +492,11 @@ def createEvidence(request, suspect_pk):
 	context = {'form':form, 'suspect':suspect}
 	return render(request, 'crime/StationOfficer/evidence_form.html', context)
 
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['StationUser'])
 
 def find_primary_suspects(request, suspect_pk):
-
+	
 	"""
 	implement calculation to add status of primary suspect after 
 	"""
@@ -527,10 +534,16 @@ def find_primary_suspects(request, suspect_pk):
 		# implement Free
 		suspect_for_update.suspect_status = 'free'
 		suspect_for_update.save()
+		
+		# case status update
+	suspect = Suspect.objects.get(id=suspect_pk)
+	case = suspect.case_set.first()
+	case.status ='Finished'
+	case.save()
 
 
 	messages.success(request, 'Suspect Decision Analysed and Generated successfully')
-	context = {'suspect':Suspect.objects.get(id=suspect_pk),'evidences':Suspect.objects.get(id=suspect_pk).evidences.all(),'evidence_count':Suspect.objects.get(id=suspect_pk).evidences.all().count()}
+	context = {'suspect':Suspect.objects.get(id=suspect_pk), 'case':case, 'evidences':Suspect.objects.get(id=suspect_pk).evidences.all(),'evidence_count':Suspect.objects.get(id=suspect_pk).evidences.all().count()}
 	return render(request, 'crime/StationOfficer/suspectDecisionReport.html', context)
 
 
@@ -626,7 +639,8 @@ def AnswerList(request):
     return render(request, 'crime/RIBHQ/answerList.html', {'answers':answers})
 
 
-
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['StationUser'])
 def createCAQS(request, pk_suspect, crimeType):
 	questions = QuestionSuspect.objects.all()
 	QuestionFormSet = inlineformset_factory(Suspect, CAQS, fields=('question', 'answer'), extra=questions.count() )
@@ -670,11 +684,16 @@ def createCAQS(request, pk_suspect, crimeType):
 	context = {'form':formset, 'suspect':suspect}
 	return render(request, 'crime/StationOfficer/cransquestsusp_Form.html', context)
 
+
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['StationUser'])
 def CAQSList(request):
     quesans = CAQS.objects.all()
     return render(request, 'crime/StationOfficer/questAnsList.html', {'quesans':quesans})
 
 
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['StationUser'])
 def createCAQW(request, pk_witness):
 	suspect = Suspect.objects.filter(reporters__id=pk_witness)
 	questions = QuestionReporter.objects.all()
@@ -1308,6 +1327,9 @@ def ajaxSearch(request):
         return JsonResponse(f_name, safe=False)
     context = {}
     return render(request, 'ajaxSuspectForm.html', context)
+
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['StationUser'])
 
 def primaryOrReleaseReport(request, pk_suspect):
 	user = request.user

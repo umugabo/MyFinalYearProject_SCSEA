@@ -8,7 +8,7 @@
   </style>
 {% endblock styles %}
 
- <img src="{% static 'images/Capture.JPG' %}"alt="logo" height="105" width="1325">
+ <img src="{% static 'images/Capture.JPG' %}"alt="logo" height="105" width="1455">
 <center><b>{% now "jS F Y H:i" %}</b></center>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 
@@ -22,7 +22,7 @@
         <a class="nav-link" href="{% url 'home_Officer' %}">Dashboard </a>
       </li>
 
-      <li class="{% if 'crimeSuspect' in request.path %} nav-item active {% endif %}">
+      <li class="{% if 'crimeSuspect' in request.path %} nav-item active {% elif 'suspect' in request.path %} nav-item active {% elif 'create_evidence' in request.path %} nav-item active {% elif 'evidence' in request.path %} nav-item active {% endif %}">
         <a class="nav-link" href="{% url 'crimeSuspect' %}">Crime Suspect </a>
       </li>
       
@@ -68,8 +68,8 @@
         </div> {% endcomment %}
 
         
-        <li class="{% if 'casesAnalyse' in request.path %} nav-item active {% endif %}">
-        <a class="nav-link" href="{% url 'casesAnalyse' %}">Primary Suspect</a>
+        <li class="{% if 'casesAnalyse' in request.path %} nav-item active {% elif 'analyseCaseSuspects' in request.path %} nav-item active {% endif %}">
+        <a class="nav-link" href="{% url 'casesAnalyse' %}">List of Cases</a>
       </li>
          </div>
          <ul class="list-unstyled CTAs">
