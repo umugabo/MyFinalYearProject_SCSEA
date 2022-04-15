@@ -52,7 +52,7 @@
 	<div class="col">
 		<div class="card card-body">
 			<form method="get">
-			<h5>The Suspect <strong>"{{suspect.l_name}}</strong>" has the following Evidences</h5>
+			<h5>The Suspect <strong>"{{suspect.l_name}} {{suspect.f_name}}</strong>" has the following Evidences</h5>
 			
 		  </form>
 		</div>
@@ -68,7 +68,7 @@
 				
 	{% comment %} Report Generation of primary suspect to PDF {% endcomment %}
 
-				<tr><a class="btn btn-primary  btn-sm btn-block" href="{% url 'primaryOrReleaseReport' suspect.id %}">Generate PDF</a>
+				<tr><a class="btn btn-primary  btn-sm btn-block" href="{% url 'primaryOrReleaseReport' suspect.id %}">Generate Suspect Decision on PDF</a>
 					
 					<th>Suspect</th>
 					<th>Evidence Type</th>
