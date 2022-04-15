@@ -625,11 +625,11 @@ def AnswerList(request):
 
 
 
-def createCAQS(request, pk_suspect):
+def createCAQS(request, pk_suspect, crimeType):
 	questions = QuestionSuspect.objects.all()
 	QuestionFormSet = inlineformset_factory(Suspect, CAQS, fields=('question', 'answer'), extra=questions.count() )
-	suspect = Suspect.objects.filter(id=pk_suspect)
-	formset = QuestionFormSet(queryset=CAQS.objects.none(),instance=suspect)
+	suspect = Suspect.objects.get(id=pk_suspect)
+	formset = QuestionFormSet(queryset=CAQS.objects.filter(question__crimeType=crimeType),instance=suspect)
 	if request.method == 'POST':
 		formset = QuestionFormSet(request.POST,instance=suspect)
 
