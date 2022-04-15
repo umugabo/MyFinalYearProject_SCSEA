@@ -63,8 +63,8 @@
             
             <br><br>
             <p style="line-height: 1.8; font-size: 11px;">
-                {% if suspect.suspect_status == "Free of Crime" %} This is officialy prove that <strong>you are free from the above case</strong> for the reason of processes went through to find primary suspects
-            {% elif suspect.suspect_status == "Primary Suspect" %} This is officialy prove that <strong>you are primary suspect from the above case</strong> for the reason of the processes went through to find primary suspects and the case is goinf to be sent to court {% endif %}               
+                {% if suspect.suspect_status == "free" %} This is officialy prove that <strong>you are free from the above case</strong> for the reason of processes went through to find primary suspects
+            {% elif suspect.suspect_status == "primary_suspect" %} This is officialy prove that <strong>you are primary suspect from the above case</strong> for the reason of the processes went through to find primary suspects and the case is goinf to be sent to court {% endif %}               
             </p>
 
         </div>

@@ -10,9 +10,9 @@ GENDER = [
 ]
 
 SUSPECTSTATUS = [
-    ("Free of Crime", "free"),
-    ("Middle", "middle"),
-    ("Primary Suspect", "primary_suspect"),
+    ("free", "free"),
+    ("middle", "middle"),
+    ("primary_suspect", "primary_suspect"),
 ]
 
 LEVEL_CHOICES = [
