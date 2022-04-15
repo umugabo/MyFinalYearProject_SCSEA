@@ -637,10 +637,23 @@ def createCAQS(request, pk_suspect, crimeType):
 
 		if formset.is_valid():	
 			count=0
+			not_applied=0
 			for form in formset:
+				
 				if str(form.cleaned_data['answer']) == "yes":
 					count+=1
-					form.save()
+				elif str(form.cleaned_data['answer']) == "not_applied":
+					not_applied+=1
+					
+
+				form.save()
+
+			print(not_applied)
+			print(questions.count())
+			print(count)
+
+			questionsTotal = questions.count() - not_applied
+			
 
 			"""
 			  calculate the rate over 50 of from suspect answers
@@ -648,7 +661,7 @@ def createCAQS(request, pk_suspect, crimeType):
 			  and return the rate of Yes ones. means total marks will be
 			  calculated out of 50.
 			"""
-			rate = 50 * float(count)/float(questions.count())
+			rate = 50 * float(count)/float(questionsTotal)
 			Suspect.objects.filter(id=pk_suspect).update(crime_rate=rate)
 			
 			messages.success(request, 'Questions have been Linked to Suspect Successfully')
