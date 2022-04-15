@@ -529,9 +529,9 @@ def find_primary_suspects(request, suspect_pk):
 		suspect_for_update.save()
 
 
-	messages.success(request, 'Primary calculated successfully')
+	messages.success(request, 'Suspect Decision Analysed and Generated successfully')
 	context = {'suspect':Suspect.objects.get(id=suspect_pk),'evidences':Suspect.objects.get(id=suspect_pk).evidences.all(),'evidence_count':Suspect.objects.get(id=suspect_pk).evidences.all().count()}
-	return render(request, 'crime/StationOfficer/suspect.html', context)
+	return render(request, 'crime/StationOfficer/suspectDecisionReport.html', context)
 
 
 def updateEvidence(request, pk):

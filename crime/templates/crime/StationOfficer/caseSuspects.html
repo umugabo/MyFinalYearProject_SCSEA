@@ -39,7 +39,7 @@
                                                 <td><a class="btn btn-sm btn-info" href="{% url 'witnes' suspect.id%}">View Witness</a></td>
                                                
                                                 {% comment %} Function that present primary suspect report decision {% endcomment %}
-                                                <td><a class="btn btn-sm btn-info" href="{% url 'findPrimarySuspect' suspect_pk=suspect.id %}">Generate Suspect Decision on this case</a></td></tr>
+                                                <td><a class="btn btn-sm btn-warning" href="{% url 'findPrimarySuspect' suspect_pk=suspect.id %}">Generate Suspect Decision on this case</a></td></tr>
                                                 
                         
                                             </br>
