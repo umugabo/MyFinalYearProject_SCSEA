@@ -681,7 +681,7 @@ def createCAQS(request, pk_suspect, crimeType):
 			Suspect.objects.filter(id=pk_suspect).update(crime_rate=rate)
 			
 			messages.success(request, 'Questions have been Linked to Suspect Successfully')
-			return redirect('home_Officer')	
+			return redirect('CAQSList')	
 	
 	context = {'form':formset, 'suspect':suspect}
 	return render(request, 'crime/StationOfficer/cransquestsusp_Form.html', context)
@@ -780,6 +780,20 @@ def casesAnalyse(request):
 	
 	return render(request, 'crime/StationOfficer/caselistAnalysis.html', context)
 
+
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBStation'])
+def stationClosedCases(request):
+	user = request.user
+	rib_station = RIBStation.objects.get(user=user)
+	cases = Case.objects.filter(ribstation=rib_station, status='Finished')
+	suspects = Suspect.objects.filter(ribstation=rib_station)
+	
+	context = {'cases':cases, 'suspects':suspects,'rib_station':rib_station}
+	
+	return render(request, 'crime/RIBStation/casesClosed.html', context)
+
+
 @login_required(login_url='login_view')
 @allowed_users(allowed_roles=['StationUser'])
 def analyseCaseSuspects(request, case_pk):
@@ -789,6 +803,16 @@ def analyseCaseSuspects(request, case_pk):
 
 	context = {'suspects':suspects, 'case':case}
 	return render(request, 'crime/StationOfficer/caseSuspectsAnalysis.html', context)
+
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBStation'])
+def ClosedCaseSuspects(request, case_pk):
+
+	caseSuspects = Case.objects.get(id=case_pk)
+	suspects = caseSuspects.suspects.all()
+
+	context = {'suspects':suspects, 'caseSuspects':caseSuspects}
+	return render(request, 'crime/RIBStation/SuspectsForClosedcase.html', context)
 
 def some_view(request):
 	suspect = Suspect.objects.all()

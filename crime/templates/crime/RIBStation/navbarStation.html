@@ -32,21 +32,17 @@
       </li>    
         
       </li>
+
+      <li class="{% if 'stationClosedCases' in request.path %} nav-item active {% endif %}">
+        <a class="nav-link" href="{% url 'stationClosedCases' %}">Closed Cases</a>
+      </li>    
+        
+      </li>
       
       <li class="{% if 'stationStatReporting' in request.path %} nav-item active {% endif %}">
         <a class="nav-link" href="{% url 'stationStatReporting' %}">Reports</a>
       </li>
-        {% comment %} <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Questionaire
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="{% url 'createMurderForm' %}">Murder Form</a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="{% url 'createViolentForm' %}">Violent Form</a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="{% url 'createRobberyForm' %}">Robbery Form</a>
-        </div> {% endcomment %}
+   
          </div>
          
          <ul class="list-unstyled CTAs">

@@ -60,6 +60,10 @@ urlpatterns = [
     path('QuestionRepoList/', views.QuestionRepoList, name="QuestionRepoList"),
     path('AnswerList/', views.AnswerList, name="AnswerList"),
     path('casesAnalyse/', views.casesAnalyse, name="casesAnalyse"),
+    path('stationClosedCases/', views.stationClosedCases, name="stationClosedCases"),
+    path('ClosedCaseSuspects/<str:case_pk>/', views.ClosedCaseSuspects, name="ClosedCaseSuspects"),
+
+
     path('analyseCaseSuspects/<str:case_pk>/', views.analyseCaseSuspects, name="analyseCaseSuspects"),
     path('generalStatisticalReport/', views.generalStatisticalReport, name="generalStatisticalReport"),
     path('some_view/', views.some_view, name="some_view"),
