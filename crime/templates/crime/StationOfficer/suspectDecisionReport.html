@@ -2,9 +2,11 @@
 
 
 {% block content %}
-
+{% load static %}
+<center>
+ <img src="{% static 'images/loading.gif' %} "alt="logo" height="110" width="110">
 	<br>
-    <tr><a class="btn btn-primary  btn-sm btn-block" href="{% url 'primaryOrReleaseReport' suspect.id %}">Generate Suspect Decision on PDF</a>
+    <tr><a class="btn btn-primary  btn-sm btn-block" href='{% url 'primaryOrReleaseReport' suspect.id %}' target="_blank">Generate Suspect Decision on PDF</a>
 
 <div class="row">
     <div class="col-md">

@@ -21,6 +21,7 @@ urlpatterns = [
     path('logout',views.logoutUser, name='logout'),
     path('error401', views.error401, name='error401'),
     path('errorDelete', views.errorDelete, name='errorDelete'),
+    path('errorUpdateCase', views.errorUpdateCase, name='errorUpdateCase'),
     path('errorDeleteCase', views.errorDeleteCase, name='errorDeleteCase'),
     path('home_Hq/', views.homeHq, name="home_Hq"),
     path('home_Station/', views.homeStation, name="home_Station"),

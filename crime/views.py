@@ -42,6 +42,11 @@ def errorDeleteCase(request):
     context = {}
     return render(request, 'crime/RIBStation/deleteRequest.html', context)
 
+def errorUpdateCase(request):
+
+    context = {}
+    return render(request, 'crime/RIBStation/updateRequest.html', context)
+
 
 def register_ribofficer(request):
     form = RibOfficerRegistrationForm()
@@ -189,7 +194,7 @@ def homeStation(request):
 	ribstation = RIBStation.objects.get(user=user)
 	cases = Case.objects.filter(ribstation=ribstation)
 
-	paginator = Paginator(cases, 3)
+	paginator = Paginator(cases, 5)
 	
 	page_number = request.GET.get('page')
 	
@@ -372,7 +377,8 @@ def updateCase(request, pk):
 		form = CaseForm(request.POST, instance=case)
 		if form.is_valid():
 			form.save()
-			return redirect('home_Station')
+			messages.success(request, 'Case has been Updated Successfully')
+			return redirect('caseList')
 
 	context = {'form':form}
 	return render(request, 'crime/RIBStation/case_form.html', context)
@@ -488,7 +494,7 @@ def createEvidence(request, suspect_pk):
 			suspect.evidences.add(evidence)
 
 			messages.success(request, 'Evidence has been Linked Successfully')
-			return redirect('home_Officer')
+			return redirect('evidence')
 
 
 	context = {'form':form, 'suspect':suspect}
@@ -572,7 +578,7 @@ def createReporter(request, suspect_pk):
 			reporter = form.save()
 			suspect.reporters.add(reporter)
 			messages.success(request, 'Witness has been Linked Successfully')
-			return redirect('home_Officer')
+			return redirect('crimeSuspect')
 
 	context = {'form':form, 'suspect':suspect}
 	return render(request, 'crime/StationOfficer/reporter_form.html', context)
@@ -725,7 +731,7 @@ def createCAQW(request, pk_witness):
 
 			
 			messages.success(request, 'Qeustions has been Linked to Witness Successfully')
-			return redirect('home_Officer')
+			return redirect('crimeSuspect')
 
 
 	context = {'form':formset, 'reporter':reporter}
@@ -1220,14 +1226,14 @@ def stationStatReporting(request):
 	rib_station = RIBStation.objects.get(user=user)
 	cases = Case.objects.filter(ribstation=rib_station)
 
-	male= Suspect.objects.filter(ribstation=rib_station, gender='M').count()
-	female= Suspect.objects.filter(ribstation=rib_station, gender='F').count()
+	male= StationUser.objects.filter(ribstation=rib_station, gender='M').count()
+	female= StationUser.objects.filter(ribstation=rib_station, gender='F').count()
 	Captain = StationUser.objects.filter(ribstation=rib_station, rank = 'Captain').count()
 	Major = StationUser.objects.filter(ribstation=rib_station, rank = 'Major').count()
 	General = StationUser.objects.filter(ribstation=rib_station, rank = 'General').count()
 
 
-	context = {'cases':cases,
+	context = {'cases':cases,'General':General,'Major':Major,'Captain':Captain,
 	'male':male, 'female':female}
 	return render(request, 'crime/Reports/stationReporting.html',context)
 

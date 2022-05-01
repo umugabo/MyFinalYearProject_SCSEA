@@ -17,15 +17,18 @@
 <table class="table table-sm">
 <tr>
 <th>CaseCode</th>
-<th>Victim</th>
-<th>Phone</th>
-<th>Type</th>
-<th>Status</th>
-<th>Officer</th>
-{% comment %} <th>Update</th>
-<th>Delete</th> {% endcomment %}
+<th>CaseVictim</th>
+<th>ReporterPhone</th>
+<th>CaseType</th>
+<th>CaseStatus</th>
+<th>CaseOfficer</th>
+
+{% for case in cases %}
+{% if case.status != 'Finished' %} 
 <th>Add Suspect</th>
-<th>Suspects</th>
+{% endif %}
+{% endfor %}
+<th>Suspects Info</th>
 </tr>
 {% for case in cases %}
 		<tr>
@@ -35,11 +38,12 @@
 			<td>{{case.crimeType}}</td>			
 			<td>{{case.status}}</td>
 			<td>{{case.stationuser}}</td>
-			{% comment %} <td><a class="btn btn-sm btn-info" href="{% url 'update_case' case.id %}">Update</a></td>
-			<td><a class="btn btn-sm btn-danger" href="{% url 'delete_case' case.id %}">Delete</a></td> {% endcomment %}
-			<td><a class="btn btn-sm btn-primary" href="{% url 'create_suspect' case.id %}">Add Suspect</a></td>
-			<td><a class="btn btn-sm btn-primary" href="{% url 'viewCaseSuspects' case.id %}">View Suspects</a></td>
 
+			{% if case.status != 'Finished' %}        
+			<td><a class="btn btn-sm btn-primary" href="{% url 'create_suspect' case.id %}">Add Suspect</a></td>
+			{% endif %}
+			
+			<td><a class="btn btn-sm btn-primary" href="{% url 'viewCaseSuspects' case.id %}">View Suspects</a></td>
 		
 		</tr>
 {% endfor %}
