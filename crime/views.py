@@ -194,7 +194,7 @@ def homeStation(request):
 	ribstation = RIBStation.objects.get(user=user)
 	cases = Case.objects.filter(ribstation=ribstation)
 
-	paginator = Paginator(cases, 5)
+	paginator = Paginator(cases, 3)
 	
 	page_number = request.GET.get('page')
 	
@@ -206,6 +206,7 @@ def homeStation(request):
 	finished = cases.filter(status='Finished').count()
 	pending = cases.filter(status='Pending').count()
 	studied = cases.filter(status='Studied').count()
+
 	context = {'cases':cases, 'suspects':suspects,
     'total_casess':total_cases,'finished':finished,'studied':studied,
     'pending':pending, 'page_obj':page_obj }
@@ -226,9 +227,14 @@ def homeOfficer(request):
 	finished = cases.filter(status='Finished').count()
 	pending = cases.filter(status='Pending').count()
 	studied = cases.filter(status='Studied').count()
+	
+	paginator = Paginator(cases, 1)
+	page_number = request.GET.get('page')
+	page_obj = paginator.get_page(page_number)
+	
 	context = {'cases':cases, 'suspects':suspects,
     'total_casess':total_cases,'finished':finished,
-    'pending':pending,'studied':studied }
+    'pending':pending,'studied':studied , 'page_obj':page_obj}
 	messages.success(request, 'Logged In as Station Officer')
 	return render(request, 'crime/StationOfficer/DashboardOfficer.html', context)
 

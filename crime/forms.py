@@ -81,6 +81,11 @@ class CaseForm(forms.ModelForm):
             'case_desc':'Case Description',
             'stationuser':'Case Officer',
             }
+        
+        widgets = {
+            'case_name': forms.TextInput(attrs={'placeholder':'RIBCASE00001VIO'}),
+            }
+
 class RibstationForm(forms.ModelForm):
     class Meta:
         model = RIBStation
