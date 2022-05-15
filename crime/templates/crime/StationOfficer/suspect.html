@@ -65,17 +65,12 @@
 	<div class="col-md">
 		<div class="card card-body">
 			<table class="table table-sm">
-				
-	{% comment %} Report Generation of primary suspect to PDF {% endcomment %}
 
-				{% comment %} <tr><a class="btn btn-primary  btn-sm btn-block" href="{% url 'primaryOrReleaseReport' suspect.id %}">Generate Suspect Decision on PDF</a> {% endcomment %}
-					
 					<th>Suspect</th>
 					<th>Evidence Type</th>
 					<th>Notes on the Evidence</th>
 					 <th>Evidence Photo</th>
-					 {% comment %} <th>Update</th>
-					<th>Remove</th>  {% endcomment %}
+				
 				</tr>
 				{% for evidence in evidences %}
 
@@ -86,9 +81,7 @@
 					<td><img src="{{evidence.evidencerimage.url}}" alt="Evidence Photo" width="90" height="50"></td>
 					<td>
 					</td>
-					 {% comment %} <td><a class="btn btn-sm btn-info" href="{% url 'update_evidence' suspect.id %}">Modify</a></td>  {% endcomment %}
-					{% comment %} <td><a class="btn btn-sm btn-danger" href="{% url 'delete_suspect' suspect.id %}">Delete</a></td> {% endcomment %}
-				</tr>
+
 				{% endfor %}
 			</table>
 		</div>

@@ -157,7 +157,7 @@ class StationUser(models.Model):
     gender = models.CharField(max_length=1, choices=GENDER,)
     phone = models.CharField(max_length=10, blank=True, null=True,)
     email = models.CharField(max_length=50, blank=True, null=True,)
-    officerimage = models.ImageField(upload_to='images/', max_length=154, blank=True, null=True)
+    officerimage = models.ImageField(upload_to='upload/', blank=True, null=True)
     rank = models.CharField(max_length=30, choices=RANK, null=True,)
     recruit_year = models.IntegerField(null=True, blank=True)
     ribstation = models.ForeignKey(RIBStation, on_delete=models.CASCADE, null=True, blank=True)

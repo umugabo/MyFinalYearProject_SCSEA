@@ -30,6 +30,8 @@ urlpatterns = [
     path('createRIBStation/', views.createRIBStation, name="createRIBStation"),
     path('createOfficer/', views.createOfficer, name="createOfficer"),
     path('officerList/', views.officerList, name="officerList"),
+    path('officerListHQ/', views.officerListHQ, name="officerListHQ"),
+
     path('RIBstationList/', views.RIBstationList, name="RIBstationList"),
     path('suspect/<str:pk_susp>/', views.suspect, name="suspect"),
     path('witnes/<str:pk_susp>/', views.witnes, name="witnes"),

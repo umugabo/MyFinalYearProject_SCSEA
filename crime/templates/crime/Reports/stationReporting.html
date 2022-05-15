@@ -357,7 +357,7 @@ const ctx = document.getElementById('myChart').getContext('2d');
 const myChart = new Chart(ctx, {
     type: 'doughnut',
     data: {
-        labels: ['Male', 'Female'],
+        labels: ['Male Officers', 'Female Officers'],
         datasets: [{
             label: '# of Gender per RIB Station',
             data: ['{{male}}', '{{female}}'],

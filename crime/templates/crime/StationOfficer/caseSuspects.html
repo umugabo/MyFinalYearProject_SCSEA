@@ -20,13 +20,11 @@
                         <th>Date Arrested</th>
                         <!-- <th>Crime type</th> -->
                         <th>Relation</th>
-                        {% for suspect in suspects %}
-                        {% if suspect.suspect_status != 'primary_suspect' %}  
+                       
                         <th>Questionaire</th>
                         <th>Attach Evidence</th>
                         <th>Link Witness</th>
-                        {% endif %}
-                        {% endfor %}
+                       
                         <th>Suspect Decision Report</th>
                         
                         </tr>
@@ -36,7 +34,6 @@
                                                 <td>{{suspect.f_name}} {{suspect.l_name}}</td>
                                                 <td>{{suspect.phone}}</td>
                                                 <td>{{suspect.date_arrested}}</td>
-                                                <!-- <td>{{suspect.case}}</td> -->
                                                 <td>{{suspect.relation}}</td>
 
                                                 {% if suspect.suspect_status != 'primary_suspect' %}  
@@ -44,7 +41,7 @@
                                                 <td><a class="btn btn-sm btn-info" href="{% url 'suspect' suspect.id %}">View Evidence</a></td>
                                                 <td><a class="btn btn-sm btn-info" href="{% url 'witnes' suspect.id%}">View Witness</a></td>
                                                 {% endif %}
-                                                {% comment %} Function that present primary suspect report decision {% endcomment %}
+                                                
                                                 <td><a class="btn btn-sm btn-warning" href="{% url 'findPrimarySuspect' suspect_pk=suspect.id %}">Generate Suspect Decision on this case</a></td></tr>
                                                 
                         

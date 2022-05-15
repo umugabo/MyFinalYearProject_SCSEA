@@ -35,7 +35,7 @@
 	<div class="col-md-12">
 		<div class="card card-body">
             
-			<form action="{% url 'createOfficer' %}" method="POST">
+			<form action="{% url 'createOfficer' %}" method="POST" enctype="multipart/form-data">
 				{% csrf_token %}
 				<div class="contain">
 				<div class="form-group">

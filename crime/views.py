@@ -57,11 +57,7 @@ def register_ribofficer(request):
             username = form.cleaned_data.get('username')
             group = Group.objects.get(name='StationUser')
             user.groups.add(group)
-			
-
-          
-            # messages.success(request, 'RIB Agent has been successfully registered')
-            
+	
             return redirect('createOfficer')
     
     context = {'form':form}
@@ -313,6 +309,14 @@ def officerList(request):
 	officers = StationUser.objects.filter(ribstation=ribstation)
 	return render(request, 'crime/RIBStation/officerList.html', {'officers':officers})
 
+
+def officerListHQ(request):
+	# user = request.user
+	# ribstation = RIBStation.objects.get(user=user)
+
+	officers = StationUser.objects.all()
+	return render(request, 'crime/RIBHQ/Caseofficers.html', {'officers':officers})
+
 def caseList(request):
 	user = request.user
 	ribstation = RIBStation.objects.get(user=user)
@@ -348,7 +352,8 @@ def criminalRecord(request):
 	suspects = Suspect.objects.all()
 	myFilter = SuspectFilter(request.GET, queryset=suspects)
 	suspects = myFilter.qs 
-    
+	# suspect = Suspect.objects.get(id=pk_suspect)
+	# case = suspect.case_set.first()
 	context = {'suspects':suspects,
 	'myFilter':myFilter}
 	return render(request, 'crime/RIBHQ/criminalRecordList.html', context)
@@ -822,8 +827,8 @@ def ClosedCaseSuspects(request, case_pk):
 
 	caseSuspects = Case.objects.get(id=case_pk)
 	suspects = caseSuspects.suspects.all()
-
-	context = {'suspects':suspects, 'caseSuspects':caseSuspects}
+	officer = caseSuspects.stationuser
+	context = {'suspects':suspects,'officer':officer, 'caseSuspects':caseSuspects}
 	return render(request, 'crime/RIBStation/SuspectsForClosedcase.html', context)
 
 def some_view(request):

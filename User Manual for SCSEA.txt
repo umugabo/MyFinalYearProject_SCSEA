@@ -6,11 +6,20 @@ The system has got Four type of Users
    *Password:investigation
 
 2)RIB STATION
-   *UserName:Remerastation,KicukiroStation,RwezamenyoStation
+   *UserName:Remerastation
+             KicukiroStation
+             RwezamenyoStation
    *Password:investigation
 
 3)Station Users
-   *UserName:Lt.Bruno,Lt.Patrick,Lt.Alfred
+   *UserName:Officer.Bruno.REM
+            Officer.Divine.KIC
+            Officer.Alfred.RWE
+            Officer.Fidele.RWE
+            Officer.Muvunyi.MHR
+            Officer.Macumu.MUH
+            Officer.Eric.REM
+            Officer.Tumusiime.NYA
    *Password:investigation
 
 4)RIB Super User

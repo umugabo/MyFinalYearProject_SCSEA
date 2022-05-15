@@ -12,27 +12,23 @@
 <h5>Crime Case Assigned To Me:</h5>
 <hr>
 		<div class="card card-body">
-			{% comment %} <a class="btn btn-primary  btn-sm btn-block" href="{% url 'create_case' %}">Add Crime Case
-</a> {% endcomment %}
+
 <table class="table table-sm">
 <tr>
-	{% for case in cases %}
-{% if case.status == 'Pending' %} 
+
 <th>CaseCode</th>
 <th>CaseVictim</th>
 <th>ReporterPhone</th>
 <th>CaseType</th>
 <th>CaseStatus</th>
 <th>CaseOfficer</th>
-{% endif %}
-{% endfor %}
 
-{% for case in cases %}
-{% if case.status != 'Finished' and case.status != 'Studied' %} 
-<th>Add Suspect</th>
-{% endif %}
-{% endfor %}
+
+
+
 <th>Suspects Info</th>
+
+
 </tr>
 {% for case in page_obj %}
 		<tr>
@@ -43,12 +39,15 @@
 			<td>{{case.status}}</td>
 			<td>{{case.stationuser}}</td>
 
-			{% if case.status != 'Finished' %}        
+			{% if case.status == 'Pending' %}        
 			<td><a class="btn btn-sm btn-primary" href="{% url 'create_suspect' case.id %}">Add Suspect</a></td>
 			{% endif %}
-			
+            {% if case.status == 'Studied' %}        
+			<td><a class="btn btn-sm btn-primary" href="{% url 'create_suspect' case.id %}">Add Suspect</a></td>
+			{% endif %}
+			{% if case.status != 'Pending' %}   
 			<td><a class="btn btn-sm btn-primary" href="{% url 'viewCaseSuspects' case.id %}">View Suspects</a></td>
-		
+            {% endif %}
 		</tr>
 {% endfor %}
 
