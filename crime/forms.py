@@ -83,7 +83,7 @@ class CaseForm(forms.ModelForm):
             }
         
         widgets = {
-            'case_name': forms.TextInput(attrs={'placeholder':'RIBCASE00001VIO'}),
+            'case_name': forms.TextInput(attrs={'value':'RIBCASE00237'}),
             }
 
 class RibstationForm(forms.ModelForm):
