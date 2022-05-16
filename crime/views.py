@@ -352,11 +352,22 @@ def createCase(request):
 			case.ribstation = ribstation
 			case.status = 'Pending'
 			case.save()
+			reporterPhoneNumber = request.POST['reporter_phone']
+			reporterName = request.POST['reporter_name']
+			send_sms_to_reporter(reporterPhoneNumber,reporterName)
 			messages.success(request, 'Case has been Innitiated Successfully')
 			return redirect('caseList')
 
 	context = {'form':form}
 	return render(request, 'crime/RIBStation/case_form.html', context)
+
+"""
+	Method to send an sms to the reporter that his/her case was successfully received.
+"""
+def send_sms_to_reporter(receiver, name):
+    message = f'Bwana,' + name + \
+        ' ikirego cyawe cyakirewe neza , Murakoze '
+    Suspect.send_sms(receiver, message)
 
 def updateCase(request, pk):
 
