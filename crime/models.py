@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 import africastalking
-
+from datetime import datetime
 
 # Create your models here.
 
@@ -242,11 +242,11 @@ class Crime(models.Model):
 
 
 class Case(models.Model):
-    case_name = models.CharField(max_length=7)
+    case_name = models.CharField(max_length=20)
     victim_name = models.CharField(max_length=90, blank=True, null=True)
     victim_age = models.DateField(blank=True, null=True)
     reporter_name = models.CharField(max_length=90, blank=True, null=True)
-    reporter_phone = models.CharField(max_length=10, blank=True, null=True)
+    reporter_phone = models.CharField(max_length=13, blank=True, null=True)
     victim_address = models.CharField(max_length=90, blank=True, null=True)
     crimeType = models.CharField(max_length=30,null=True, choices=CRIMETYPE)
     case_desc = models.TextField()
@@ -254,9 +254,23 @@ class Case(models.Model):
     suspects = models.ManyToManyField(Suspect, blank=True, null=True)
     ribstation = models.ForeignKey(RIBStation, on_delete=models.CASCADE, null=True, blank=True)
     status = models.CharField(max_length=15, choices=STATUS)
+    case_number = models.CharField(max_length=100, unique=True, blank=True, null=True)
     
     def __str__(self):
         return self.case_name
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.set_case_number()                                 # calling the set_case_number function
+
+    def set_case_number(self):
+        if not self.case_number: 
+            year = datetime.now().year                              # if case_number of the instance is blank
+            case_number = str(year)+"RIB" + "%05d" % (self.id ,)      # generating the case_number
+            case= Case.objects.get(id=self.id)     # getting the instance
+            case.case_number = case_number                           # allocating the value
+            case.save()
+
 
 
 

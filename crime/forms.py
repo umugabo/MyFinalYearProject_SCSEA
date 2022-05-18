@@ -71,7 +71,7 @@ class CaseForm(forms.ModelForm):
         # fields = '__all__'
         fields = ('case_name','crimeType','victim_name','reporter_name','victim_age','reporter_phone','victim_address','case_desc','stationuser', 'suspects')
         labels = {
-            'case_name':'Case Code',
+            'case_name':'Case Name',
             'crimeType':'Type Of Crime',
             'victim_name':'Victim Name',
             'victim_age':'Victim Aage',
@@ -83,7 +83,7 @@ class CaseForm(forms.ModelForm):
             }
         
         widgets = {
-            'case_name': forms.TextInput(attrs={'value':'RIBCASE00237'}),
+            'case_name': forms.TextInput(attrs={'placeholder':'Case name in brief'}),
             }
 
 class RibstationForm(forms.ModelForm):
