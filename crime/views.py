@@ -191,7 +191,7 @@ def homeHq(request):
 def homeStation(request):
 	user = request.user
 	ribstation = RIBStation.objects.get(user=user)
-	cases = Case.objects.filter(ribstation=ribstation)
+	cases = Case.objects.filter(ribstation=ribstation).order_by('-date_reported')
 
 	paginator = Paginator(cases, 3)
 	
@@ -218,7 +218,7 @@ def homeOfficer(request):
 	user = request.user
 	stationuser = StationUser.objects.get(user=user)
 	
-	cases = Case.objects.filter(stationuser=stationuser)
+	cases = Case.objects.filter(stationuser=stationuser).order_by('-date_reported')
 	
 	suspects = Suspect.objects.filter(stationuser=stationuser)
 	total_suspects = suspects.count()
