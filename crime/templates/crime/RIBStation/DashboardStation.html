@@ -21,6 +21,8 @@
 <th>ReporterPhone</th>
 <th>CaseStatus</th>
 <th>Officer Incharge</th>
+
+<th>Date Reported</th>
  <th colspan="2" class="text-center">Actions To Perform</th> 
 </tr>
 {% for case in page_obj %}
@@ -31,11 +33,11 @@
 			<td>{{case.reporter_phone}}</td>						
 			<td>{{case.status}}</td>
 			<td>{{case.stationuser}}</td>
-
+			<td>{{case.date_reported}}</td>
 			{% if case.status == 'Studied' %}
 
 			<td><a class="btn btn-sm btn-info" href="{% url 'errorUpdateCase' %}">Request Update</a></td>
-			<td><a class="btn btn-sm btn-danger" href="{% url 'errorDeleteCase' %}">Request Delete</a></td>
+			<td><a class="btn btn-sm btn-danger" href="{% url 'errorDeleteCase' case.id %}">Request Delete</a></td>
 			
 			{% endif %}
 			

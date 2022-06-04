@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome To SCSEA</title>
+    <link rel="shortcut icon" href="{%  static 'favicon.ico' %}">
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/></head>
@@ -22,7 +23,7 @@
 
 
     <div class="container"><br>
-    <h4 align="center">WELCOME TO SMART CRIME SCENE EVIDENCES ANALYSIS (SCSEA)</h4><center>
+    <h3 align="center">WELCOME TO SMART CRIME SCENE EVIDENCES ANALYSIS (SCSEA)</h3><center>
     <a href="{% url 'login_view' %}" style="background-color: white-blue" class="btn btn-primary btn-block mt-1" >LOGIN </a>
     </div>
     <div class="container">
@@ -51,10 +52,13 @@
                 <img src="{% static 'images/van.jpg' %}" alt="Los Angeles">
               </div>
               <div class="carousel-item">
-                <img src="{% static 'images/cimag.jpg' %}" alt="Chicago">
+                <img src="{% static 'images/wanted.jpg' %}" alt="Chicago">
               </div>
               <div class="carousel-item">
                 <img src="{% static 'images/inmate.jpg' %}" alt="Chicago">
+              </div>
+              <div class="carousel-item">
+                <img src="{% static 'images/cimag.jpg' %}" alt="Chicago">
               </div>
                <div class="carousel-item">
                 <img src="{% static 'images/Ca.jpg' %}" alt="New York">

@@ -46,6 +46,7 @@ STATUS = [
     ("Pending", "Pending"),
     ("Studied", "Studied"),
     ("Finished", "Finished"), 
+    ("Deleted", "Deleted"),
 ]
 VOTE = [
     ("Yes", "YES"),
@@ -127,8 +128,7 @@ class Evidence(models.Model):
     evidenceCategory = models.CharField(max_length=15, choices=EVIDENCECATEGORY, default="Select Category")
     evidence_note = models.TextField(max_length=255)
     level =  models.CharField(max_length=30, blank=False, choices=LEVEL_CHOICES, default='')
-    # evidencerimage = models.ImageField(upload_to='images', blank=True, null=True)
-    evidencerimage = models.ImageField(upload_to='upload/', null=True, blank=True)
+    evidencerimage = models.ImageField(upload_to='upload/', null=True, blank=True , default="anonymous-user.png",)
     def __str__(self):
         return self.title
         
@@ -255,6 +255,7 @@ class Case(models.Model):
     ribstation = models.ForeignKey(RIBStation, on_delete=models.CASCADE, null=True, blank=True)
     status = models.CharField(max_length=15, choices=STATUS)
     case_number = models.CharField(max_length=100, unique=True, blank=True, null=True)
+    date_reported = models.DateTimeField(auto_now_add=True,null=True) 
     
     def __str__(self):
         return self.case_name

@@ -25,7 +25,8 @@ from collections import Counter
 
 
 # Create your views here.
-
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBHeadquarter'])
 def error401(request):
 
     context = {}
@@ -36,10 +37,13 @@ def errorDelete(request):
     context = {}
     return render(request, 'crime/RIBHQ/deleteRequest.html', context)
 
-def errorDeleteCase(request):
-
-    context = {}
-    return render(request, 'crime/RIBStation/deleteRequest.html', context)
+def errorDeleteCase(request, case_pk):
+	case = Case.objects.get(id=case_pk) 
+	case.status = 'Deleted'
+	case.save()
+	
+	context = {'case':case}
+	return render(request, 'crime/RIBStation/deleteRequest.html', context)
 
 def errorUpdateCase(request):
 
@@ -375,7 +379,7 @@ def createCase(request):
 			reporterPhoneNumber = request.POST['reporter_phone']
 			reporterName = request.POST['reporter_name']
 			send_sms_to_reporter(reporterPhoneNumber,reporterName)
-			messages.success(request, 'Case has been Innitiated Successfully')
+			messages.success(request, 'Case has been Innitiated Successfully and Repoter has been Notified')
 			return redirect('caseList')
 
 	context = {'form':form}
@@ -385,7 +389,7 @@ def createCase(request):
 	Method to send an sms to the reporter that his/her case was successfully received.
 """
 def send_sms_to_reporter(receiver, name):
-    message = f'Bwana,' + name + \
+    message = f'Bwana/Madame,' + name + \
         ' ikirego cyawe cyakirewe neza , Murakoze '
     Suspect.send_sms(receiver, message)
 
@@ -415,6 +419,8 @@ def deleteCase(request, pk):
 	return render(request, 'crime/RIBStation/deleteCase.html', context)
 
 
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['StationUser'])
 def createSuspect(request, case_pk):
 	user = request.user
 	case = Case.objects.get(id=case_pk) 
@@ -430,7 +436,7 @@ def createSuspect(request, case_pk):
 			case.save()
 			suspect.save()
 			case.suspects.add(suspect)
-			messages.success(request, 'Suspect has been Linked to case The Successfully')
+			messages.success(request, 'Suspect has been Linked to The case Successfully')
 			return redirect('crimeSuspect')
 
 	context = {'form':form, 'case':case}
@@ -821,6 +827,16 @@ def stationClosedCases(request):
 	
 	return render(request, 'crime/RIBStation/casesClosed.html', context)
 
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBHeadquarter'])
+def CanceledCases(request):
+	rib_station = RIBStation.objects.all()
+	cases = Case.objects.filter(status='Deleted')
+	suspects = Suspect.objects.filter(ribstation=rib_station)
+	
+	context = {'cases':cases, 'suspects':suspects,'rib_station':rib_station}
+	
+	return render(request, 'crime/RIBHQ/canceledCase.html', context)
 
 @login_required(login_url='login_view')
 @allowed_users(allowed_roles=['StationUser'])
@@ -833,7 +849,7 @@ def analyseCaseSuspects(request, case_pk):
 	return render(request, 'crime/StationOfficer/caseSuspectsAnalysis.html', context)
 
 @login_required(login_url='login_view')
-@allowed_users(allowed_roles=['RIBStation'])
+# @allowed_users(allowed_roles=['RIBStation'])
 def ClosedCaseSuspects(request, case_pk):
 
 	caseSuspects = Case.objects.get(id=case_pk)
@@ -841,6 +857,17 @@ def ClosedCaseSuspects(request, case_pk):
 	officer = caseSuspects.stationuser
 	context = {'suspects':suspects,'officer':officer, 'caseSuspects':caseSuspects}
 	return render(request, 'crime/RIBStation/SuspectsForClosedcase.html', context)
+
+
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBHeadquarter'])
+def RIBClosedCaseSuspects(request, case_pk):
+
+	caseSuspects = Case.objects.get(id=case_pk)
+	suspects = caseSuspects.suspects.all()
+	officer = caseSuspects.stationuser
+	context = {'suspects':suspects,'officer':officer, 'caseSuspects':caseSuspects}
+	return render(request, 'crime/RIBHQ/RIBSuspectsForClosedcase.html', context)
 
 def some_view(request):
 	suspect = Suspect.objects.all()

@@ -38,16 +38,18 @@
 				{{form.crimeType|as_crispy_field}}
 				{{form.victim_name|as_crispy_field}}
 				{{form.victim_age|as_crispy_field}}
-				{{form.reporter_name|as_crispy_field}}
-				{{form.reporter_phone|as_crispy_field}}
 			</div>
 			<div class="form-group">
+				{{form.reporter_name|as_crispy_field}}
+				{{form.reporter_phone|as_crispy_field}}
 				{{form.victim_address|as_crispy_field}}
 				{{form.stationuser|as_crispy_field}}
+			</div>
+			<div class="form-group">
 				{{form.case_desc|as_crispy_field}}
 			
 				<center>
-				<a class="btn btn-warning" href="{% url 'home_Station' %}">Cancel</a>
+				<a class="btn btn-warning" href="{% url 'home_Station' %}">Cancel</a>&nbsp;&nbsp;
 				<input type="submit" name="Submit" class="btn btn-info"></div>
 			</form>
 

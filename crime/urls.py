@@ -22,7 +22,7 @@ urlpatterns = [
     path('error401', views.error401, name='error401'),
     path('errorDelete', views.errorDelete, name='errorDelete'),
     path('errorUpdateCase', views.errorUpdateCase, name='errorUpdateCase'),
-    path('errorDeleteCase', views.errorDeleteCase, name='errorDeleteCase'),
+    path('errorDeleteCase/<str:case_pk>/', views.errorDeleteCase, name='errorDeleteCase'),
     path('home_Hq/', views.homeHq, name="home_Hq"),
     path('home_Station/', views.homeStation, name="home_Station"),
     path('home_Officer/', views.homeOfficer, name="home_Officer"),
@@ -31,7 +31,7 @@ urlpatterns = [
     path('createOfficer/', views.createOfficer, name="createOfficer"),
     path('officerList/', views.officerList, name="officerList"),
     path('officerListHQ/', views.officerListHQ, name="officerListHQ"),
-
+    path('CanceledCases/', views.CanceledCases, name="CanceledCases"),
     path('RIBstationList/', views.RIBstationList, name="RIBstationList"),
     path('suspect/<str:pk_susp>/', views.suspect, name="suspect"),
     path('witnes/<str:pk_susp>/', views.witnes, name="witnes"),
@@ -65,8 +65,7 @@ urlpatterns = [
     path('casesAnalyse/', views.casesAnalyse, name="casesAnalyse"),
     path('stationClosedCases/', views.stationClosedCases, name="stationClosedCases"),
     path('ClosedCaseSuspects/<str:case_pk>/', views.ClosedCaseSuspects, name="ClosedCaseSuspects"),
-
-
+    path('RIBClosedCaseSuspects/<str:case_pk>/', views.RIBClosedCaseSuspects, name="RIBClosedCaseSuspects"),
     path('analyseCaseSuspects/<str:case_pk>/', views.analyseCaseSuspects, name="analyseCaseSuspects"),
     path('generalStatisticalReport/', views.generalStatisticalReport, name="generalStatisticalReport"),
     path('some_view/', views.some_view, name="some_view"),

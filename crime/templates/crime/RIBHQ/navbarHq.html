@@ -37,6 +37,12 @@
       <li class="{% if 'AnswerList' in request.path %} nav-item active {% endif %}">
         <a class="nav-link" href="{% url 'AnswerList' %}">RIB Answers</a>
       </li>
+      <li class="{% if 'CanceledCases' in request.path %} nav-item active {% endif %}">
+        <a class="nav-link" href="{% url 'CanceledCases' %}">Cases Canceled</a>
+      </li>
+      <li class="{% if 'criminalRecord' in request.path %} nav-item active {% endif %}">
+        <a class="nav-link" href="{% url 'criminalRecord' %}">Criminal Record</a>
+      </li> 
       <li class="{% if 'generalStatisticalReport' in request.path %} nav-item active {% endif %}">
         <a class="nav-link" href="{% url 'generalStatisticalReport' %}">General Report</a>
       </li>
@@ -44,9 +50,7 @@
       <li class="{% if 'ribStationReport' in request.path %} nav-item active {% endif %}">
         <a class="nav-link" href="{% url 'ribStationReport' %}">Statistical Reports</a>
       </li>   
-      <li class="{% if 'criminalRecord' in request.path %} nav-item active {% endif %}">
-        <a class="nav-link" href="{% url 'criminalRecord' %}">Criminal Record Reports</a>
-      </li>           
+                
   </div>
   
    <ul class="list-unstyled CTAs">
