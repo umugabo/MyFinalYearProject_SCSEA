@@ -344,11 +344,11 @@
 <br><br>
 <div class="row">
 	<div class="col-md-6">
-		<canvas id="myChart" width="200" height="100"></canvas>
+		<canvas id="myChart" width="200" height="80"></canvas>
 	</div>
 
 	<div class="col-md-6">
-		<canvas id="myChart1" width="200" height="100"></canvas>
+		<canvas id="myChart1" width="200" height="80"></canvas>
 	</div>
 </div>
 <br><br>
@@ -357,7 +357,7 @@ const ctx = document.getElementById('myChart').getContext('2d');
 const myChart = new Chart(ctx, {
     type: 'doughnut',
     data: {
-        labels: ['Male', 'Female'],
+        labels: ['Male Officers', 'Female Officers'],
         datasets: [{
             label: '# of Gender per RIB Station',
             data: ['{{male}}', '{{female}}'],
@@ -387,8 +387,8 @@ const myChart1 = new Chart(ctx1, {
     data: {
         labels: ['Captain', 'Major' , 'General'],
         datasets: [{
-            label: '# of Rank Of Officer',
-            data: ['{{Captain}}', '{{male}}', '{{female}}'],
+            label: '# of Rank Of Station RIB Officers',
+            data: ['{{Captain}}', '{{Major}}', '{{General}}'],
             backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
                 'rgba(54, 162, 235, 0.2)',

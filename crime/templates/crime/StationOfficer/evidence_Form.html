@@ -34,8 +34,9 @@
 			<form action="" method="POST" enctype="multipart/form-data">
 				{% csrf_token %}
 				<div class="contain">
+				{{form.title|as_crispy_field}}			
 				{{form.evidenceCategory|as_crispy_field}}			
-				{{form.points|as_crispy_field}}
+				{{form.level|as_crispy_field}}
 				{{form.evidencerimage|as_crispy_field}}
 				{{form.evidence_note|as_crispy_field}}	
 				

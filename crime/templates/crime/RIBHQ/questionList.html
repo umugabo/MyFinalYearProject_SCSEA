@@ -24,12 +24,14 @@
 						<tr>
                             <th>Question Id</th>
 							<th>Question Name</th>
+							<th>CrimeType Question</th>
 														
 						</tr>
 						{% for question in questions %}
 							<tr>
 								<td>{{question.id}}</td>
 								<td>{{question.questionName}}</td>
+								<td>{{question.crimeType}}</td>
 								
 							</tr>
 						{% endfor %}

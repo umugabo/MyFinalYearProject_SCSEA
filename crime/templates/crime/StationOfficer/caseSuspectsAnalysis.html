@@ -19,6 +19,7 @@
                         <th>Phone</th>
                         <th>Date Arrested</th>
                         <th>Relation</th>
+                        <th>Suspect Report</th>
                         
                         </tr>
                         {% for suspect in suspects %}
@@ -26,13 +27,13 @@
                                                 <td>{{suspect.suspectNID}}</td>
                                                 <td>{{suspect.f_name}} {{suspect.l_name}}</td>
                                                 <td>{{suspect.phone}}</td>
-                                                <td>{{suspect.date_arrested}}</td>
-                                    
+                                                <td>{{suspect.date_arrested}}</td>                                    
                                                 <td>{{suspect.relation}}</td>
+                                                <td>{{suspect.suspect_status}}</td>
                                
                                             </tr>
                                         {% endfor %}
-                                        <a class="btn btn-sm btn-info" href="{% url 'presentPrimarySuspect'%}">Present Primary Suspects on this case</a>
+                                        {% comment %} <a class="btn btn-sm btn-info" href="{% url 'presentPrimarySuspect'%}">Present Primary Suspects on this case</a> {% endcomment %}
 
                         </table>
 				</div>

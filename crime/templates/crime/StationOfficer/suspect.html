@@ -14,16 +14,6 @@
 	<br>
 
 <div class="row">
-	<div class="col-md">
-		<div class="card card-body">
-			<h5>Options:</h5>
-			<hr>
-			<a class="btn btn-outline-info  btn-sm btn-block" href="{% url 'update_suspect' suspect.id %}">Update Suspect</a>
-			<a class="btn btn-outline-danger  btn-sm btn-block" href="{% url 'delete_suspect' suspect.id %}">Delete Suspect</a>
-			<a class="btn btn-outline-warning  btn-sm btn-block" href="{% url 'create_evidence' suspect.id %}">Link To Evidence</a>
-
-		</div>
-	</div>
 
 	<div class="col-md">
 		<div class="card card-body">
@@ -32,6 +22,16 @@
 			<p>Full Name:  {{suspect.f_name}} {{suspect.l_name}}</p>
 			<p>Identification: {{suspect.suspectNID}}</p>
 			<p>Phone: {{suspect.phone}}</p>
+		</div>
+	</div>
+	<div class="col-md">
+		<div class="card card-body">
+			<h5>Options:</h5>
+			<hr>
+			<a class="btn btn-outline-info  btn-sm btn-block" href="{% url 'update_suspect' suspect.id %}">Update Suspect</a>
+			<a class="btn btn-outline-danger  btn-sm btn-block" href="{% url 'witnes' suspect.id %}">Link with Witness</a>
+			<a class="btn btn-outline-warning  btn-sm btn-block" href="{% url 'create_evidence' suspect.id %}">Link To Evidence</a>
+
 		</div>
 	</div>
 
@@ -52,7 +52,7 @@
 	<div class="col">
 		<div class="card card-body">
 			<form method="get">
-			<h5>The Suspect <strong>"{{suspect.l_name}}</strong>" has the following Evidences</h5>
+			<h5>The Suspect <strong>"{{suspect.l_name}} {{suspect.f_name}}</strong>" has the following Evidences</h5>
 			
 		  </form>
 		</div>
@@ -65,13 +65,12 @@
 	<div class="col-md">
 		<div class="card card-body">
 			<table class="table table-sm">
-				<tr><a class="btn btn-primary  btn-sm btn-block" href="{% url 'printEvidence' %}">Generate PDF</a>
+
 					<th>Suspect</th>
 					<th>Evidence Type</th>
 					<th>Notes on the Evidence</th>
 					 <th>Evidence Photo</th>
-					 {% comment %} <th>Update</th>
-					<th>Remove</th>  {% endcomment %}
+				
 				</tr>
 				{% for evidence in evidences %}
 
@@ -79,13 +78,10 @@
 					<td>{{suspect.f_name}} {{suspect.l_name}}</td>
 					<td>{{evidence.evidenceCategory }}</td>
 					<td>{{evidence.evidence_note}}</td>
-					{% comment %} <td>{{evidence.officerimage}}</td> {% endcomment %}
-					<td><img src="{{request.user.evidence.evidencerimage.url}}" ></td>
+					<td><img src="{{evidence.evidencerimage.url}}" alt="Evidence Photo" width="90" height="50"></td>
 					<td>
 					</td>
-					 {% comment %} <td><a class="btn btn-sm btn-info" href="{% url 'update_evidence' suspect.id %}">Modify</a></td>  {% endcomment %}
-					{% comment %} <td><a class="btn btn-sm btn-danger" href="{% url 'delete_suspect' suspect.id %}">Delete</a></td> {% endcomment %}
-				</tr>
+
 				{% endfor %}
 			</table>
 		</div>

@@ -64,20 +64,28 @@ class DateInput(forms.DateInput):
     input_type = 'date'
 
 class CaseForm(forms.ModelForm):
+    victim_age =forms.DateField(widget=DateInput)
+    
     class Meta:
         model = Case
         # fields = '__all__'
-        fields = ('case_name','crimeType','victim_name','reporter_name','reporter_phone','victim_address','case_desc','stationuser', 'suspects')
+        fields = ('case_name','crimeType','victim_name','reporter_name','victim_age','reporter_phone','victim_address','case_desc','stationuser', 'suspects')
         labels = {
-            'case_name':'Case Code',
+            'case_name':'Case Name',
             'crimeType':'Type Of Crime',
             'victim_name':'Victim Name',
+            'victim_age':'Victim Aage',
             'reporter_name':'Reporter Name',
             'reporter_phone':'Reporter Phone',
             'victim_address':'Address of the Victim',
             'case_desc':'Case Description',
             'stationuser':'Case Officer',
             }
+        
+        widgets = {
+            'case_name': forms.TextInput(attrs={'placeholder':'Case name in brief'}),
+            }
+
 class RibstationForm(forms.ModelForm):
     class Meta:
         model = RIBStation
@@ -89,6 +97,7 @@ class RibstationForm(forms.ModelForm):
             }
 
 class SuspectForm(forms.ModelForm):
+    dob =forms.DateField(widget=DateInput)
     class Meta:
         model = SuspectCriminalRecord
         model = Suspect
@@ -115,11 +124,11 @@ class SuspectForm(forms.ModelForm):
 class EvidenceForm(forms.ModelForm):
     class Meta:
         model = Evidence
-        fields = ('evidenceCategory','evidence_note','evidencerimage','points')
+        fields = ('title','evidenceCategory','evidence_note','evidencerimage','level')
         labels = {
             'evidenceCategory':'Evidence Category',
             'evidencerimage':'Evidence Photo',
-            'points':'Points Gainned',
+            'level':'Evidence level',
             'evidence_note':'Short note',
             }
 
@@ -181,23 +190,25 @@ class ReporterForm(forms.ModelForm):
 class QuestionForm(forms.ModelForm):
     class Meta:
         model = QuestionSuspect
-        fields = ('questionId','questionName',)
+        fields = ('questionId','questionName','crimeType')
         labels = {
             'questionId': 'Id of the Question',
             'questionName':'Describe the Question To Be Asked Suspects',
+            'crimeType':'Crime Category',
             }
         widgets = {
-            'questionId': forms.TextInput(attrs={'value':'VIO'}),
+            'questionId': forms.TextInput(attrs={'placeholder':'Question ID'}),
             'questionName': forms.Textarea(attrs={'placeholder':'Question To be asked'})
         }
 
 class QuestionRepoForm(forms.ModelForm):
     class Meta:
         model = QuestionReporter
-        fields = ('questionId','questionName')
+        fields = ('questionId','questionName','crimeType')
         labels = {
             'questionId': 'Id of the Question',
             'questionName':'Describe the Question To Be Asked Witness',
+            'crimeType':'Crime Category',
             }
 
 class AnswerForm(forms.ModelForm):

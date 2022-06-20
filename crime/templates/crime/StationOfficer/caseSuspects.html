@@ -9,9 +9,9 @@
 		<div class="row">
 			<div class="col-md">
 				<div class="card card-body">
-                    <h3>Case Suspect of the case with Code:"{{case.case_name}}" Case type:"{{case.crimeType}}"</h3>
+                    <h3>Case Suspect of the case with Code:"{{case.case_number}}" Case type:"{{case.crimeType}}"</h3>
 				</div>
-				<div class="card card-body">
+				
 					<table class="table table-sm">
                         <tr>
                         <th>Identification</th>
@@ -20,25 +20,32 @@
                         <th>Date Arrested</th>
                         <!-- <th>Crime type</th> -->
                         <th>Relation</th>
+                       
                         <th>Questionaire</th>
                         <th>Attach Evidence</th>
                         <th>Link Witness</th>
+                       
+                        <th>Suspect Decision Report</th>
                         
                         </tr>
                         {% for suspect in suspects %}
-                                            <tr>
+                                            <br>
                                                 <td>{{suspect.suspectNID}}</td>
                                                 <td>{{suspect.f_name}} {{suspect.l_name}}</td>
                                                 <td>{{suspect.phone}}</td>
                                                 <td>{{suspect.date_arrested}}</td>
-                                                <!-- <td>{{suspect.case}}</td> -->
                                                 <td>{{suspect.relation}}</td>
-                                                <td><a class="btn btn-sm btn-info" href="{% url 'createCAQS' suspect.id %}">Ask Questions</a></td>
+
+                                                {% if suspect.suspect_status != 'primary_suspect' %}  
+                                                <td><a class="btn btn-sm btn-info" href="{% url 'createCAQS' pk_suspect=suspect.id crimeType=case.crimeType %}">Ask Questions</a></td>
                                                 <td><a class="btn btn-sm btn-info" href="{% url 'suspect' suspect.id %}">View Evidence</a></td>
                                                 <td><a class="btn btn-sm btn-info" href="{% url 'witnes' suspect.id%}">View Witness</a></td>
+                                                {% endif %}
+                                                
+                                                <td><a class="btn btn-sm btn-warning" href="{% url 'findPrimarySuspect' suspect_pk=suspect.id %}">Generate Suspect Decision on this case</a></td></tr>
                                                 
                         
-                                            </tr>
+                                            </br>
                                         {% endfor %}
                         </table>
 				</div>

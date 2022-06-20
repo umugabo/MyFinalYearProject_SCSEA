@@ -15,16 +15,18 @@ import datetime
 from django.db.models import Count
 from django.contrib import messages
 from .decorators import unauthenticated_user, allowed_users
-from .forms import CrimeForm,CAQSForm,CAQWForm,AnswerForm,QuestionForm,QuestionRepoForm,StationUserForm,RibOfficerRegistrationForm,CaseForm,SuspectForm,EvidenceForm,RibstationForm,OfficerForm,ReporterForm
+from .forms import CrimeForm,CAQSForm,CAQWForm,AnswerForm,QuestionForm,QuestionRepoForm,StationUserForm,RibOfficerRegistrationForm,CaseForm,SuspectForm,EvidenceForm,RibstationForm,OfficerForm,ReporterForm,StationNameRegistrationForm
 import reportlab
 import io
 from django.http import FileResponse
 from reportlab.pdfgen import canvas
 from .filters import SuspectFilter
+from collections import Counter
 
 
 # Create your views here.
-
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBHeadquarter'])
 def error401(request):
 
     context = {}
@@ -35,10 +37,18 @@ def errorDelete(request):
     context = {}
     return render(request, 'crime/RIBHQ/deleteRequest.html', context)
 
-def errorDeleteCase(request):
+def errorDeleteCase(request, case_pk):
+	case = Case.objects.get(id=case_pk) 
+	case.status = 'Deleted'
+	case.save()
+	
+	context = {'case':case}
+	return render(request, 'crime/RIBStation/deleteRequest.html', context)
+
+def errorUpdateCase(request):
 
     context = {}
-    return render(request, 'crime/RIBStation/deleteRequest.html', context)
+    return render(request, 'crime/RIBStation/updateRequest.html', context)
 
 
 def register_ribofficer(request):
@@ -50,13 +60,7 @@ def register_ribofficer(request):
             username = form.cleaned_data.get('username')
             group = Group.objects.get(name='StationUser')
             user.groups.add(group)
-			
-
-            StationUser.objects.create(
-                user=user,
-            )
-            # messages.success(request, 'RIB Agent has been successfully registered')
-            
+	
             return redirect('createOfficer')
     
     context = {'form':form}
@@ -70,19 +74,15 @@ def register_stationName(request):
         if form.is_valid():
             user = form.save()
             username = form.cleaned_data.get('username')
-            group = Group.objects.get(name='StationUser')
+            group = Group.objects.get(name='RIBStation')
             user.groups.add(group)
 			
-
-            StationUser.objects.create(
-                user=user,
-            )
-            # messages.success(request, 'Hospital Agent has been successfully registered')
+            # messages.success(request, 'RIBStation has been successfully registered')
             
-            return redirect('createOfficer')
+            return redirect('createRIBStation')
     
     context = {'form':form}
-    return render(request, 'crime/RIBStation/register_StationName.html', context)
+    return render(request, 'crime/RIBHQ/register_StationName.html', context)
 
 @unauthenticated_user
 def registerPage(request):
@@ -191,7 +191,7 @@ def homeHq(request):
 def homeStation(request):
 	user = request.user
 	ribstation = RIBStation.objects.get(user=user)
-	cases = Case.objects.filter(ribstation=ribstation)
+	cases = Case.objects.filter(ribstation=ribstation).order_by('-date_reported')
 
 	paginator = Paginator(cases, 3)
 	
@@ -205,6 +205,7 @@ def homeStation(request):
 	finished = cases.filter(status='Finished').count()
 	pending = cases.filter(status='Pending').count()
 	studied = cases.filter(status='Studied').count()
+
 	context = {'cases':cases, 'suspects':suspects,
     'total_casess':total_cases,'finished':finished,'studied':studied,
     'pending':pending, 'page_obj':page_obj }
@@ -217,7 +218,7 @@ def homeOfficer(request):
 	user = request.user
 	stationuser = StationUser.objects.get(user=user)
 	
-	cases = Case.objects.filter(stationuser=stationuser)
+	cases = Case.objects.filter(stationuser=stationuser).order_by('-date_reported')
 	
 	suspects = Suspect.objects.filter(stationuser=stationuser)
 	total_suspects = suspects.count()
@@ -225,9 +226,14 @@ def homeOfficer(request):
 	finished = cases.filter(status='Finished').count()
 	pending = cases.filter(status='Pending').count()
 	studied = cases.filter(status='Studied').count()
+	
+	paginator = Paginator(cases, 1)
+	page_number = request.GET.get('page')
+	page_obj = paginator.get_page(page_number)
+	
 	context = {'cases':cases, 'suspects':suspects,
     'total_casess':total_cases,'finished':finished,
-    'pending':pending,'studied':studied }
+    'pending':pending,'studied':studied , 'page_obj':page_obj}
 	messages.success(request, 'Logged In as Station Officer')
 	return render(request, 'crime/StationOfficer/DashboardOfficer.html', context)
 
@@ -259,7 +265,7 @@ def createRIBStation(request):
 		if form.is_valid():
 			form.save()
 			messages.success(request, 'RIBStation has been created Successfully')
-			return redirect('home_Hq')
+			return redirect('RIBstationList')
 
 	context = {'form':form}
 	return render(request, 'crime/RIBHQ/ribstation_Form.html', context)
@@ -294,7 +300,7 @@ def createOfficer(request):
 			stationUser.ribstation = ribstation
 			stationUser.save(stationUser)
 			messages.success(request, 'RIB Officer has been created Successfully')
-			return redirect('home_Station')
+			return redirect('officerList')
 
 	context = {'form':form}
 	return render(request, 'crime/RIBStation/officer_form.html', context)
@@ -306,6 +312,14 @@ def officerList(request):
 	officers = StationUser.objects.filter(ribstation=ribstation)
 	return render(request, 'crime/RIBStation/officerList.html', {'officers':officers})
 
+
+def officerListHQ(request):
+	# user = request.user
+	# ribstation = RIBStation.objects.get(user=user)
+
+	officers = StationUser.objects.all()
+	return render(request, 'crime/RIBHQ/Caseofficers.html', {'officers':officers})
+
 def caseList(request):
 	user = request.user
 	ribstation = RIBStation.objects.get(user=user)
@@ -313,9 +327,10 @@ def caseList(request):
 	return render(request, 'crime/RIBStation/caseList.html', {'cases':cases})
 
 def evidenceList(request):
-    evidences = Evidence.objects.all()
-    return render(request, 'crime/StationOfficer/evidenceList.html', {'evidences':evidences})
-
+	suspect = Suspect.objects.all()
+	evidences = Evidence.objects.all()
+	return render(request, 'crime/StationOfficer/evidenceList.html', {'suspect':suspect, 'evidences':evidences})
+	
 def witnes(request, pk_susp):
     suspect = Suspect.objects.get(id=pk_susp)
     reporters = suspect.reporters.all()
@@ -340,11 +355,15 @@ def criminalRecord(request):
 	suspects = Suspect.objects.all()
 	myFilter = SuspectFilter(request.GET, queryset=suspects)
 	suspects = myFilter.qs 
-    
+	# suspect = Suspect.objects.get(id=pk_suspect)
+	# case = suspect.case_set.first()
 	context = {'suspects':suspects,
 	'myFilter':myFilter}
 	return render(request, 'crime/RIBHQ/criminalRecordList.html', context)
     
+
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBStation'])
 
 def createCase(request):
 	user = request.user
@@ -357,11 +376,23 @@ def createCase(request):
 			case.ribstation = ribstation
 			case.status = 'Pending'
 			case.save()
-			messages.success(request, 'Case has been Innitiated Successfully')
+			reporterPhoneNumber = request.POST['reporter_phone']
+			reporterName = request.POST['reporter_name']
+			send_sms_to_reporter(reporterPhoneNumber,reporterName)
+			messages.success(request, 'Case has been Innitiated Successfully and Repoter has been Notified')
 			return redirect('caseList')
 
 	context = {'form':form}
 	return render(request, 'crime/RIBStation/case_form.html', context)
+
+"""
+	Method to send an sms to the reporter that his/her case was successfully received.
+"""
+def send_sms_to_reporter(receiver, name):
+    message = f'Bwana/Madame,' + name + \
+        ' ikirego cyawe cyakirewe neza , Murakoze '
+    Suspect.send_sms(receiver, message)
+
 
 def updateCase(request, pk):
 
@@ -372,7 +403,8 @@ def updateCase(request, pk):
 		form = CaseForm(request.POST, instance=case)
 		if form.is_valid():
 			form.save()
-			return redirect('home_Station')
+			messages.success(request, 'Case has been Updated Successfully')
+			return redirect('caseList')
 
 	context = {'form':form}
 	return render(request, 'crime/RIBStation/case_form.html', context)
@@ -387,6 +419,8 @@ def deleteCase(request, pk):
 	return render(request, 'crime/RIBStation/deleteCase.html', context)
 
 
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['StationUser'])
 def createSuspect(request, case_pk):
 	user = request.user
 	case = Case.objects.get(id=case_pk) 
@@ -402,7 +436,7 @@ def createSuspect(request, case_pk):
 			case.save()
 			suspect.save()
 			case.suspects.add(suspect)
-			messages.success(request, 'Suspect has been Linked to case The Successfully')
+			messages.success(request, 'Suspect has been Linked to The case Successfully')
 			return redirect('crimeSuspect')
 
 	context = {'form':form, 'case':case}
@@ -441,21 +475,112 @@ def deleteSuspect(request, case_pk):
 	context = {'item':suspect}
 	return render(request, 'crime/StationOfficer/deleteSuspect.html', context)
 
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['StationUser'])
 def createEvidence(request, suspect_pk):
+	# variable to store current evidence value.
+	current_evidence_rate = Suspect.objects.filter(id=suspect_pk).values_list('evidence_rate',flat=True)[0]
+	# Number of evidences for a suspect.
+
+	suspect_evidences_length = Suspect.objects.filter(id=suspect_pk).values_list("evidences", flat=True).count()
+
+	print(" sel "+str(suspect_evidences_length))
+	print(" current ev "+str(current_evidence_rate))
+
+	sel = 0
+	if current_evidence_rate == 0.0:
+		sel = 1
+	elif suspect_evidences_length == 1 :
+		sel = suspect_evidences_length + 1
+	else: 
+		sel = suspect_evidences_length + 1
+	"""
+	calculate the rate of evidence according to the evidence. 
+	"""
+	print("length is "+ str(suspect_evidences_length))
+	rate_for_easy = (current_evidence_rate + 20 ) / sel
+	rate_for_medium = (current_evidence_rate + 30 ) / sel
+	rate_for_Difficult = (current_evidence_rate + 50 ) / sel 
+
+
 	suspect = Suspect.objects.get(id=suspect_pk)
+
 	form = EvidenceForm()
 	if request.method == 'POST':
 	
 		form = EvidenceForm(request.POST, request.FILES)
 		if form.is_valid():
+			# print(str(form.cleaned_data['level']))
+			if str(form.cleaned_data['level'])  == 'Easy' :
+				Suspect.objects.filter(id=suspect_pk).update(evidence_rate=rate_for_easy)
+			if str(form.cleaned_data['level'])  == 'Middle' :
+				Suspect.objects.filter(id=suspect_pk).update(evidence_rate=rate_for_medium)
+			if str(form.cleaned_data['level'])  == 'Difficult' :
+				Suspect.objects.filter(id=suspect_pk).update(evidence_rate=rate_for_Difficult)
+
 			evidence = form.save()
 			suspect.evidences.add(evidence)
+
 			messages.success(request, 'Evidence has been Linked Successfully')
-			return redirect('home_Officer')
+			return redirect('evidence')
+
 
 	context = {'form':form, 'suspect':suspect}
 	return render(request, 'crime/StationOfficer/evidence_form.html', context)
 
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['StationUser'])
+
+def find_primary_suspects(request, suspect_pk):
+	
+	"""
+	implement calculation to add status of primary suspect after 
+	"""
+	suspects_rate = Suspect.objects.filter(id=suspect_pk).values_list('crime_rate',flat=True)[0]
+	evidences_rate = Suspect.objects.filter(id=suspect_pk).values_list('evidence_rate',flat=True)[0]
+	witness_rate = Suspect.objects.filter(id=suspect_pk).values_list('witness_rate',flat=True)[0]
+
+
+	print('suspect rate is' + str(suspects_rate))
+	print('evidence rate is' + str(evidences_rate))
+	print('witness rate is' + str(witness_rate))
+
+	"""
+	calculate the total of evidences rate over 50 plus the 
+	rate of suspect answers rate over 50 plus evidence rate over
+	"""
+	total_rate_over = (suspects_rate + evidences_rate + witness_rate) / 150
+	total_rate = total_rate_over * 100
+	print('the total is '+ str(total_rate))
+	
+	suspect_for_update = Suspect.objects.get(id=suspect_pk)
+
+	if total_rate >= 50:
+		# implement changing status to primary suspect here
+		print("primary suspect")
+		# suspect_for_update.update(suspect_status='primary_suspect')
+		suspect_for_update.suspect_status = 'primary_suspect'
+		suspect_for_update.save()
+	elif total_rate >=25 and total_rate < 50 :
+		#implement status middle status continue investigation
+		print("Continue investigation to suspect")
+		suspect_for_update.suspect_status = 'middle'
+		suspect_for_update.save()
+	else:
+		# implement Free
+		suspect_for_update.suspect_status = 'free'
+		suspect_for_update.save()
+		
+		# case status update
+	suspect = Suspect.objects.get(id=suspect_pk)
+	case = suspect.case_set.first()
+	case.status ='Finished'
+	case.save()
+
+
+	messages.success(request, 'Suspect Decision Analysed and Generated successfully')
+	context = {'suspect':Suspect.objects.get(id=suspect_pk), 'case':case, 'evidences':Suspect.objects.get(id=suspect_pk).evidences.all(),'evidence_count':Suspect.objects.get(id=suspect_pk).evidences.all().count()}
+	return render(request, 'crime/StationOfficer/suspectDecisionReport.html', context)
 
 
 def updateEvidence(request, pk):
@@ -481,7 +606,7 @@ def createReporter(request, suspect_pk):
 			reporter = form.save()
 			suspect.reporters.add(reporter)
 			messages.success(request, 'Witness has been Linked Successfully')
-			return redirect('home_Officer')
+			return redirect('crimeSuspect')
 
 	context = {'form':form, 'suspect':suspect}
 	return render(request, 'crime/StationOfficer/reporter_form.html', context)
@@ -549,37 +674,93 @@ def AnswerList(request):
     answers = Answer.objects.all()
     return render(request, 'crime/RIBHQ/answerList.html', {'answers':answers})
 
-def createCAQS(request, pk_suspect):
-	QuestionFormSet = inlineformset_factory(Suspect, CAQS, fields=('question', 'answer'), extra=10 )
+
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['StationUser'])
+def createCAQS(request, pk_suspect, crimeType):
+	questions = QuestionSuspect.objects.all()
+	QuestionFormSet = inlineformset_factory(Suspect, CAQS, fields=('question', 'answer'), extra=questions.count() )
 	suspect = Suspect.objects.get(id=pk_suspect)
-	formset = QuestionFormSet(queryset=CAQS.objects.none(),instance=suspect)
+	formset = QuestionFormSet(queryset=CAQS.objects.filter(question__crimeType=crimeType),instance=suspect)
 	if request.method == 'POST':
 		formset = QuestionFormSet(request.POST,instance=suspect)
 
-		if formset.is_valid():
-			formset.save()
-			messages.success(request, 'Questions have been Linked to Suspect Successfully')
-			return redirect('home_Officer')
+		if formset.is_valid():	
+			count=0
+			not_applied=0
+			for form in formset:
+				
+				if str(form.cleaned_data['answer']) == "yes":
+					count+=1
+				elif str(form.cleaned_data['answer']) == "not_applied":
+					not_applied+=1
+					
 
+				form.save()
+
+			print(not_applied)
+			print(questions.count())
+			print(count)
+
+			questionsTotal = questions.count() - not_applied
+			
+
+			"""
+			  calculate the rate over 50 of from suspect answers
+			  find the average based on lenght of questions.
+			  and return the rate of Yes ones. means total marks will be
+			  calculated out of 50.
+			"""
+			rate = 50 * float(count)/float(questionsTotal)
+			Suspect.objects.filter(id=pk_suspect).update(crime_rate=rate)
+			
+			messages.success(request, 'Questions have been Linked to Suspect Successfully')
+			return redirect('CAQSList')	
+	
 	context = {'form':formset, 'suspect':suspect}
 	return render(request, 'crime/StationOfficer/cransquestsusp_Form.html', context)
 
+
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['StationUser'])
 def CAQSList(request):
     quesans = CAQS.objects.all()
     return render(request, 'crime/StationOfficer/questAnsList.html', {'quesans':quesans})
 
 
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['StationUser'])
 def createCAQW(request, pk_witness):
-	QuestionFormSet = inlineformset_factory(Reporter, CAQW, fields=('question', 'answer'), extra=3 )
+	suspect = Suspect.objects.filter(reporters__id=pk_witness)
+	questions = QuestionReporter.objects.all()
+	QuestionFormSet = inlineformset_factory(Reporter, CAQW, fields=('question', 'answer'), extra=questions.count())
 	reporter = Reporter.objects.get(id=pk_witness)
 	formset = QuestionFormSet(queryset=CAQW.objects.none(),instance=reporter)
 	if request.method == 'POST':
 		formset = QuestionFormSet(request.POST,instance=reporter)
 
 		if formset.is_valid():
-			formset.save()
+			count=0
+			for form in formset:
+				if str(form.cleaned_data['answer']) == "yes":
+					count+=1
+					form.save()
+
+			"""
+			  calculate the rate over 50 of from suspect answers
+			  find the average based on lenght of questions.
+			  and return the rate of Yes ones. means total marks will be
+			  calculated out of 50.
+			"""
+			rate = 50 * float(count)/float(questions.count())
+			suspect.update(witness_rate=rate)
+
+
+
+			
 			messages.success(request, 'Qeustions has been Linked to Witness Successfully')
-			return redirect('home_Officer')
+			return redirect('crimeSuspect')
+
 
 	context = {'form':formset, 'reporter':reporter}
 	return render(request, 'crime/StationOfficer/cransquestWitness_Form.html', context)
@@ -626,12 +807,36 @@ def generalStatisticalReport(request):
 def casesAnalyse(request):
 	user = request.user
 	stationuser = StationUser.objects.get(user=user)	
-	cases = Case.objects.filter(stationuser=stationuser, status='Studied')	
+	cases = Case.objects.filter(stationuser=stationuser, status='Finished')	
 	suspects = Suspect.objects.filter(stationuser=stationuser)
 	
 	context = {'cases':cases, 'suspects':suspects}
 	
 	return render(request, 'crime/StationOfficer/caselistAnalysis.html', context)
+
+
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBStation'])
+def stationClosedCases(request):
+	user = request.user
+	rib_station = RIBStation.objects.get(user=user)
+	cases = Case.objects.filter(ribstation=rib_station, status='Finished')
+	suspects = Suspect.objects.filter(ribstation=rib_station)
+	
+	context = {'cases':cases, 'suspects':suspects,'rib_station':rib_station}
+	
+	return render(request, 'crime/RIBStation/casesClosed.html', context)
+
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBHeadquarter'])
+def CanceledCases(request):
+	rib_station = RIBStation.objects.all()
+	cases = Case.objects.filter(status='Deleted')
+	suspects = Suspect.objects.filter(ribstation=rib_station)
+	
+	context = {'cases':cases, 'suspects':suspects,'rib_station':rib_station}
+	
+	return render(request, 'crime/RIBHQ/canceledCase.html', context)
 
 @login_required(login_url='login_view')
 @allowed_users(allowed_roles=['StationUser'])
@@ -642,6 +847,27 @@ def analyseCaseSuspects(request, case_pk):
 
 	context = {'suspects':suspects, 'case':case}
 	return render(request, 'crime/StationOfficer/caseSuspectsAnalysis.html', context)
+
+@login_required(login_url='login_view')
+# @allowed_users(allowed_roles=['RIBStation'])
+def ClosedCaseSuspects(request, case_pk):
+
+	caseSuspects = Case.objects.get(id=case_pk)
+	suspects = caseSuspects.suspects.all()
+	officer = caseSuspects.stationuser
+	context = {'suspects':suspects,'officer':officer, 'caseSuspects':caseSuspects}
+	return render(request, 'crime/RIBStation/SuspectsForClosedcase.html', context)
+
+
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBHeadquarter'])
+def RIBClosedCaseSuspects(request, case_pk):
+
+	caseSuspects = Case.objects.get(id=case_pk)
+	suspects = caseSuspects.suspects.all()
+	officer = caseSuspects.stationuser
+	context = {'suspects':suspects,'officer':officer, 'caseSuspects':caseSuspects}
+	return render(request, 'crime/RIBHQ/RIBSuspectsForClosedcase.html', context)
 
 def some_view(request):
 	suspect = Suspect.objects.all()
@@ -1049,14 +1275,14 @@ def stationStatReporting(request):
 	rib_station = RIBStation.objects.get(user=user)
 	cases = Case.objects.filter(ribstation=rib_station)
 
-	male= Suspect.objects.filter(ribstation=rib_station, gender='M').count()
-	female= Suspect.objects.filter(ribstation=rib_station, gender='F').count()
+	male= StationUser.objects.filter(ribstation=rib_station, gender='M').count()
+	female= StationUser.objects.filter(ribstation=rib_station, gender='F').count()
 	Captain = StationUser.objects.filter(ribstation=rib_station, rank = 'Captain').count()
 	Major = StationUser.objects.filter(ribstation=rib_station, rank = 'Major').count()
 	General = StationUser.objects.filter(ribstation=rib_station, rank = 'General').count()
 
 
-	context = {'cases':cases,
+	context = {'cases':cases,'General':General,'Major':Major,'Captain':Captain,
 	'male':male, 'female':female}
 	return render(request, 'crime/Reports/stationReporting.html',context)
 
@@ -1183,6 +1409,33 @@ def ajaxSearch(request):
     context = {}
     return render(request, 'ajaxSuspectForm.html', context)
 
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['StationUser'])
+
+def primaryOrReleaseReport(request, pk_suspect):
+	user = request.user
+	template = get_template('crime/Reports/primaryOrReleaseReport.html')
+	today = datetime.datetime.now()
+
+	suspect = Suspect.objects.get(id=pk_suspect)
+	case = suspect.case_set.first()
+	reporters = suspect.reporters.all()
+	evidences = suspect.evidences.all()
+ 
+
+	context = {'user':user, 'suspect':suspect, 'case':case, 'reporters':reporters, 'evidences':evidences, 'today':today}
+	html = template.render(context)
+	pdf= render_to_pdf('crime/Reports/primaryOrReleaseReport.html', context)
+	if pdf:
+		response = HttpResponse(pdf, content_type='application/pdf')
+		file_name = "Primary or Release Suspect Report"
+		content = "inline; filename='%s'" %(file_name)
+		download = request.GET.get("download")
+		if download:
+			content = "attachment; filename='%s'" %(file_name)
+		response['Content-Disposition'] = content
+		return response
+		return HttpResponse*"Not found"
 
 
 

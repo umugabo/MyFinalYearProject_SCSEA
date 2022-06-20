@@ -1,10 +1,12 @@
 {%  extends 'crime/StationOfficer/mainOfficer.html' %}
 
 {% block content %}
-<br>
+<center>
+<a class="btn btn-warning" href="{% url 'home_Officer' %}">Back Home</a>
+
 <div class="row">
 
-<h5>Process of presenting primary suspect ...</h5>
+<h5>List of All My Finished Cases ...</h5>
 <hr>
 		<div class="card card-body">
 <table class="table table-sm">
@@ -13,9 +15,9 @@
 <th>Victim</th>
 <th>Phone</th>
 <th>Type</th>
-<th>Status</th>
+<th>Case Status</th>
 <th>Case Summary</th>
-<th>Evidences Analysis</th>
+<th>More Case Details</th>
 </tr>
 {% for case in cases %}
 		<tr>
@@ -25,7 +27,7 @@
 			<td>{{case.crimeType}}</td>			
 			<td>{{case.status}}</td>
 			<td>{{case.case_desc}}</td>
-			<td><a class="btn btn-sm btn-primary" href="{% url 'analyseCaseSuspects' case.id%}">Analyse Suspect Evidences</a></td>
+			<td><a class="btn btn-sm btn-primary" href="{% url 'analyseCaseSuspects' case.id%}">Case Suspects Details</a></td>
 
 		
 		</tr>

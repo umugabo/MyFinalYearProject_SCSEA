@@ -11,25 +11,46 @@
 {% endfor %}
 {% endblock %}
 <!--End of Message line-->
+<style>
 
+    form button{
+        margin-right: 170px;
+    }
+
+    .contain{
+        display: flex;
+    }
+    .form-group {
+        width: 70%;
+    }
+
+</style>
 <div class="row">
 <h2>Case Registration</h2>
-	<div class="col-md-6">
-		<div class="card card-body">
+<div class="col-md-12">
+	<div class="card card-body">
 
 			<form action="" method="POST">
 				{% csrf_token %}
+				<div class="contain">
+					<div class="form-group">
 				{{form.case_name|as_crispy_field}}
 				{{form.crimeType|as_crispy_field}}
 				{{form.victim_name|as_crispy_field}}
+				{{form.victim_age|as_crispy_field}}
+			</div>
+			<div class="form-group">
 				{{form.reporter_name|as_crispy_field}}
 				{{form.reporter_phone|as_crispy_field}}
 				{{form.victim_address|as_crispy_field}}
 				{{form.stationuser|as_crispy_field}}
+			</div>
+			<div class="form-group">
 				{{form.case_desc|as_crispy_field}}
+			
 				<center>
-				<a class="btn btn-warning" href="{% url 'home_Station' %}">Cancel</a>
-				<input type="submit" name="Submit" class="btn btn-info">
+				<a class="btn btn-warning" href="{% url 'home_Station' %}">Cancel</a>&nbsp;&nbsp;
+				<input type="submit" name="Submit" class="btn btn-info"></div>
 			</form>
 
 		</div>

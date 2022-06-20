@@ -13,14 +13,14 @@
 					<table class="table">
 						<tr>
                             <th>Suspect Name</th>
-							<th>Crime Type</th>
-							<th>Question</th>	
-                            <th>Answer</th>						
+							{% comment %} <th>Crime Type</th> {% endcomment %}
+							<th>Question Asked</th>	
+                            <th>Answer Provided</th>						
 						</tr>
 						{% for quesans in quesans %}
 							<tr>
 								<td>{{quesans.suspect}}</td>
-								<td>{{quesans.crime}}</td>
+								{% comment %}  <td>{{quesans.suspect.Case.crimeType}}</td> {% endcomment %}
 								<td>{{quesans.question}}</td>
                                 <td>{{quesans.answer}}</td>
 							</tr>

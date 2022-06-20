@@ -17,10 +17,12 @@ urlpatterns = [
     path('login_view/', views.login_view, name="login_view"),
     path('registerPage/', views.registerPage, name="registerPage"),
     path('register_ribofficer/', views.register_ribofficer, name="register_ribofficer"),
+    path('register_stationName/', views.register_stationName, name="register_stationName"),
     path('logout',views.logoutUser, name='logout'),
     path('error401', views.error401, name='error401'),
     path('errorDelete', views.errorDelete, name='errorDelete'),
-    path('errorDeleteCase', views.errorDeleteCase, name='errorDeleteCase'),
+    path('errorUpdateCase', views.errorUpdateCase, name='errorUpdateCase'),
+    path('errorDeleteCase/<str:case_pk>/', views.errorDeleteCase, name='errorDeleteCase'),
     path('home_Hq/', views.homeHq, name="home_Hq"),
     path('home_Station/', views.homeStation, name="home_Station"),
     path('home_Officer/', views.homeOfficer, name="home_Officer"),
@@ -28,6 +30,8 @@ urlpatterns = [
     path('createRIBStation/', views.createRIBStation, name="createRIBStation"),
     path('createOfficer/', views.createOfficer, name="createOfficer"),
     path('officerList/', views.officerList, name="officerList"),
+    path('officerListHQ/', views.officerListHQ, name="officerListHQ"),
+    path('CanceledCases/', views.CanceledCases, name="CanceledCases"),
     path('RIBstationList/', views.RIBstationList, name="RIBstationList"),
     path('suspect/<str:pk_susp>/', views.suspect, name="suspect"),
     path('witnes/<str:pk_susp>/', views.witnes, name="witnes"),
@@ -50,7 +54,7 @@ urlpatterns = [
     path('createQuestionForSuspect/', views.createQuestionForSuspect, name="createQuestionForSuspect"),
     path('createQuestionForReporter/', views.createQuestionForReporter, name="createQuestionForReporter"),
     path('createAnswer/', views.createAnswer, name="createAnswer"),
-    path('createCAQS/<str:pk_suspect>/', views.createCAQS, name="createCAQS"),
+    path('createCAQS/<str:pk_suspect>/crimeType/<str:crimeType>/', views.createCAQS, name="createCAQS"),
     path('createCAQW/<str:pk_witness>/', views.createCAQW, name="createCAQW"),
     path('CAQSList/', views.CAQSList, name="CAQSList"),
     path('createCrime/', views.createCrime, name="createCrime"),
@@ -59,6 +63,9 @@ urlpatterns = [
     path('QuestionRepoList/', views.QuestionRepoList, name="QuestionRepoList"),
     path('AnswerList/', views.AnswerList, name="AnswerList"),
     path('casesAnalyse/', views.casesAnalyse, name="casesAnalyse"),
+    path('stationClosedCases/', views.stationClosedCases, name="stationClosedCases"),
+    path('ClosedCaseSuspects/<str:case_pk>/', views.ClosedCaseSuspects, name="ClosedCaseSuspects"),
+    path('RIBClosedCaseSuspects/<str:case_pk>/', views.RIBClosedCaseSuspects, name="RIBClosedCaseSuspects"),
     path('analyseCaseSuspects/<str:case_pk>/', views.analyseCaseSuspects, name="analyseCaseSuspects"),
     path('generalStatisticalReport/', views.generalStatisticalReport, name="generalStatisticalReport"),
     path('some_view/', views.some_view, name="some_view"),
@@ -79,6 +86,9 @@ urlpatterns = [
     path('printSuspectsOnTwoCase/', views.printSuspectsOnTwoCase, name="printSuspectsOnTwoCase"),
     path('presentPrimarySuspect/', views.presentPrimarySuspect, name="presentPrimarySuspect"),
     
+    path('primaryOrReleaseReport/<str:pk_suspect>/', views.primaryOrReleaseReport, name='primaryOrReleaseReport'),
+    path('findPrimarySuspect/<str:suspect_pk>/', views.find_primary_suspects, name='findPrimarySuspect'),
+    
 
 
 
@@ -87,6 +97,12 @@ urlpatterns = [
 
 
  ]
+ 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,
                           document_root=settings.MEDIA_ROOT)
+
+# Admin Title
+admin.site.site_header = "SCSEA RIB ADMNINISTRATION PANEL"
+admin.site.site_title = "Browser Title"
+admin.site.index_title = "Welcome To RIB System Admin Area"

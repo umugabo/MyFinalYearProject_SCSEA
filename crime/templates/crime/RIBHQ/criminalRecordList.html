@@ -20,13 +20,11 @@
             <a class="btn btn-danger" href="{% url 'criminalRecord' %}">Clear</a></tr></td>
               <form method="get">
                 {{myFilter.form}}
-                <button class="btn btn-primary mb-2" type="SUBMIT" >Search For Suspect record
+                <button class="btn btn-primary mb-2" type="SUBMIT" >Search For Suspect Criminal record
                 </button>
                </form>
 
-            
-            
-            <!-- <tr><td><a class="btn btn-primary  btn-sm btn-block" href="{%  url 'printSuspectsHQ' %}">Generate PDF</a> -->
+             <tr><td><a class="btn btn-primary  btn-sm btn-block" href="{%  url 'printSuspectsHQ' %}">Generate PDF</a>
             </tr></td></table>
 				</div>
 				<div class="card card-body">
@@ -38,6 +36,7 @@
                             <th>Date Arrested</th>
                             <th>RIBStation</th>
                             <th>Officer Incharge</th>
+							<th>Final Decision</th>
 						</tr>
 						{% for suspect in suspects %}
 							<tr>
@@ -47,6 +46,7 @@
                                 <td>{{suspect.date_arrested}}</td>
                                 <td>{{suspect.ribstation}}</td>
                                 <td>{{suspect.stationuser}}</td>
+								<td>{{suspect.suspect_status}}</td>
 			
 							</tr>
 						{% endfor %}
