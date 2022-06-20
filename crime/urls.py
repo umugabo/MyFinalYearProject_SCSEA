@@ -101,3 +101,8 @@ urlpatterns = [
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,
                           document_root=settings.MEDIA_ROOT)
+
+# Admin Title
+admin.site.site_header = "SCSEA RIB ADMNINISTRATION PANEL"
+admin.site.site_title = "Browser Title"
+admin.site.index_title = "Welcome To RIB System Admin Area"
