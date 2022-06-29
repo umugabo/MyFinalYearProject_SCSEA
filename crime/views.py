@@ -378,7 +378,9 @@ def createCase(request):
 			case.save()
 			reporterPhoneNumber = request.POST['reporter_phone']
 			reporterName = request.POST['reporter_name']
-			send_sms_to_reporter(reporterPhoneNumber,reporterName)
+			caseName = request.POST['case_name']
+
+			send_sms_to_reporter(reporterPhoneNumber,reporterName,caseName)
 			messages.success(request, 'Case has been Innitiated Successfully and Repoter has been Notified')
 			return redirect('caseList')
 
@@ -388,9 +390,9 @@ def createCase(request):
 """
 	Method to send an sms to the reporter that his/her case was successfully received.
 """
-def send_sms_to_reporter(receiver, name):
+def send_sms_to_reporter(receiver, name, caseName):
     message = f'Bwana/Madame,' + name + \
-        ' ikirego cyawe cyakirewe neza , Murakoze '
+        ' ikirego cyawe giifite No:' + caseName + 'cyakiriwe neza , Murakoze RIB RWANDA'
     Suspect.send_sms(receiver, message)
 
 

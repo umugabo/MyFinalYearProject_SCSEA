@@ -37,7 +37,7 @@
       <li class="{% if 'AnswerList' in request.path %} nav-item active {% endif %}">
         <a class="nav-link" href="{% url 'AnswerList' %}">RIB Answers</a>
       </li>
-      <li class="{% if 'CanceledCases' in request.path %} nav-item active {% endif %}">
+      <li class="{% if 'CanceledCases' in request.path %} nav-item active  {% elif 'create_evidence' in request.path %} nav-item active {% elif 'RIBClosedCaseSuspects' in request.path %} nav-item active {% endif %}">
         <a class="nav-link" href="{% url 'CanceledCases' %}">Cases Canceled</a>
       </li>
       <li class="{% if 'criminalRecord' in request.path %} nav-item active {% endif %}">
