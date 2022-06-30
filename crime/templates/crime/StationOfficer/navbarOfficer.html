@@ -26,14 +26,14 @@
         <a class="nav-link" href="{% url 'crimeSuspect' %}">Crime Suspect </a>
       </li>
       
-      <li class="{% if 'CAQSList' in request.path %} nav-item active {% endif %}">
+      {% comment %} <li class="{% if 'CAQSList' in request.path %} nav-item active {% endif %}">
         <a class="nav-link" href="{% url 'CAQSList' %}">Questionaire Results</a>
       </li> 
 
 
         <li class="{% if 'evidence' in request.path %} nav-item active {% elif 'create_evidence' in request.path %} nav-item active {% elif 'evidence' in request.path %} nav-item active {% endif %}">
         <a class="nav-link" href="{% url 'evidence' %}">Evidences List</a>
-      </li> 
+      </li>  {% endcomment %}
 
         
         <li class="{% if 'casesAnalyse' in request.path %} nav-item active {% elif 'analyseCaseSuspects' in request.path %} nav-item active {% endif %}">

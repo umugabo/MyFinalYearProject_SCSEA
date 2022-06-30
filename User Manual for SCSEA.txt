@@ -12,13 +12,15 @@ The system has got Four type of Users
    *Password:investigation
 
 3)Station Users
-   *UserName:Officer.Bruno.REM
+   *UserName:
+            Officer.Bruno.REM
+            Officer.Eric.REM   
             Officer.Divine.KIC
+            Officer.Ndungutse.KIC
             Officer.Alfred.RWE
             Officer.Fidele.RWE
             Officer.Muvunyi.MHR
             Officer.Macumu.MUH
-            Officer.Eric.REM
             Officer.Tumusiime.NYA
    *Password:investigation
 
