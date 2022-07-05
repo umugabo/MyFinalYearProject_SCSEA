@@ -138,6 +138,7 @@ def logoutUser(request):
 @login_required(login_url='login_view')
 @allowed_users(allowed_roles=['RIBHeadquarter'])
 def homeHq(request):
+	today = datetime.datetime.now()
 	cases = Case.objects.all()
 	officers = Officer.objects.all()
 	stations = RIBStation.objects.all()
@@ -153,6 +154,11 @@ def homeHq(request):
 	cases_rwezamenyo = Case.objects.filter(ribstation = 3).count()
 	cases_muhanga = Case.objects.filter(ribstation = 4).count()
 	cases_nyagatare = Case.objects.filter(ribstation = 5).count()
+	cases_gatuna = Case.objects.filter(ribstation = 6).count()
+	cases_ruli = Case.objects.filter(ribstation = 7).count()
+	# cases_remera = Case.objects.filter(ribstation = 8).count()
+
+
 
 	year = datetime.datetime.now().year
 
@@ -173,10 +179,10 @@ def homeHq(request):
 	violent_cases = Case.objects.filter(crimeType = 'Violent').count()
 	murder_cases = Case.objects.filter(crimeType = 'Murder').count()
 
-	context = {'cases':cases, 'suspects':suspects,'stations':stations,
+	context = {'cases':cases, 'suspects':suspects,'stations':stations,'today':today,
 	'total_casess':total_cases,'finished':finished,'officers':officers,'studied':studied,
 	'pending':pending, 'cases_remera':cases_remera,'cases_kicukiro':cases_kicukiro, 
-	'cases_rwezamenyo': cases_rwezamenyo,'cases_muhanga': cases_muhanga,'cases_nyagatare': cases_nyagatare, 
+	'cases_rwezamenyo': cases_rwezamenyo,'cases_muhanga': cases_muhanga,'cases_nyagatare': cases_nyagatare, 'cases_gatuna':cases_gatuna,'cases_ruli':cases_ruli,
 	'january':january, 'february':february, 'march': march,
 	'april': april, 'may': may, 'june': june, 'july': july, 'august': august, 'september':september, 
 	'october': october, 'november': november, 'december': december,
@@ -189,6 +195,7 @@ def homeHq(request):
 @login_required(login_url='login_view')
 @allowed_users(allowed_roles=['RIBStation'])
 def homeStation(request):
+	today = datetime.datetime.now()
 	user = request.user
 	ribstation = RIBStation.objects.get(user=user)
 	cases = Case.objects.filter(ribstation=ribstation).order_by('-date_reported')
@@ -206,7 +213,7 @@ def homeStation(request):
 	pending = cases.filter(status='Pending').count()
 	studied = cases.filter(status='Studied').count()
 
-	context = {'cases':cases, 'suspects':suspects,
+	context = {'cases':cases, 'suspects':suspects,'today':today,
     'total_casess':total_cases,'finished':finished,'studied':studied,
     'pending':pending, 'page_obj':page_obj }
 	messages.success(request, 'Logged In as RIBStation User')
@@ -215,9 +222,9 @@ def homeStation(request):
 @login_required(login_url='login_view')
 @allowed_users(allowed_roles=['StationUser'])
 def homeOfficer(request):
+	today = datetime.datetime.now()
 	user = request.user
 	stationuser = StationUser.objects.get(user=user)
-	
 	cases = Case.objects.filter(stationuser=stationuser).order_by('-date_reported')
 	
 	suspects = Suspect.objects.filter(stationuser=stationuser)
@@ -232,7 +239,7 @@ def homeOfficer(request):
 	page_obj = paginator.get_page(page_number)
 	
 	context = {'cases':cases, 'suspects':suspects,
-    'total_casess':total_cases,'finished':finished,
+    'total_casess':total_cases,'finished':finished,'today':today,
     'pending':pending,'studied':studied , 'page_obj':page_obj}
 	messages.success(request, 'Logged In as Station Officer')
 	return render(request, 'crime/StationOfficer/DashboardOfficer.html', context)
@@ -379,8 +386,9 @@ def createCase(request):
 			reporterPhoneNumber = request.POST['reporter_phone']
 			reporterName = request.POST['reporter_name']
 			caseName = request.POST['case_name']
+			ribName = request.POST['victim_address']
 
-			send_sms_to_reporter(reporterPhoneNumber,reporterName,caseName)
+			send_sms_to_reporter(reporterPhoneNumber,reporterName,caseName,ribName)
 			messages.success(request, 'Case has been Innitiated Successfully and Repoter has been Notified')
 			return redirect('caseList')
 
@@ -390,9 +398,9 @@ def createCase(request):
 """
 	Method to send an sms to the reporter that his/her case was successfully received.
 """
-def send_sms_to_reporter(receiver, name, caseName):
-    message = f'Bwana/Madame,' + name + \
-        ' ikirego cyawe giifite No:' + caseName + 'cyakiriwe neza , Murakoze RIB RWANDA'
+def send_sms_to_reporter(receiver, name, caseName, ribName):
+    message = f'Dear,' + name + \
+        ' The case you have reporter which have No:' + caseName + ' Has been received and the investigation is in process , From ' + ribName + ' Station  Thank you '
     Suspect.send_sms(receiver, message)
 
 
@@ -524,7 +532,7 @@ def createEvidence(request, suspect_pk):
 			suspect.evidences.add(evidence)
 
 			messages.success(request, 'Evidence has been Linked Successfully')
-			return redirect('evidence')
+			return redirect('crimeSuspect')
 
 
 	context = {'form':form, 'suspect':suspect}

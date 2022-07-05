@@ -3,14 +3,14 @@
 {% block styles %}
   <style>
     .active {
-      background-color: cadetblue;
+      background-color: blue;
     }
   </style>
 {% endblock styles %}
  <img src="{% static 'images/hd.jpg' %}"alt="logo" height="70" width="1380">
- <center><b>{% now "SHORT_DATETIME_FORMAT" %}</b></center>
+ <center><b>{{today}}</b></center>
  {% comment %} navbar-expand-lg {% endcomment %}
-<nav class="navbar     navbar-dark bg-dark">
+<nav class="navbar  navbar-expand-lg   navbar-dark bg-dark">
 
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>

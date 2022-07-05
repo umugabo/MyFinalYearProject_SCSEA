@@ -2,11 +2,13 @@ The system has got Four type of Users
 ===============================
 
 1)RIB HEADQUARTER
-   *UserName:RIBHQ
-   *Password:investigation
+   *UserName:
+		RIBHQ
+   *Password: investigation
 
 2)RIB STATION
-   *UserName:Remerastation
+   *UserName:
+	     Remerastation
              KicukiroStation
              RwezamenyoStation
    *Password:investigation
@@ -19,9 +21,11 @@ The system has got Four type of Users
             Officer.Ndungutse.KIC
             Officer.Alfred.RWE
             Officer.Fidele.RWE
-            Officer.Muvunyi.MHR
+            Officer.Muvunyi.MUH
             Officer.Macumu.MUH
             Officer.Tumusiime.NYA
+            Officer.Gatare.Gatuna
+            Officer.Geofrey.Gatuna
    *Password:investigation
 
 4)RIB Super User

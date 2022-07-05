@@ -172,6 +172,7 @@ class Suspect(models.Model):
     dob = models.DateField()
     phone =  models.CharField(max_length=10, blank=False)
     date_arrested = models.DateTimeField(auto_now_add=True,null=True) 
+    date_released = models.DateTimeField(auto_now_add=True,null=True) 
     relation = models.CharField(max_length=30, blank=False)   
     father_name = models.CharField(max_length=100, blank=True)
     mother_name = models.CharField(max_length=100, blank=True)
@@ -258,7 +259,7 @@ class Case(models.Model):
     date_reported = models.DateTimeField(auto_now_add=True,null=True) 
     
     def __str__(self):
-        return self.case_name
+        return self.case_number
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
