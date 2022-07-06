@@ -277,7 +277,8 @@ def createRIBStation(request):
 	context = {'form':form}
 	return render(request, 'crime/RIBHQ/ribstation_Form.html', context)
 
-
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBHeadquarter'])
 def RIBstationList(request):
     stations = RIBStation.objects.all()
     return render(request, 'crime/RIBHQ/RIBstationList.html', {'stations':stations})
@@ -296,6 +297,8 @@ def createStationName(request):
 	context = {'form':form}
 	return render(request, 'crime/RIBHQ/officer_form.html', context)
 
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBStation'])
 def createOfficer(request):
 	user = request.user
 	ribstation = RIBStation.objects.get(user=user)
@@ -312,6 +315,8 @@ def createOfficer(request):
 	context = {'form':form}
 	return render(request, 'crime/RIBStation/officer_form.html', context)
 
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBStation'])
 def officerList(request):
 	user = request.user
 	ribstation = RIBStation.objects.get(user=user)
@@ -319,7 +324,8 @@ def officerList(request):
 	officers = StationUser.objects.filter(ribstation=ribstation)
 	return render(request, 'crime/RIBStation/officerList.html', {'officers':officers})
 
-
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBHeadquarter'])
 def officerListHQ(request):
 	# user = request.user
 	# ribstation = RIBStation.objects.get(user=user)
@@ -327,17 +333,23 @@ def officerListHQ(request):
 	officers = StationUser.objects.all()
 	return render(request, 'crime/RIBHQ/Caseofficers.html', {'officers':officers})
 
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBStation'])
 def caseList(request):
 	user = request.user
 	ribstation = RIBStation.objects.get(user=user)
 	cases = Case.objects.filter(ribstation=ribstation)
 	return render(request, 'crime/RIBStation/caseList.html', {'cases':cases})
 
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['StationUser'])
 def evidenceList(request):
 	suspect = Suspect.objects.all()
 	evidences = Evidence.objects.all()
 	return render(request, 'crime/StationOfficer/evidenceList.html', {'suspect':suspect, 'evidences':evidences})
-	
+
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['StationUser'])	
 def witnes(request, pk_susp):
     suspect = Suspect.objects.get(id=pk_susp)
     reporters = suspect.reporters.all()
@@ -345,6 +357,8 @@ def witnes(request, pk_susp):
     context = {'suspect':suspect,'reporters':reporters,'reporter_count':reporter_count}
     return render(request, 'crime/StationOfficer/witness.html',context)
 
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['StationUser'])
 def suspect(request, pk_susp):
     suspect = Suspect.objects.get(id=pk_susp)
     evidences = suspect.evidences.all()
@@ -352,10 +366,14 @@ def suspect(request, pk_susp):
     context = {'suspect':suspect,'evidences':evidences,'evidence_count':evidence_count}
     return render(request, 'crime/StationOfficer/suspect.html',context)
 
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['StationUser'])
 def suspectList(request):
     suspect = Suspect.objects.all()
     return render(request, 'crime/StationOfficer/suspectList.html', {'suspect':suspect})
 
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBHeadquarter'])
 def criminalRecord(request):
 	# case = Case.objects.get(id=case_pk)
 	# suspects = case.suspects.all()
@@ -400,10 +418,17 @@ def createCase(request):
 """
 def send_sms_to_reporter(receiver, name, caseName, ribName):
     message = f'Dear,' + name + \
-        ' The case you have reporter which have No:' + caseName + ' Has been received and the investigation is in process , From ' + ribName + ' Station  Thank you '
+        ' The case you have reported which has Re_ No:' + caseName + ' Has been received and the investigation is in process , From ' + ribName + ' Station  Thank you '
+    Suspect.send_sms(receiver, message)
+
+def send_sms_to_close(receiver, name, caseName, ribName):
+    message = f'Dear,' + name + \
+        ' The case you have reporter which have No:' + caseName + ' Has been Closed and the investigation is Closed , From ' + ribName + ' Station  Thank you '
     Suspect.send_sms(receiver, message)
 
 
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBStation'])
 def updateCase(request, pk):
 
 	case = Case.objects.get(id=pk)
@@ -419,6 +444,8 @@ def updateCase(request, pk):
 	context = {'form':form}
 	return render(request, 'crime/RIBStation/case_form.html', context)
 
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['RIBStation'])
 def deleteCase(request, pk):
 	case = Case.objects.get(id=pk)
 	if request.method == "POST":
@@ -462,6 +489,8 @@ def viewCaseSuspects(request, case_pk):
 	context = {'suspects':suspects, 'case':case}
 	return render(request, 'crime/StationOfficer/caseSuspects.html', context)
 
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['StationUser'])
 def updateSuspect(request, case_pk):
 
 	suspect = Suspect.objects.get(id=case_pk)
@@ -476,6 +505,8 @@ def updateSuspect(request, case_pk):
 	context = {'form':form}
 	return render(request, 'crime/StationOfficer/suspect_form.html', context)
 
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['StationUser'])
 def deleteSuspect(request, case_pk):
 	suspect = Suspect.objects.get(id=case_pk)
 	if request.method == "POST":
@@ -592,7 +623,8 @@ def find_primary_suspects(request, suspect_pk):
 	context = {'suspect':Suspect.objects.get(id=suspect_pk), 'case':case, 'evidences':Suspect.objects.get(id=suspect_pk).evidences.all(),'evidence_count':Suspect.objects.get(id=suspect_pk).evidences.all().count()}
 	return render(request, 'crime/StationOfficer/suspectDecisionReport.html', context)
 
-
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['StationUser'])
 def updateEvidence(request, pk):
 
 	evidence = Evidence.objects.get(id=pk)
@@ -607,6 +639,8 @@ def updateEvidence(request, pk):
 	context = {'form':form}
 	return render(request, 'crime/StationOfficer/evidence_Form.html', context)
 
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['StationUser'])
 def createReporter(request, suspect_pk):
 	suspect = Suspect.objects.get(id=suspect_pk)
 	form = ReporterForm()
@@ -621,6 +655,8 @@ def createReporter(request, suspect_pk):
 	context = {'form':form, 'suspect':suspect}
 	return render(request, 'crime/StationOfficer/reporter_form.html', context)
 
+@login_required(login_url='login_view')
+@allowed_users(allowed_roles=['StationUser'])
 def reporterList(request):
     reporter = Reporter.objects.all()
     return render(request, 'crime/StationOfficer/reportertList.html', {'reporter':reporter})
@@ -1361,11 +1397,11 @@ def printSuspectsOnTwoCase(request):
 
 	if case1:	
 		first_case = Case.objects.get(id=case1)
-		nameC1 = first_case.case_name
+		nameC1 = first_case.case_number
 		cases_suspects1 = first_case.suspects.all()
 		if case2:
 			second_case = Case.objects.get(id=case2)
-			nameC2 = second_case.case_name
+			nameC2 = second_case.case_number
 			cases_suspects2 = second_case.suspects.all()
 
 	context = {'cases_suspects1':cases_suspects1, 'cases_suspects2':cases_suspects2,
@@ -1431,7 +1467,13 @@ def primaryOrReleaseReport(request, pk_suspect):
 	case = suspect.case_set.first()
 	reporters = suspect.reporters.all()
 	evidences = suspect.evidences.all()
- 
+
+	# reporterPhoneNumber = request.POST['reporter_phone']
+	# reporterName = request.POST['reporter_name']
+	# caseName = request.POST['case_name']
+	# ribName = request.POST['victim_address']
+
+	# send_sms_to_close(reporterPhoneNumber,reporterName,caseName,ribName)
 
 	context = {'user':user, 'suspect':suspect, 'case':case, 'reporters':reporters, 'evidences':evidences, 'today':today}
 	html = template.render(context)
