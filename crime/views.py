@@ -375,13 +375,9 @@ def suspectList(request):
 @login_required(login_url='login_view')
 @allowed_users(allowed_roles=['RIBHeadquarter'])
 def criminalRecord(request):
-	# case = Case.objects.get(id=case_pk)
-	# suspects = case.suspects.all()
 	suspects = Suspect.objects.all()
 	myFilter = SuspectFilter(request.GET, queryset=suspects)
 	suspects = myFilter.qs 
-	# suspect = Suspect.objects.get(id=pk_suspect)
-	# case = suspect.case_set.first()
 	context = {'suspects':suspects,
 	'myFilter':myFilter}
 	return render(request, 'crime/RIBHQ/criminalRecordList.html', context)

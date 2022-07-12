@@ -185,6 +185,7 @@ class Suspect(models.Model):
     cell = models.CharField(max_length=100, blank=True)
     village = models.CharField(max_length=100, blank=True)
     note = models.TextField(max_length=150, blank=False)
+    suspectimage = models.ImageField(upload_to='images/', default="upload/anonymous-user.png", max_length=154, blank=True, null=True)
     evidences = models.ManyToManyField(Evidence, blank=True, null=True)
     reporters = models.ManyToManyField(Reporter, blank=True, null=True)
     ribstation = models.ForeignKey(RIBStation, on_delete=models.CASCADE, null=True, blank=True)

@@ -27,7 +27,7 @@
         <a class="nav-link" href="{% url 'officerList' %}">Station Officers</a>
       </li>
 
-      <li class="{% if 'caseList' in request.path %} nav-item active {% endif %}">
+      <li class="{% if 'caseList' in request.path %} nav-item active {% elif 'create_case' in request.path %} nav-item active {% elif 'update_case' in request.path %} nav-item active {% endif %}">
         <a class="nav-link" href="{% url 'caseList' %}">Crime Case</a>
       </li>    
         

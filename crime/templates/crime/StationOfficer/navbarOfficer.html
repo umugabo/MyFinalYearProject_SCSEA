@@ -22,7 +22,7 @@
         <a class="nav-link" href="{% url 'home_Officer' %}">Dashboard </a>
       </li>
 
-      <li class="{% if 'crimeSuspect' in request.path %} nav-item active {% elif 'suspect' in request.path %} nav-item active {% elif 'create_evidence' in request.path %} nav-item active {% elif 'witnes' in request.path %} nav-item active {% elif 'createReporter' in request.path %} nav-item active {% elif 'evidence' in request.path %} nav-item active {% endif %}">
+      <li class="{% if 'crimeSuspect' in request.path %} nav-item active {% elif 'suspect' in request.path %} nav-item active {% elif 'create_evidence' in request.path %} nav-item active {% elif 'witnes' in request.path %} nav-item active {% elif 'createReporter' in request.path %} nav-item active {% elif 'evidence' in request.path %} nav-item active {% elif 'viewCaseSuspects' in request.path %} nav-item active {% endif %}">
         <a class="nav-link" href="{% url 'crimeSuspect' %}">Crime Suspect </a>
       </li>
       
@@ -34,7 +34,7 @@
          </div>
          <ul class="list-unstyled CTAs">
        {% csrf_token%}
-        <a href="{% url 'logout' %}" style="background-color: #7CFC00 " class="btn btn-primary btn-block mt-5" >LOGOUT {{request.user}}</a>
+        <a href="{% url 'logout' %}" style="background-color: #7CFC08 " class="btn btn-primary btn-block mt-5" >LOGOUT {{request.user}}</a>
       
     </ul>
    

@@ -11,5 +11,5 @@ class SuspectFilter(django_filters.FilterSet):
     class Meta:
          model = Suspect
          fields = '__all__'
-         exclude = ['cell','village','note','evidences','reporters','relation','dob','province','crime_rate','witness_rate','evidence_rate',
+         exclude = ['cell','suspectimage','village','note','evidences','reporters','relation','dob','province','crime_rate','witness_rate','evidence_rate',
          'district','f_name','l_name','date_arrested','gender','l_name','father_name','mother_name','phone']
