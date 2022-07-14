@@ -116,7 +116,7 @@ class Officer(models.Model):
     gender = models.CharField(max_length=1, choices=GENDER)
     phone = models.CharField(max_length=10, blank=False)
     email = models.CharField(max_length=50, blank=False)
-    officerimage = models.ImageField(upload_to='images/', max_length=154, blank=True, null=True)
+    officerimage = models.ImageField(upload_to='images/', default="upload/anonymous-user.png", max_length=154, blank=True, null=True)
     rank = models.CharField(max_length=30, choices=RANK)
     recruit_year = models.IntegerField()
     ribstation = models.ForeignKey(RIBStation, on_delete=models.CASCADE, null=True, blank=True)
@@ -128,7 +128,7 @@ class Evidence(models.Model):
     evidenceCategory = models.CharField(max_length=15, choices=EVIDENCECATEGORY, default="Select Category")
     evidence_note = models.TextField(max_length=255)
     level =  models.CharField(max_length=30, blank=False, choices=LEVEL_CHOICES, default='')
-    evidencerimage = models.ImageField(upload_to='upload/', null=True, blank=True , default="anonymous-user.png",)
+    evidencerimage = models.ImageField(upload_to='upload/', null=True, blank=True , default="upload/anonymous-user.png",)
     def __str__(self):
         return self.title
         
@@ -157,7 +157,7 @@ class StationUser(models.Model):
     gender = models.CharField(max_length=1, choices=GENDER,)
     phone = models.CharField(max_length=10, blank=True, null=True,)
     email = models.CharField(max_length=50, blank=True, null=True,)
-    officerimage = models.ImageField(upload_to='upload/', blank=True, null=True)
+    officerimage = models.ImageField(upload_to='upload/', default="upload/anonymous-user.png", blank=True, null=True)
     rank = models.CharField(max_length=30, choices=RANK, null=True,)
     recruit_year = models.IntegerField(null=True, blank=True)
     ribstation = models.ForeignKey(RIBStation, on_delete=models.CASCADE, null=True, blank=True)
@@ -172,6 +172,7 @@ class Suspect(models.Model):
     dob = models.DateField()
     phone =  models.CharField(max_length=10, blank=False)
     date_arrested = models.DateTimeField(auto_now_add=True,null=True) 
+    date_released = models.DateTimeField(auto_now_add=True,null=True) 
     relation = models.CharField(max_length=30, blank=False)   
     father_name = models.CharField(max_length=100, blank=True)
     mother_name = models.CharField(max_length=100, blank=True)
@@ -184,6 +185,7 @@ class Suspect(models.Model):
     cell = models.CharField(max_length=100, blank=True)
     village = models.CharField(max_length=100, blank=True)
     note = models.TextField(max_length=150, blank=False)
+    suspectimage = models.ImageField(upload_to='images/', default="upload/anonymous-user.png", max_length=154, blank=True, null=True)
     evidences = models.ManyToManyField(Evidence, blank=True, null=True)
     reporters = models.ManyToManyField(Reporter, blank=True, null=True)
     ribstation = models.ForeignKey(RIBStation, on_delete=models.CASCADE, null=True, blank=True)
@@ -258,7 +260,7 @@ class Case(models.Model):
     date_reported = models.DateTimeField(auto_now_add=True,null=True) 
     
     def __str__(self):
-        return self.case_name
+        return self.case_number
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -283,7 +285,7 @@ class Admin(models.Model):
     gender = models.CharField(max_length=1, choices=GENDER)
     phone = models.CharField(max_length=10, blank=False)
     email = models.CharField(max_length=50, blank=False)
-    adminimage = models.ImageField(upload_to='images/', max_length=154, blank=True, null=True)
+    adminimage = models.ImageField(upload_to='images/', default="upload/anonymous-user.png" ,max_length=154, blank=True, null=True)
     def __str__(self):
         return self.f_name 
 

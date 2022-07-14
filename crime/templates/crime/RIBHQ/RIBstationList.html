@@ -24,7 +24,7 @@
 <th>Station Name</th>
 <th>Location</th>
 {% comment %} <th>Update</th> {% endcomment %}
-<th>Delete</th>
+{% comment %} <th>Delete</th> {% endcomment %}
 </tr>
 {% for station in stations %}
 		<tr>
@@ -32,7 +32,7 @@
 			<td>{{station.station_name}}</td>
 			<td>{{station.province}}</td>
 			 {% comment %} <td><a class="btn btn-sm btn-info" href="">Update</a></td> {% endcomment %}
-			 <td><a class="btn btn-sm btn-danger" href="{% url 'errorDelete' %}">Delete</a></td>
+			 {% comment %} <td><a class="btn btn-sm btn-danger" href="{% url 'errorDelete' %}">Delete</a></td> {% endcomment %}
 
 	 
 		</tr>

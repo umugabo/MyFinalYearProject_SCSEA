@@ -9,7 +9,7 @@
 {% endblock styles %}
 
  <img src="{% static 'images/RIB_Banner_final.gif' %}"alt="logo" height="90" width="1360">
- <center><b>{% now "jS F Y H:i" %}</b></center>
+ <center><b>{{today}}</b></center>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -27,13 +27,13 @@
         <a class="nav-link" href="{% url 'officerList' %}">Station Officers</a>
       </li>
 
-      <li class="{% if 'caseList' in request.path %} nav-item active {% endif %}">
+      <li class="{% if 'caseList' in request.path %} nav-item active {% elif 'create_case' in request.path %} nav-item active {% elif 'update_case' in request.path %} nav-item active {% endif %}">
         <a class="nav-link" href="{% url 'caseList' %}">Crime Case</a>
       </li>    
         
       </li>
 
-      <li class="{% if 'stationClosedCases' in request.path %} nav-item active {% endif %}">
+      <li class="{% if 'stationClosedCases' in request.path %} nav-item active " {% elif 'ClosedCaseSuspects' in request.path %} nav-item active {% endif %}">
         <a class="nav-link" href="{% url 'stationClosedCases' %}">Closed Cases</a>
       </li>    
         

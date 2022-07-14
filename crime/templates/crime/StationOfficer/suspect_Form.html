@@ -32,7 +32,7 @@
 
 		<div class="card card-body">
             
-			<form action="" method="POST">
+			<form action="" method="POST" enctype="multipart/form-data">
 				{% csrf_token %}
 				<div class="contain">
 				<div class="form-group">
@@ -56,6 +56,7 @@
                 <div class="form-group">
 				{{form.village|as_crispy_field}}
 				{{form.ribstation|as_crispy_field}}
+				{{form.suspectimage|as_crispy_field}}
 				{{form.note|as_crispy_field}}
 			
 				</div>

@@ -102,15 +102,15 @@ class SuspectForm(forms.ModelForm):
         model = SuspectCriminalRecord
         model = Suspect
         # fields = '__all__'
-        fields = ('suspectNID','f_name','l_name','gender','dob','phone','relation','father_name','mother_name','province','district','cell','village','ribstation','note')
+        fields = ('suspectNID','f_name','l_name','gender','dob','phone','relation','father_name','mother_name','province','district','cell','village','ribstation','suspectimage','note')
         labels = {
-            'suspectNID':'Suspect Id',
+            'suspectNID':'Suspect National Id',
             'f_name':'First Name',
             'l_name':'Last Name',
             'gender':'Gender',
             'dob':'Date Of Birth',
             'phone':'Phone Number',            
-            'relation':'Relation to Crime',
+            'relation':'Suspect Relation with Crime',
             'father_name':'Father Name',
             'mother_name':'Mother Name',
             'province':'Province',
@@ -118,6 +118,7 @@ class SuspectForm(forms.ModelForm):
             'cell':'Cell',
             'village':'Village',
             'ribstation':'RIBStation',
+            'suspectimage':'Suspect Photo',
             'note':'Short Note',
             }
 
